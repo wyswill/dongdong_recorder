@@ -1,5 +1,7 @@
 name: audio_flutter
 description: audio_flutter
+name: asdasd
+description: A new Flutter application.
 
 version: 1.0.0+1
 
@@ -9,16 +11,17 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^0.1.2
   flutter_ffmpeg: ^0.2.8
-  flutter_sound: ^1.8.0
+  cupertino_icons: ^0.1.2
   path_provider: ^1.5.0
-  crypto: ^2.1.4
+  flutter_plugin_record: ^0.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
+
 flutter:
+
   uses-material-design: true
-  assets:
-    - assets/
+
