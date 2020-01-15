@@ -1,5 +1,8 @@
 import 'package:asdasd/pages/list/list.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../provider.dart';
 
 class MainPage extends StatefulWidget {
   @override
@@ -41,6 +44,96 @@ class _MainPageState extends State<MainPage>
     },
   ];
   TabController tabController;
+  @override
+  void initState() {
+    super.initState();
+    menus[0]['isActive'] = true;
+    tabController = TabController(vsync: this, length: 5);
+    tabController.addListener(() {
+      setState(() {
+        this.menus[tabController.index]['isActive'] = true;
+        for (int i = 0; i < this.menus.length; i++) {
+          if (i == tabController.index) continue;
+          this.menus[i]['isActive'] = false;
+        }
+      });
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        leading: Icon(Icons.account_circle),
+        title: Center(child: Text('录音机')),
+        actions: <Widget>[Icon(Icons.list)],
+      ),
+      body: Column(
+        children: <Widget>[
+          setTab(),
+          Expanded(
+            child: TabBarView(
+              controller: tabController,
+              children: List.generate(this.menus.length, (int index) {
+                Map curent = this.menus[index];
+                return curent['widget'];
+              }),
+            ),
+          ),
+          Container(
+            padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                      color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
+                ]),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                ClipOval(
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    color: Theme.of(context).primaryColor,
+                    child: IconButton(
+                      color: Colors.white,
+                      icon: Icon(Icons.timer),
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
+                ClipOval(
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    color: Theme.of(context).primaryColor,
+                    child: IconButton(
+                      color: Colors.white,
+                      icon: Icon(Icons.mic),
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
+                ClipOval(
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    color: Theme.of(context).primaryColor,
+                    child: IconButton(
+                      color: Colors.white,
+                      icon: Icon(Icons.text_rotation_down),
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   ///菜单item
   Widget buildMeneuItem(Widget icon, String routers, bool isActive, int index) {
@@ -84,94 +177,6 @@ class _MainPageState extends State<MainPage>
           Map e = this.menus[index];
           return buildMeneuItem(e['icon'], e['router'], e['isActive'], index);
         }),
-      ),
-    );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    menus[0]['isActive'] = true;
-    tabController = TabController(vsync: this, length: 5);
-    tabController.addListener(() {
-      setState(() {
-        this.menus[tabController.index]['isActive'] = true;
-        for (int i = 0; i < this.menus.length; i++) {
-          if (i == tabController.index) continue;
-          this.menus[i]['isActive'] = false;
-        }
-      });
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: Icon(Icons.account_circle),
-        title: Center(child: Text('录音机')),
-        actions: <Widget>[Icon(Icons.list)],
-      ),
-      body: Column(
-        children: <Widget>[
-          setTab(),
-          Expanded(
-            child: TabBarView(
-              controller: tabController,
-              children: List.generate(this.menus.length, (int index) {
-                Map curent = this.menus[index];
-                return curent['widget'];
-              }),
-            ),
-          )
-        ],
-      ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
-        decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[
-          BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
-        ]),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            ClipOval(
-              child: Container(
-                width: 40,
-                height: 40,
-                color: Theme.of(context).primaryColor,
-                child: IconButton(
-                  color: Colors.white,
-                  icon: Icon(Icons.timer),
-                  onPressed: () {},
-                ),
-              ),
-            ),
-            ClipOval(
-              child: Container(
-                width: 60,
-                height: 60,
-                color: Theme.of(context).primaryColor,
-                child: IconButton(
-                  color: Colors.white,
-                  icon: Icon(Icons.mic),
-                  onPressed: () {},
-                ),
-              ),
-            ),
-            ClipOval(
-              child: Container(
-                width: 40,
-                height: 40,
-                color: Theme.of(context).primaryColor,
-                child: IconButton(
-                  color: Colors.white,
-                  icon: Icon(Icons.text_rotation_down),
-                  onPressed: () {},
-                ),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
