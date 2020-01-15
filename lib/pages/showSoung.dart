@@ -3,17 +3,17 @@ import 'package:flutter/material.dart';
 import 'mycanvas.dart';
 
 class ShowSoun extends StatefulWidget {
-  ShowSoun({this.key}) : super(key: key);
+  ShowSoun({this.key, this.recriodingTime}) : super(key: key);
   final key;
+  final double recriodingTime;
 
   @override
   ShowSounState createState() => ShowSounState();
 }
 
 class ShowSounState extends State<ShowSoun> {
-  List<double> recrodingData, _cached;
+  List<double> recrodingData, cached;
   Offset offset;
-  int COLUMNS_COUNT = 50;
 
   setRecrodingData(List<double> data) {
     setState(() {
@@ -24,7 +24,7 @@ class ShowSounState extends State<ShowSoun> {
   @override
   void initState() {
     super.initState();
-    _cached = recrodingData;
+    cached = recrodingData;
   }
 
   @override
@@ -33,7 +33,7 @@ class ShowSounState extends State<ShowSoun> {
       width: MediaQuery.of(context).size.width,
       height: 200,
       child: CustomPaint(
-        painter: MyCanvas(recrodingData),
+        painter: MyCanvas(recrodingData, widget.recriodingTime),
       ),
     );
   }

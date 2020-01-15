@@ -1,7 +1,4 @@
 import 'dart:io';
-import 'dart:math';
-import 'dart:typed_data';
-
 import 'package:asdasd/pages/showSoung.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,8 +18,7 @@ class _RecrodingState extends State<Recroding> {
   List<String> paths = [];
   List<double> recrodingData;
   GlobalKey<ShowSounState> key = GlobalKey();
-  double left = 0,
-      right = 60;
+  double left = 0, right = 60;
   double audioTimeLength = 0;
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
   var overlayEntry;
@@ -34,7 +30,7 @@ class _RecrodingState extends State<Recroding> {
     super.initState();
     flutterPluginRecord.init();
     flutterPluginRecord.responseFromInit.listen(responseFromInitListen);
-    flutterPluginRecord.response.listen(StrartRecroding);
+    flutterPluginRecord.response.listen(strartRecroding);
   }
 
   ///初始化回调监听
@@ -46,7 +42,7 @@ class _RecrodingState extends State<Recroding> {
   }
 
   ///播放或暂停
-  StartOrStop() {
+  startOrStop() {
     if (statu)
       flutterPluginRecord.stop();
     else {
@@ -59,7 +55,7 @@ class _RecrodingState extends State<Recroding> {
   }
 
   ///始录制停止录制监听
-  StrartRecroding(RecordResponse data) {
+  strartRecroding(RecordResponse data) {
     if (data.msg == "onStop") {
       setState(() {
         filepath = data.path;
@@ -82,10 +78,8 @@ class _RecrodingState extends State<Recroding> {
 
   ///将数字音频信号转换成毫秒位单位的值
   Future<List> transfrom(List data) async {
-    double recrodingtime = (data.length / 8000) * 100,
-        temp = 0;
-    int flag = (data.length / recrodingtime).floor(),
-        stp = 0;
+    double recrodingtime = (data.length / 8000) * 100, temp = 0;
+    int flag = (data.length / recrodingtime).floor(), stp = 0;
     List<double> res = [];
     print("音频时长:$recrodingtime ms");
     setState(() {
@@ -109,7 +103,7 @@ class _RecrodingState extends State<Recroding> {
     double ofs = offset.floorToDouble();
     List<double> newList;
     left += ofs;
-    right = (-left) + 60;
+    right = (-left) + 100;
     if (-left.floor() < 0) {
       left -= ofs;
       return;
@@ -135,16 +129,13 @@ class _RecrodingState extends State<Recroding> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery
-          .of(context)
-          .size
-          .width,
+      width: MediaQuery.of(context).size.width,
       child: Column(
         children: <Widget>[
           Text(statu ? "结束录音" : "开始录音"),
           IconButton(
             icon: Icon(statu ? Icons.stop : Icons.play_arrow),
-            onPressed: StartOrStop,
+            onPressed: startOrStop,
           ),
           Text("播放"),
           IconButton(
@@ -170,7 +161,7 @@ class _RecrodingState extends State<Recroding> {
               double offset = e.delta.dx;
               recrodingOffset(offset);
             },
-            child: ShowSoun(key: key),
+            child: ShowSoun(key: key, recriodingTime: this.audioTimeLength),
           ),
         ],
       ),

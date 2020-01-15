@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 
 class MyCanvas extends CustomPainter {
-  MyCanvas(this.canvasData);
+  MyCanvas(this.canvasData, this.recriodingTime);
 
+  final double recriodingTime;
   final List<double> canvasData;
 
   // ignore: non_constant_identifier_names
-  int columns_count = 60;
+  int columns_count = 100;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -22,17 +23,18 @@ class MyCanvas extends CustomPainter {
       Color.fromRGBO(248, 177, 149, 1)
     ], begin: Alignment.bottomCenter, end: Alignment.topCenter);
     // 每个柱子的宽度
-    double columnWidth = size.width / columns_count;
+    double columnWidth = (size.width / columns_count);
     // 幅度比例
     double step = size.height / 250;
     // 挨个画频谱柱子
+//    print(recriodingTime);
     for (int i = 0; i < columns_count; i++) {
       double volume = 2.0;
       if (canvasData != null) {
         volume = canvasData[i] * step;
       }
-      Rect column = Rect.fromLTWH(
-          columnWidth * i, size.height - volume, columnWidth - 10, volume);
+      Rect column = Rect.fromLTWH(columnWidth * i, (size.height - volume) / 2,
+          columnWidth.ceil().toDouble(), volume);
       canvas.save();
       canvas.drawRect(column, Paint()..shader = gradient.createShader(column));
       canvas.restore();
