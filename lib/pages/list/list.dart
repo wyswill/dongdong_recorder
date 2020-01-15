@@ -112,7 +112,13 @@ class _RecrodingListState extends State<RecrodingList> {
           Column(
             children: List.generate(curentRecrodingFiles.length, (int ind) {
               Map curentFile = curentRecrodingFiles[ind];
-              return recrodingFileItems(curentFile: curentFile);
+              return GestureDetector(
+                onHorizontalDragUpdate: (DragUpdateDetails e) {
+                  double offset = e.delta.dx;
+                  recrodingOffset(offset);
+                },
+                child: recrodingFileItems(curentFile: curentFile),
+              );
             }),
           )
         ],
@@ -215,5 +221,12 @@ class _RecrodingListState extends State<RecrodingList> {
       });
     }
     eventBus.fire(PlayingFile(curentFile));
+  }
+
+  ///向左滑动显示菜单
+  void recrodingOffset(double offset) {
+    if (offset <= 0) {
+      print('asd');
+    }
   }
 }
