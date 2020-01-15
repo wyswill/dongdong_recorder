@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:asdasd/event_bus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -71,10 +73,16 @@ class _RecrodingListState extends State<RecrodingList> {
   List dataKeys = [];
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
   Map curentPlayRecrofing;
+  StreamSubscription streamSubscription;
   @override
   void initState() {
     super.initState();
     dataKeys = datas.keys.toList();
+    streamSubscription = eventBus.on<PlayingState>().listen((event) {
+      setState(() {
+        this.curentPlayRecrofing['isPlaying'] = event.state;
+      });
+    });
   }
 
   @override
@@ -130,7 +138,7 @@ class _RecrodingListState extends State<RecrodingList> {
           Container(
             child: IconButton(
               icon: curentFile['isPlaying']
-                  ? Icon(Icons.stop, color: Theme.of(context).primaryColor)
+                  ? Icon(Icons.pause, color: Theme.of(context).primaryColor)
                   : Icon(Icons.play_arrow, color: Colors.grey),
               onPressed: () {
                 playRecroding(curentFile: curentFile);

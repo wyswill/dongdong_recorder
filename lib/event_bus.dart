@@ -4,5 +4,10 @@ EventBus eventBus = EventBus();
 
 class PlayingFile {
   PlayingFile(this.file);
-  Map file;
+  final Map file;
+}
+
+class PlayingState {
+  PlayingState(this.state);
+  final bool state;
 }

@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: '录音机', //87, 92, 159, 1
+      title: '录音机',
       theme: ThemeData(primaryColor: Color.fromRGBO(87, 92, 159, 1)),
       home: MainPage(),
       onGenerateRoute: (RouteSettings settings) => generateRoute(settings),

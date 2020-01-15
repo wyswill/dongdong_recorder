@@ -22,30 +22,39 @@ class _MainPageState extends State<MainPage>
       "icon": Icon(Icons.insert_drive_file),
       "router": 'list',
       "isActive": false,
-      "widget": RecrodingList()
+      "widget": Text('asd')
     },
     {
       "icon": Icon(Icons.today),
       "router": 'list',
       "isActive": false,
-      "widget": RecrodingList()
+      "widget": Text('asd')
     },
     {
       "icon": Icon(Icons.restore_from_trash),
       "router": 'list',
       "isActive": false,
-      "widget": RecrodingList()
+      "widget": Text('asd')
     },
     {
       "icon": Icon(Icons.search),
       "router": 'list',
       "isActive": false,
-      "widget": RecrodingList()
+      "widget": Text('asd')
     },
+  ],
+      playerIocns = [
+    {'icon': Icons.timer, 'title': '定时'},
+    {'icon': Icons.four_k, 'title': '倍速'},
+    {'icon': Icons.cancel, 'title': '剪辑'},
+    {'icon': Icons.translate, 'title': '转文字'},
+    {'icon': Icons.list, 'title': '更多'},
   ];
+
   TabController tabController;
   StreamSubscription streamSubscription;
   Map plaingFile;
+
   @override
   void initState() {
     super.initState();
@@ -71,6 +80,12 @@ class _MainPageState extends State<MainPage>
         plaingFile = event.file;
       });
     });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    streamSubscription.cancel();
   }
 
   @override
@@ -148,15 +163,83 @@ class _MainPageState extends State<MainPage>
 
   ///设置底部
   Widget setBottom() {
-    if (plaingFile != null && plaingFile['isPlaying'])
+    if (plaingFile != null) {
+      Duration duration = Duration(milliseconds: plaingFile['rectimg']);
       return Container(
-          width: MediaQuery.of(context).size.width,
-          padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
-          decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[
-            BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
-          ]),
-          child: Text('ads'));
-    else
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.only(right: 13, top: 15, bottom: 15),
+        decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[
+          BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
+        ]),
+        child: Column(
+          children: <Widget>[
+            Container(
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: this
+                    .playerIocns
+                    .map((e) => Container(
+                          child: Column(
+                            children: <Widget>[
+                              GestureDetector(
+                                onTap: () {},
+                                child: Icon(
+                                  e['icon'],
+                                  color: Theme.of(context).primaryColor,
+                                  size: 20,
+                                ),
+                              ),
+                              Text(
+                                e['title'],
+                                style: TextStyle(
+                                  color: Theme.of(context).primaryColor,
+                                  fontSize: 10,
+                                ),
+                              )
+                            ],
+                          ),
+                        ))
+                    .toList(),
+              ),
+            ),
+            Row(
+              children: <Widget>[
+                IconButton(
+                    icon: Icon(
+                      this.plaingFile['isPlaying']
+                          ? Icons.pause
+                          : Icons.play_arrow,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        this.plaingFile['isPlaying'] =
+                            !this.plaingFile['isPlaying'];
+                      });
+                      eventBus.fire(PlayingState(this.plaingFile['isPlaying']));
+                    }),
+                Text('0:0:0', style: TextStyle(color: Colors.grey)),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 5),
+                    child: LinearProgressIndicator(
+                      value: 0.5,
+                      backgroundColor:
+                          Theme.of(context).primaryColor.withOpacity(0.5),
+                      valueColor: AlwaysStoppedAnimation(
+                          Theme.of(context).primaryColor),
+                    ),
+                  ),
+                ),
+                Text(
+                    "${duration.inHours}:${duration.inMinutes}:${duration.inSeconds}",
+                    style: TextStyle(color: Colors.grey))
+              ],
+            )
+          ],
+        ),
+      );
+    } else
       return Container(
         padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
         decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[
