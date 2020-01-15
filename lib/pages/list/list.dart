@@ -1,8 +1,6 @@
+import 'package:asdasd/event_bus.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-
-import '../../provider.dart';
 
 class RecrodingList extends StatefulWidget {
   RecrodingList({this.key, this.arguments}) : super(key: key);
@@ -193,6 +191,7 @@ class _RecrodingListState extends State<RecrodingList> {
       setState(() {
         curentPlayRecrofing['isPlaying'] = !curentPlayRecrofing['isPlaying'];
       });
+      eventBus.fire(PlayingFile(curentFile));
       return;
     }
     if (curentPlayRecrofing != null && curentPlayRecrofing['isPlaying']) {
@@ -207,5 +206,6 @@ class _RecrodingListState extends State<RecrodingList> {
         curentPlayRecrofing = curentFile;
       });
     }
+    eventBus.fire(PlayingFile(curentFile));
   }
 }
