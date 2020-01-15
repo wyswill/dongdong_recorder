@@ -165,79 +165,106 @@ class _MainPageState extends State<MainPage>
   Widget setBottom() {
     if (plaingFile != null) {
       Duration duration = Duration(milliseconds: plaingFile['rectimg']);
-      return Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.only(right: 13, top: 15, bottom: 15),
-        decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[
-          BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
-        ]),
-        child: Column(
-          children: <Widget>[
-            Container(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: this
-                    .playerIocns
-                    .map((e) => Container(
-                          child: Column(
-                            children: <Widget>[
-                              GestureDetector(
-                                onTap: () {},
-                                child: Icon(
-                                  e['icon'],
-                                  color: Theme.of(context).primaryColor,
-                                  size: 20,
-                                ),
-                              ),
-                              Text(
-                                e['title'],
-                                style: TextStyle(
-                                  color: Theme.of(context).primaryColor,
-                                  fontSize: 10,
-                                ),
-                              )
-                            ],
-                          ),
-                        ))
-                    .toList(),
-              ),
-            ),
-            Row(
+      return Stack(
+        children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.only(right: 13, top: 15, bottom: 15),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                      color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
+                ]),
+            child: Column(
               children: <Widget>[
-                IconButton(
-                    icon: Icon(
-                      this.plaingFile['isPlaying']
-                          ? Icons.pause
-                          : Icons.play_arrow,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    onPressed: () {
-                      setState(() {
-                        this.plaingFile['isPlaying'] =
-                            !this.plaingFile['isPlaying'];
-                      });
-                      eventBus.fire(PlayingState(this.plaingFile['isPlaying']));
-                    }),
-                Text('0:0:0', style: TextStyle(color: Colors.grey)),
-                Expanded(
-                  child: Container(
-                    margin: EdgeInsets.symmetric(horizontal: 5),
-                    child: LinearProgressIndicator(
-                      value: 0.5,
-                      backgroundColor:
-                          Theme.of(context).primaryColor.withOpacity(0.5),
-                      valueColor: AlwaysStoppedAnimation(
-                          Theme.of(context).primaryColor),
-                    ),
+                Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: this
+                        .playerIocns
+                        .map((e) => Container(
+                              child: Column(
+                                children: <Widget>[
+                                  GestureDetector(
+                                    onTap: () {},
+                                    child: Icon(
+                                      e['icon'],
+                                      color: Theme.of(context).primaryColor,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  Text(
+                                    e['title'],
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 10,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ))
+                        .toList(),
                   ),
                 ),
-                Text(
-                    "${duration.inHours}:${duration.inMinutes}:${duration.inSeconds}",
-                    style: TextStyle(color: Colors.grey))
+                Row(
+                  children: <Widget>[
+                    IconButton(
+                        icon: Icon(
+                          this.plaingFile['isPlaying']
+                              ? Icons.pause
+                              : Icons.play_arrow,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        onPressed: () {
+                          setState(() {
+                            this.plaingFile['isPlaying'] =
+                                !this.plaingFile['isPlaying'];
+                          });
+                          eventBus
+                              .fire(PlayingState(this.plaingFile['isPlaying']));
+                        }),
+                    Text('0:0:0', style: TextStyle(color: Colors.grey)),
+                    Expanded(
+                      child: Container(
+                        margin: EdgeInsets.symmetric(horizontal: 5),
+                        child: LinearProgressIndicator(
+                          value: 0.5,
+                          backgroundColor:
+                              Theme.of(context).primaryColor.withOpacity(0.5),
+                          valueColor: AlwaysStoppedAnimation(
+                              Theme.of(context).primaryColor),
+                        ),
+                      ),
+                    ),
+                    Text(
+                        "${duration.inHours}:${duration.inMinutes}:${duration.inSeconds}",
+                        style: TextStyle(color: Colors.grey))
+                  ],
+                )
               ],
-            )
-          ],
-        ),
+            ),
+          ),
+          Positioned(
+            right: 0,
+            child: ClipOval(
+              child: Container(
+                width: 20,
+                height: 20,
+                color: Theme.of(context).primaryColor,
+                child: GestureDetector(
+                  child: Icon(Icons.close, size: 20, color: Colors.white),
+                  onTap: () {
+                    setState(() {
+                      this.plaingFile = null;
+                    });
+                    eventBus.fire(PlayingState(false));
+                  },
+                ),
+              ),
+            ),
+          )
+        ],
       );
     } else
       return Container(
