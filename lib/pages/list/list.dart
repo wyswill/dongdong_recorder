@@ -15,6 +15,7 @@ class RecrodingList extends StatefulWidget {
 }
 
 class _RecrodingListState extends State<RecrodingList> {
+  StreamSubscription streamSubscription;
   Map datas = {
     "2019年12月": [
       {
@@ -74,7 +75,6 @@ class _RecrodingListState extends State<RecrodingList> {
   List dataKeys = [];
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
   Map curentPlayRecrofing;
-  StreamSubscription streamSubscription;
   @override
   void initState() {
     super.initState();
