@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:asdasd/pages/folder/folder.dart';
 import 'package:asdasd/pages/list/list.dart';
+import 'package:asdasd/pages/trash/trash.dart';
 import 'package:flutter/material.dart';
 import 'package:asdasd/event_bus.dart';
 
@@ -35,7 +36,7 @@ class _MainPageState extends State<MainPage>
       "icon": Icon(Icons.restore_from_trash),
       "router": 'list',
       "isActive": false,
-      "widget": Text('asd')
+      "widget": Trash()
     },
     {
       "icon": Icon(Icons.search),
