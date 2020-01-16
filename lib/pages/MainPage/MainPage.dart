@@ -132,7 +132,7 @@ class _MainPageState extends State<MainPage>
       decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: <BoxShadow>[
-            BoxShadow(color: Colors.grey, offset: Offset(0, 3), blurRadius: 5)
+            BoxShadow(color: Color.fromRGBO(187, 187, 187, 0.4), offset: Offset(0, 0), blurRadius: 5)
           ],
           borderRadius: BorderRadius.all(Radius.circular(2))),
       child: TabBar(

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:asdasd/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -163,6 +165,7 @@ class _RecrodState extends State<Recrod> {
   double audioTimeLength = 0;
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
   String recrodinTime = '00:00:00';
+  Timer timer;
   @override
   void initState() {
     super.initState();
@@ -232,7 +235,7 @@ class _RecrodState extends State<Recrod> {
               child: IconButton(
                 color: Colors.white,
                 icon: Icon(Icons.redo),
-                onPressed: () {},
+                onPressed: setTimer,
               ),
             ),
           ),
@@ -321,7 +324,16 @@ class _RecrodState extends State<Recrod> {
   setTimer() {
     //在播放
     if (statu) {
-    } else {}
+      setState(() {
+        this.recrodinTime = '';
+      });
+      timer.cancel();
+    } else {
+      setState(() {
+        statu = true;
+        // timer = 
+      });
+    }
   }
 
   ///保存录音
