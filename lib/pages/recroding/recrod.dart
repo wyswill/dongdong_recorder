@@ -1,12 +1,8 @@
+import 'package:asdasd/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
-import 'dart:math' as math;
-
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:flutter_plugin_record/response.dart';
-
-import '../showSoung.dart';
 
 class Recrod extends StatefulWidget {
   Recrod({Key key}) : super(key: key);
