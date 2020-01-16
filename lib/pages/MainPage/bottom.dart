@@ -36,11 +36,13 @@ class _BottomshowBarState extends State<BottomshowBar>
     });
     controller.forward();
     streamSubscription = eventBus.on<PlayingFile>().listen((event) {
+      if (plaingFile == null) {
+        controller.reset();
+        controller.forward();
+      }
       setState(() {
         plaingFile = event.file;
       });
-      controller.reset();
-      controller.forward();
     });
   }
 
