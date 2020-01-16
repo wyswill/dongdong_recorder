@@ -15,7 +15,15 @@ class RecrodingFileItems extends StatefulWidget {
 class _RecrodingFileItemsState extends State<RecrodingFileItems> {
   ScrollController controller = ScrollController();
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
+
   double get winWidth => MediaQuery.of(context).size.width;
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     Duration duration = Duration(milliseconds: widget.curentFile['rectimg']);
@@ -27,78 +35,81 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
         controller: controller,
         child: Row(
           children: <Widget>[
-            Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(right: 20),
-              decoration: BoxDecoration(
-                border: Border(
-                  left: widget.curentFile['isPlaying']
-                      ? BorderSide(
-                          width: 4, color: Theme.of(context).primaryColor)
-                      : BorderSide(width: 0),
-                  bottom: BorderSide(
-                      width: 1, color: Color.fromRGBO(240, 240, 246, 1)),
-                ),
-              ),
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    child: IconButton(
-                      icon: widget.curentFile['isPlaying']
-                          ? Icon(Icons.pause,
-                              color: Theme.of(context).primaryColor)
-                          : Icon(Icons.play_arrow, color: Colors.grey),
-                      onPressed: () {
-                        widget.playRecroding(curentFile: widget.curentFile);
-                      },
-                    ),
+            GestureDetector(
+              onTap: cancle,
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.only(right: 20),
+                decoration: BoxDecoration(
+                  border: Border(
+                    left: widget.curentFile['isPlaying']
+                        ? BorderSide(
+                            width: 4, color: Theme.of(context).primaryColor)
+                        : BorderSide(width: 0),
+                    bottom: BorderSide(
+                        width: 1, color: Color.fromRGBO(240, 240, 246, 1)),
                   ),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        Row(children: <Widget>[
-                          Text(
-                            widget.curentFile['title'],
-                            style: TextStyle(fontSize: 14),
-                          )
-                        ]),
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          mainAxisSize: MainAxisSize.max,
-                          children: <Widget>[
-                            Container(
-                              padding: EdgeInsets.symmetric(horizontal: 5),
-                              decoration: BoxDecoration(
-                                  border:
-                                      Border.all(color: Colors.grey, width: 1),
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(10))),
-                              child: Text(
-                                "${duration.inHours}:${duration.inMinutes}:${duration.inSeconds}",
-                                style: textStyle,
-                              ),
-                            ),
-                            Container(
-                              margin: EdgeInsets.symmetric(horizontal: 5),
-                              child: Text(
-                                widget.curentFile['fileSize'],
-                                style: textStyle,
-                              ),
-                            ),
-                            Expanded(child: Container()),
-                            Container(
-                              child: Text(
-                                widget.curentFile['lastDate'],
-                                style: textStyle,
-                              ),
-                            )
-                          ],
-                        )
-                      ],
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      child: IconButton(
+                        icon: widget.curentFile['isPlaying']
+                            ? Icon(Icons.pause,
+                                color: Theme.of(context).primaryColor)
+                            : Icon(Icons.play_arrow, color: Colors.grey),
+                        onPressed: () {
+                          widget.playRecroding(curentFile: widget.curentFile);
+                        },
+                      ),
                     ),
-                  )
-                ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(children: <Widget>[
+                            Text(
+                              widget.curentFile['title'],
+                              style: TextStyle(fontSize: 14),
+                            )
+                          ]),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisSize: MainAxisSize.max,
+                            children: <Widget>[
+                              Container(
+                                padding: EdgeInsets.symmetric(horizontal: 5),
+                                decoration: BoxDecoration(
+                                    border: Border.all(
+                                        color: Colors.grey, width: 1),
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(10))),
+                                child: Text(
+                                  "${duration.inHours}:${duration.inMinutes}:${duration.inSeconds}",
+                                  style: textStyle,
+                                ),
+                              ),
+                              Container(
+                                margin: EdgeInsets.symmetric(horizontal: 5),
+                                child: Text(
+                                  widget.curentFile['fileSize'],
+                                  style: textStyle,
+                                ),
+                              ),
+                              Expanded(child: Container()),
+                              Container(
+                                child: Text(
+                                  widget.curentFile['lastDate'],
+                                  style: textStyle,
+                                ),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             ),
             Container(
@@ -153,5 +164,15 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
       controller.animateTo(winWidth + 200,
           duration: Duration(milliseconds: 100), curve: Curves.linear);
     }
+  }
+
+  ///
+  void cancle() {
+    double offset = controller.offset;
+    if (offset > 0) {
+      controller.animateTo(0,
+          duration: Duration(milliseconds: 100), curve: Curves.linear);
+    } else
+      return;
   }
 }
