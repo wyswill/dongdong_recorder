@@ -7,7 +7,7 @@ class MyCanvas extends CustomPainter {
   final List<double> canvasData;
 
   // ignore: non_constant_identifier_names
-  int columns_count = 100;
+  int columns_count = 60;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -16,7 +16,7 @@ class MyCanvas extends CustomPainter {
 
   void init(Canvas canvas, Size size) {
     var rect = Offset.zero & size;
-    canvas.drawRect(rect, Paint()..color = Colors.blueGrey);
+    canvas.drawRect(rect, Paint()..color = Color.fromRGBO(87, 92, 159, 1));
     // 给个好看的颜色
     LinearGradient gradient = LinearGradient(colors: [
       Color.fromRGBO(108, 86, 123, 1),
@@ -27,7 +27,6 @@ class MyCanvas extends CustomPainter {
     // 幅度比例
     double step = size.height / 250;
     // 挨个画频谱柱子
-//    print(recriodingTime);
     for (int i = 0; i < columns_count; i++) {
       double volume = 2.0;
       if (canvasData != null) {
@@ -36,7 +35,7 @@ class MyCanvas extends CustomPainter {
       Rect column = Rect.fromLTWH(columnWidth * i, (size.height - volume) / 2,
           columnWidth.ceil().toDouble(), volume);
       canvas.save();
-      canvas.drawRect(column, Paint()..shader = gradient.createShader(column));
+      canvas.drawRect(column, Paint()..color = Colors.white);
       canvas.restore();
     }
   }

@@ -21,8 +21,6 @@ class _RecrodingState extends State<Recroding> {
   double left = 0, right = 60;
   double audioTimeLength = 0;
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
-  var overlayEntry;
-
   FlutterFFmpeg fFmpeg = FlutterFFmpeg();
 
   @override
@@ -117,8 +115,6 @@ class _RecrodingState extends State<Recroding> {
     newList = newList2.toList();
     key.currentState.setRecrodingData(newList);
   }
-
-  void testFFmpeg() async {}
 
   @override
   void dispose() {

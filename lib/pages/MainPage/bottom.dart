@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:asdasd/pages/recroding/recrod.dart';
 import 'package:flutter/material.dart';
 
 import '../../event_bus.dart';
@@ -28,7 +29,7 @@ class _BottomshowBarState extends State<BottomshowBar>
   void initState() {
     super.initState();
     controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     animation = Tween<double>(begin: 200, end: 0).animate(controller);
 
     controller.addListener(() {
@@ -187,7 +188,7 @@ class _BottomshowBarState extends State<BottomshowBar>
                   child: IconButton(
                     color: Colors.white,
                     icon: Icon(Icons.timer),
-                    onPressed: () {},
+                    onPressed: showSelect,
                   ),
                 ),
               ),
@@ -199,7 +200,7 @@ class _BottomshowBarState extends State<BottomshowBar>
                   child: IconButton(
                     color: Colors.white,
                     icon: Icon(Icons.mic),
-                    onPressed: () {},
+                    onPressed: showRecroding,
                   ),
                 ),
               ),
@@ -219,5 +220,26 @@ class _BottomshowBarState extends State<BottomshowBar>
           ),
         ),
       );
+  }
+
+  ///定时选择
+  void showSelect() {}
+
+  /// 跳转到录音页面
+  void showRecroding() {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        transitionDuration: Duration(milliseconds: 200),
+        pageBuilder: (BuildContext context, Animation animation,
+            Animation secondaryAnimation) {
+          return ScaleTransition(
+            scale: animation,
+            alignment: Alignment.bottomCenter,
+            child: Recrod(),
+          );
+        },
+      ),
+    );
   }
 }
