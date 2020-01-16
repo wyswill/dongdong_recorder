@@ -1,4 +1,3 @@
-
 import 'package:asdasd/pages/folder/folder.dart';
 import 'package:asdasd/pages/list/list.dart';
 import 'package:asdasd/pages/trash/trash.dart';
@@ -48,8 +47,6 @@ class _MainPageState extends State<MainPage>
 
   TabController tabController;
   Map plaingFile;
-  Animation<double> animation;
-  AnimationController animationController;
 
   @override
   void initState() {
@@ -69,25 +66,11 @@ class _MainPageState extends State<MainPage>
         }
       });
     });
-    // animationController = AnimationController(
-    //     vsync: this, duration: Duration(milliseconds: 1500));
-    // controller = new AnimationController(
-    //     vsync: this, duration: Duration(milliseconds: 1500));
-    // animation = Tween<double>(begin: 0, end: 10).animate(controller);
-
-    // controller.addListener(() {
-    //   setState(() {});
-    // });
-    // controller.forward();
-
-    /// 设置播放
-    
   }
 
   @override
   void dispose() {
     super.dispose();
-    animationController.dispose();
   }
 
   @override

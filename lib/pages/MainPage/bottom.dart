@@ -10,7 +10,8 @@ class BottomshowBar extends StatefulWidget {
   _BottomshowBarState createState() => _BottomshowBarState();
 }
 
-class _BottomshowBarState extends State<BottomshowBar> {
+class _BottomshowBarState extends State<BottomshowBar>
+    with SingleTickerProviderStateMixin {
   Map plaingFile;
   StreamSubscription streamSubscription;
   List<Map> playerIocns = [
@@ -20,13 +21,26 @@ class _BottomshowBarState extends State<BottomshowBar> {
     {'icon': Icons.translate, 'title': '转文字'},
     {'icon': Icons.list, 'title': '更多'},
   ];
+
+  Animation<double> animation;
+  AnimationController controller;
   @override
   void initState() {
     super.initState();
+    controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 500));
+    animation = Tween<double>(begin: 200, end: 0).animate(controller);
+
+    controller.addListener(() {
+      setState(() {});
+    });
+    controller.forward();
     streamSubscription = eventBus.on<PlayingFile>().listen((event) {
       setState(() {
         plaingFile = event.file;
       });
+      controller.reset();
+      controller.forward();
     });
   }
 
@@ -34,6 +48,7 @@ class _BottomshowBarState extends State<BottomshowBar> {
   void dispose() {
     super.dispose();
     streamSubscription.cancel();
+    controller.dispose();
   }
 
   @override
@@ -41,7 +56,7 @@ class _BottomshowBarState extends State<BottomshowBar> {
     if (plaingFile != null) {
       Duration duration = Duration(milliseconds: plaingFile['rectimg']);
       return Transform.translate(
-        offset: Offset(0, 0),
+        offset: Offset(0, animation.value),
         child: Stack(
           children: <Widget>[
             Positioned(
@@ -140,6 +155,8 @@ class _BottomshowBarState extends State<BottomshowBar> {
                       setState(() {
                         plaingFile = null;
                       });
+                      controller.reset();
+                      controller.forward();
                       eventBus.fire(PlayingState(false));
                     },
                   ),
@@ -150,51 +167,54 @@ class _BottomshowBarState extends State<BottomshowBar> {
         ),
       );
     } else
-      return Container(
-        padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
-        decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[
-          BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
-        ]),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            ClipOval(
-              child: Container(
-                width: 40,
-                height: 40,
-                color: Theme.of(context).primaryColor,
-                child: IconButton(
-                  color: Colors.white,
-                  icon: Icon(Icons.timer),
-                  onPressed: () {},
+      return Transform.translate(
+        offset: Offset(0, animation.value),
+        child: Container(
+          padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
+          decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[
+            BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
+          ]),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              ClipOval(
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  color: Theme.of(context).primaryColor,
+                  child: IconButton(
+                    color: Colors.white,
+                    icon: Icon(Icons.timer),
+                    onPressed: () {},
+                  ),
                 ),
               ),
-            ),
-            ClipOval(
-              child: Container(
-                width: 60,
-                height: 60,
-                color: Theme.of(context).primaryColor,
-                child: IconButton(
-                  color: Colors.white,
-                  icon: Icon(Icons.mic),
-                  onPressed: () {},
+              ClipOval(
+                child: Container(
+                  width: 60,
+                  height: 60,
+                  color: Theme.of(context).primaryColor,
+                  child: IconButton(
+                    color: Colors.white,
+                    icon: Icon(Icons.mic),
+                    onPressed: () {},
+                  ),
                 ),
               ),
-            ),
-            ClipOval(
-              child: Container(
-                width: 40,
-                height: 40,
-                color: Theme.of(context).primaryColor,
-                child: IconButton(
-                  color: Colors.white,
-                  icon: Icon(Icons.text_rotation_down),
-                  onPressed: () {},
+              ClipOval(
+                child: Container(
+                  width: 40,
+                  height: 40,
+                  color: Theme.of(context).primaryColor,
+                  child: IconButton(
+                    color: Colors.white,
+                    icon: Icon(Icons.text_rotation_down),
+                    onPressed: () {},
+                  ),
                 ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       );
   }
