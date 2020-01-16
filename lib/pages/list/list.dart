@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:asdasd/event_bus.dart';
+import 'package:asdasd/pages/list/recrodingFileItems.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -112,87 +113,12 @@ class _RecrodingListState extends State<RecrodingList> {
           Column(
             children: List.generate(curentRecrodingFiles.length, (int ind) {
               Map curentFile = curentRecrodingFiles[ind];
-              return GestureDetector(
-                onHorizontalDragUpdate: (DragUpdateDetails e) {
-                  double offset = e.delta.dx;
-                  recrodingOffset(offset);
-                },
-                child: recrodingFileItems(curentFile: curentFile),
+              return RecrodingFileItems(
+                curentFile: curentFile,
+                playRecroding: this.playRecroding,
+                index: ind,
               );
             }),
-          )
-        ],
-      ),
-    );
-  }
-
-  ///每个单个的录音文件样式
-  Widget recrodingFileItems({Map curentFile}) {
-    Duration duration = Duration(milliseconds: curentFile['rectimg']);
-    return Container(
-      padding: EdgeInsets.only(right: 20),
-      decoration: BoxDecoration(
-        border: Border(
-          left: curentFile['isPlaying']
-              ? BorderSide(width: 4, color: Theme.of(context).primaryColor)
-              : BorderSide(width: 0),
-          bottom: BorderSide(width: 1, color: Color.fromRGBO(240, 240, 246, 1)),
-        ),
-      ),
-      child: Row(
-        children: <Widget>[
-          Container(
-            child: IconButton(
-              icon: curentFile['isPlaying']
-                  ? Icon(Icons.pause, color: Theme.of(context).primaryColor)
-                  : Icon(Icons.play_arrow, color: Colors.grey),
-              onPressed: () {
-                playRecroding(curentFile: curentFile);
-              },
-            ),
-          ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Row(children: <Widget>[
-                  Text(
-                    curentFile['title'],
-                    style: TextStyle(fontSize: 14),
-                  )
-                ]),
-                Row(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  mainAxisSize: MainAxisSize.max,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.symmetric(horizontal: 5),
-                      decoration: BoxDecoration(
-                          border: Border.all(color: Colors.grey, width: 1),
-                          borderRadius: BorderRadius.all(Radius.circular(10))),
-                      child: Text(
-                        "${duration.inHours}:${duration.inMinutes}:${duration.inSeconds}",
-                        style: textStyle,
-                      ),
-                    ),
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 5),
-                      child: Text(
-                        curentFile['fileSize'],
-                        style: textStyle,
-                      ),
-                    ),
-                    Expanded(child: Container()),
-                    Container(
-                      child: Text(
-                        curentFile['lastDate'],
-                        style: textStyle,
-                      ),
-                    )
-                  ],
-                )
-              ],
-            ),
           )
         ],
       ),
