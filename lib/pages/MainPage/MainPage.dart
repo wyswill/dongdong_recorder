@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:asdasd/pages/folder/folder.dart';
 import 'package:asdasd/pages/list/list.dart';
 import 'package:flutter/material.dart';
 import 'package:asdasd/event_bus.dart';
@@ -19,10 +20,10 @@ class _MainPageState extends State<MainPage>
       "widget": RecrodingList()
     },
     {
-      "icon": Icon(Icons.insert_drive_file),
+      "icon": Icon(Icons.folder),
       "router": 'list',
       "isActive": false,
-      "widget": Text('asd')
+      "widget": Folder()
     },
     {
       "icon": Icon(Icons.today),

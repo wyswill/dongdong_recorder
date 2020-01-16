@@ -166,7 +166,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
     }
   }
 
-  ///
+  ///还原滑动
   void cancle() {
     double offset = controller.offset;
     if (offset > 0) {
