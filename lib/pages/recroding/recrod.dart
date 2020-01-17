@@ -6,8 +6,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:flutter_plugin_record/response.dart';
 
-import 'dart:math' as math;
-
 class Recrod extends StatefulWidget {
   Recrod({Key key}) : super(key: key);
 
@@ -15,23 +13,19 @@ class Recrod extends StatefulWidget {
   _RecrodState createState() => _RecrodState();
 }
 
-class _RecrodState extends State<Recrod> with TickerProviderStateMixin {
-  Animation<double> _backDropFilterAnimation;
-  AnimationController _backDropFilterController;
-
+class _RecrodState extends State<Recrod> {
   FocusNode node = FocusNode();
   TextEditingController controller = TextEditingController();
 
   FlutterPluginRecord flutterPluginRecord = FlutterPluginRecord();
   bool statu = false;
   String filepath = '';
-  List<String> paths = [];
   List<double> recrodingData = [];
   GlobalKey<ShowSounState> key = GlobalKey();
   double left = 0, right = 60;
   double audioTimeLength = 0;
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
-  String recrodinTime = '00:00:00';
+  int h = 0, m = 0, s = 0, temp = 0;
   Timer timer;
 
   @override
@@ -40,6 +34,7 @@ class _RecrodState extends State<Recrod> with TickerProviderStateMixin {
     flutterPluginRecord.init();
     flutterPluginRecord.responseFromInit.listen(responseFromInitListen);
     flutterPluginRecord.response.listen(strartRecroding);
+    flutterPluginRecord.responseFromAmplitude.listen(show);
   }
 
   @override
@@ -75,13 +70,18 @@ class _RecrodState extends State<Recrod> with TickerProviderStateMixin {
                 setInput(),
                 setCanvas(),
                 Text(
-                  recrodinTime,
+                  '$h:$m:$s',
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.w900,
                     fontSize: 24,
                   ),
                 ),
+                GestureDetector(
+                  child:
+                      Image.asset('asset/flag/icon_flag_white.png', width: 40),
+                  onTap: setTimeStap,
+                )
               ],
             ),
           ),
@@ -108,7 +108,7 @@ class _RecrodState extends State<Recrod> with TickerProviderStateMixin {
               child: IconButton(
                 color: Colors.white,
                 icon: Icon(Icons.redo),
-                onPressed: setTimer,
+                onPressed: () {},
               ),
             ),
           ),
@@ -171,6 +171,9 @@ class _RecrodState extends State<Recrod> with TickerProviderStateMixin {
     );
   }
 
+  ///设置时间戳
+  setTimeStap() {}
+
   ///初始化回调监听
   responseFromInitListen(data) {
     if (data)
@@ -181,31 +184,52 @@ class _RecrodState extends State<Recrod> with TickerProviderStateMixin {
 
   ///播放或暂停
   startOrStop() {
-    if (statu)
+    if (statu) {
       flutterPluginRecord.stop();
-    else {
+      timer.cancel();
+    } else {
       flutterPluginRecord.start();
       recrodingData = [];
+      setState(() {
+        h = 0;
+        m = 0;
+        s = 0;
+        timer = Timer.periodic(Duration(seconds: 1), (newtimer) {
+          setState(() {
+            s++;
+            temp += 60;
+            timeFormat();
+            setdata();
+          });
+        });
+      });
     }
-    setTimer();
     setState(() {
       statu = !statu;
     });
   }
 
-  ///设置定时器
-  setTimer() {
-    //在播放
-    if (statu) {
-      setState(() {
-        this.recrodinTime = '';
-      });
-      timer.cancel();
+  ///录音实时写入波形
+  setdata() {
+    List<double> newList;
+    if (this.recrodingData.length > 120) {
+      int end = recrodingData.length, start = end - 120;
+      newList = recrodingData.getRange(start, end);
+      key.currentState.setRecrodingData(newList);
     } else {
-      setState(() {
-        statu = true;
-        // timer =
-      });
+      key.currentState.setRecrodingData(recrodingData);
+    }
+  }
+
+  ///时间转换
+  timeFormat() {
+    if (s == 60) {
+      m++;
+      s = 0;
+    }
+    if (m == 60) {
+      h++;
+      m = 0;
     }
   }
 
@@ -217,16 +241,19 @@ class _RecrodState extends State<Recrod> with TickerProviderStateMixin {
     if (data.msg == "onStop") {
       setState(() {
         filepath = data.path;
-        paths.add(filepath);
       });
     } else if (data.msg == "onStart") {
       print("开始录音----------------------");
     }
   }
 
+  show(RecordResponse data) {
+    this.recrodingData.add((double.parse(data.msg) * 250).floorToDouble());
+  }
+
   ///将数字音频信号转换成毫秒位单位的值
   Future<List> transfrom(List data) async {
-    double recrodingtime = (data.length / 8000) * 100, temp = 0;
+    double recrodingtime = (data.length / 8000) * 1000, temp = 0;
     int flag = (data.length / recrodingtime).floor(), stp = 0;
     List<double> res = [];
     print("音频时长:$recrodingtime ms");
@@ -251,7 +278,7 @@ class _RecrodState extends State<Recrod> with TickerProviderStateMixin {
     double ofs = offset.floorToDouble();
     List<double> newList;
     left += ofs;
-    right = (-left) + 60;
+    right = (-left) + 120;
     if (-left.floor() < 0) {
       left -= ofs;
       return;
@@ -264,9 +291,5 @@ class _RecrodState extends State<Recrod> with TickerProviderStateMixin {
     var newList2 = recrodingData.getRange(-left.floor(), right.floor());
     newList = newList2.toList();
     key.currentState.setRecrodingData(newList);
-  }
-
-  double pythagoreanTheorem(double short, double long) {
-    return math.sqrt(math.pow(short, 2) + math.pow(long, 2));
   }
 }
