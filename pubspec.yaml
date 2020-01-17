@@ -26,3 +26,15 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
+  assets:
+    - asset/
+    - asset/edit
+    - asset/flag
+    - asset/home_recording
+    - asset/palying
+    - asset/setting
+    - asset/sheared
+    - asset/toolbar
+
+
+
