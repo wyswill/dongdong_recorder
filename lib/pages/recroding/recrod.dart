@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:flutter_plugin_record/response.dart';
 
+import 'dart:math' as math;
+
 class Recrod extends StatefulWidget {
   Recrod({Key key}) : super(key: key);
 
@@ -13,7 +15,10 @@ class Recrod extends StatefulWidget {
   _RecrodState createState() => _RecrodState();
 }
 
-class _RecrodState extends State<Recrod> {
+class _RecrodState extends State<Recrod> with TickerProviderStateMixin {
+  Animation<double> _backDropFilterAnimation;
+  AnimationController _backDropFilterController;
+
   FocusNode node = FocusNode();
   TextEditingController controller = TextEditingController();
 
@@ -21,151 +26,14 @@ class _RecrodState extends State<Recrod> {
   bool statu = false;
   String filepath = '';
   List<String> paths = [];
-  List<double> recrodingData = [
-    12,
-    3,
-    123,
-    123,
-    1,
-    23,
-    12,
-    31,
-    231,
-    2,
-    12,
-    31,
-    23,
-    2,
-    3,
-    14,
-    12,
-    41,
-    234,
-    12,
-    33,
-    3,
-    123,
-    123,
-    1,
-    23,
-    12,
-    31,
-    231,
-    2,
-    12,
-    31,
-    23,
-    2,
-    3,
-    14,
-    12,
-    41,
-    234,
-    12,
-    33,
-    3,
-    123,
-    123,
-    1,
-    23,
-    12,
-    31,
-    231,
-    2,
-    12,
-    31,
-    23,
-    2,
-    3,
-    14,
-    12,
-    41,
-    234,
-    12,
-    33,
-    3,
-    123,
-    123,
-    1,
-    23,
-    12,
-    31,
-    231,
-    2,
-    12,
-    31,
-    23,
-    2,
-    3,
-    14,
-    12,
-    41,
-    234,
-    12,
-    33,
-    2,
-    3,
-    14,
-    12,
-    41,
-    234,
-    12,
-    33,
-    3,
-    123,
-    123,
-    1,
-    23,
-    12,
-    31,
-    231,
-    2,
-    12,
-    31,
-    23,
-    2,
-    3,
-    14,
-    12,
-    41,
-    234,
-    12,
-    33,
-    2,
-    3,
-    14,
-    12,
-    41,
-    234,
-    12,
-    33,
-    3,
-    123,
-    123,
-    1,
-    23,
-    12,
-    31,
-    231,
-    2,
-    12,
-    31,
-    23,
-    2,
-    3,
-    14,
-    12,
-    41,
-    234,
-    12,
-    33
-  ];
+  List<double> recrodingData = [];
   GlobalKey<ShowSounState> key = GlobalKey();
   double left = 0, right = 60;
   double audioTimeLength = 0;
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
   String recrodinTime = '00:00:00';
   Timer timer;
+
   @override
   void initState() {
     super.initState();
@@ -199,26 +67,31 @@ class _RecrodState extends State<Recrod> {
               })
         ],
       ),
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            setInput(),
-            setCanvas(),
-            Text(
-              recrodinTime,
-              style: TextStyle(
-                color: Colors.white,
-                fontWeight: FontWeight.w900,
-                fontSize: 24,
-              ),
+      body: Stack(
+        children: <Widget>[
+          Container(
+            child: Column(
+              children: <Widget>[
+                setInput(),
+                setCanvas(),
+                Text(
+                  recrodinTime,
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w900,
+                    fontSize: 24,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       bottomNavigationBar: setBottonButton(),
     );
   }
 
+  ///设置底部按钮
   Widget setBottonButton() {
     return Container(
       padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
@@ -331,7 +204,7 @@ class _RecrodState extends State<Recrod> {
     } else {
       setState(() {
         statu = true;
-        // timer = 
+        // timer =
       });
     }
   }
@@ -391,5 +264,9 @@ class _RecrodState extends State<Recrod> {
     var newList2 = recrodingData.getRange(-left.floor(), right.floor());
     newList = newList2.toList();
     key.currentState.setRecrodingData(newList);
+  }
+
+  double pythagoreanTheorem(double short, double long) {
+    return math.sqrt(math.pow(short, 2) + math.pow(long, 2));
   }
 }

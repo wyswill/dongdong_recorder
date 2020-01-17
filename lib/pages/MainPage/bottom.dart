@@ -7,6 +7,7 @@ import '../../event_bus.dart';
 
 class BottomshowBar extends StatefulWidget {
   BottomshowBar({Key key}) : super(key: key);
+
   @override
   _BottomshowBarState createState() => _BottomshowBarState();
 }
@@ -16,15 +17,17 @@ class _BottomshowBarState extends State<BottomshowBar>
   Map plaingFile;
   StreamSubscription streamSubscription;
   List<Map> playerIocns = [
-    {'icon': Icons.timer, 'title': '定时'},
-    {'icon': Icons.four_k, 'title': '倍速'},
-    {'icon': Icons.cancel, 'title': '剪辑'},
-    {'icon': Icons.translate, 'title': '转文字'},
-    {'icon': Icons.list, 'title': '更多'},
+    {'icon': 'asset/palying/icon_timing.png', 'title': '定时'},
+    {'icon': 'asset/palying/icon_Circulat_blue.png', 'title': '全部循环'},
+    {'icon': 'asset/palying/icon_speed_normal.png', 'title': '倍速'},
+    {'icon': 'asset/palying/icon_Sheared_blue.png', 'title': '剪辑'},
+    {'icon': 'asset/palying/icon_refresh2.png', 'title': '转文字'},
+    {'icon': 'asset/palying/icon_more-menu_blue.png', 'title': '更多'},
   ];
 
   Animation<double> animation;
   AnimationController controller;
+
   @override
   void initState() {
     super.initState();
@@ -85,17 +88,16 @@ class _BottomshowBarState extends State<BottomshowBar>
                                     children: <Widget>[
                                       GestureDetector(
                                         onTap: () {},
-                                        child: Icon(
+                                        child: Image.asset(
                                           e['icon'],
-                                          color: Theme.of(context).primaryColor,
-                                          size: 20,
+                                          width: 25,
                                         ),
                                       ),
                                       Text(
                                         e['title'],
                                         style: TextStyle(
                                           color: Theme.of(context).primaryColor,
-                                          fontSize: 10,
+                                          fontSize: 14,
                                         ),
                                       )
                                     ],
@@ -229,7 +231,8 @@ class _BottomshowBarState extends State<BottomshowBar>
     Navigator.push(
       context,
       PageRouteBuilder(
-        transitionDuration: Duration(milliseconds: 200),
+        barrierDismissible: true,
+        transitionDuration: Duration.zero,
         pageBuilder: (BuildContext context, Animation animation,
             Animation secondaryAnimation) {
           return ScaleTransition(
