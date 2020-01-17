@@ -148,11 +148,4 @@ class _RecrodingListState extends State<RecrodingList> {
     }
     eventBus.fire(PlayingFile(curentFile));
   }
-
-  ///向左滑动显示菜单
-  void recrodingOffset(double offset) {
-    if (offset <= 0) {
-      print('asd');
-    }
-  }
 }

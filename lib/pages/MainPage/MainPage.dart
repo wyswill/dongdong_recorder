@@ -14,31 +14,31 @@ class _MainPageState extends State<MainPage>
     with SingleTickerProviderStateMixin {
   List<Map> menus = [
     {
-      "icon": Icon(Icons.list),
+      "icon": "asset/toolbar/icon_List",
       "router": 'list',
       "isActive": false,
       "widget": RecrodingList()
     },
     {
-      "icon": Icon(Icons.folder),
+      "icon": 'asset/toolbar/icon_folder',
       "router": 'list',
       "isActive": false,
       "widget": Folder()
     },
     {
-      "icon": Icon(Icons.today),
+      "icon": "asset/toolbar/icon_calendar",
       "router": 'list',
       "isActive": false,
       "widget": Text('asd')
     },
     {
-      "icon": Icon(Icons.restore_from_trash),
+      "icon": 'asset/toolbar/icon_trash',
       "router": 'list',
       "isActive": false,
       "widget": Trash()
     },
     {
-      "icon": Icon(Icons.search),
+      "icon": 'asset/toolbar/icon_Search',
       "router": 'list',
       "isActive": false,
       "widget": Text('asd')
@@ -100,16 +100,19 @@ class _MainPageState extends State<MainPage>
   }
 
   ///菜单item
-  Widget buildMeneuItem(Widget icon, String routers, bool isActive, int index) {
+  Widget buildMeneuItem(String icon, String routers, bool isActive, int index) {
     return Container(
+      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
       decoration: BoxDecoration(
         color: isActive ? Theme.of(context).primaryColor : Colors.white,
         borderRadius: BorderRadius.all(Radius.circular(2)),
       ),
-      child: IconButton(
-        icon: icon,
-        color: isActive ? Colors.white : Theme.of(context).primaryColor,
-        onPressed: () {
+      child: GestureDetector(
+        child: Image.asset(
+          isActive ? '${icon}_white.png' : '${icon}_blue.png',
+          width: 23,
+        ),
+        onTap: () {
           if (this.menus[index]['isActive']) return;
           setState(() {
             tabController.animateTo(index);
@@ -127,17 +130,20 @@ class _MainPageState extends State<MainPage>
   ///设置tab
   Widget setTab() {
     return Container(
-      height: 40,
       margin: EdgeInsets.all(15),
       decoration: BoxDecoration(
           color: Colors.white,
           boxShadow: <BoxShadow>[
-            BoxShadow(color: Color.fromRGBO(187, 187, 187, 0.4), offset: Offset(0, 0), blurRadius: 5)
+            BoxShadow(
+                color: Color.fromRGBO(187, 187, 187, 0.4),
+                offset: Offset(0, 0),
+                blurRadius: 5)
           ],
           borderRadius: BorderRadius.all(Radius.circular(2))),
       child: TabBar(
         controller: tabController,
         indicatorWeight: 0.01,
+        indicatorSize: TabBarIndicatorSize.tab,
         tabs: List.generate(this.menus.length, (int index) {
           Map e = this.menus[index];
           return buildMeneuItem(e['icon'], e['router'], e['isActive'], index);
