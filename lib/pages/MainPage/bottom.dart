@@ -31,11 +31,10 @@ class _BottomshowBarState extends State<BottomshowBar>
     controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     animation = Tween<double>(begin: 200, end: 0).animate(controller);
-
+    controller.forward();
     controller.addListener(() {
       setState(() {});
     });
-    controller.forward();
     streamSubscription = eventBus.on<PlayingFile>().listen((event) {
       if (plaingFile == null) {
         controller.reset();

@@ -117,36 +117,42 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
               height: 50,
               alignment: Alignment.center,
               decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-              child: IconButton(
-                  icon: Icon(Icons.person_pin, color: Colors.white),
-                  onPressed: () {}),
+              child: GestureDetector(
+                child: Image.asset('asset/edit/icon_edit_white.png', width: 26),
+                onTap: () {},
+              ),
             ),
             Container(
               width: 50,
               height: 50,
               alignment: Alignment.center,
               decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-              child: IconButton(
-                  icon: Icon(Icons.person_pin, color: Colors.white),
-                  onPressed: () {}),
+              child: GestureDetector(
+                child:
+                    Image.asset('asset/edit/icon_moving_white.png', width: 26),
+                onTap: () {},
+              ),
             ),
             Container(
               width: 50,
               height: 50,
               alignment: Alignment.center,
               decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-              child: IconButton(
-                  icon: Icon(Icons.person_pin, color: Colors.white),
-                  onPressed: () {}),
+              child: GestureDetector(
+                child:
+                    Image.asset('asset/edit/icon_delete_white.png', width: 26),
+                onTap: () {},
+              ),
             ),
             Container(
               width: 50,
               height: 50,
               alignment: Alignment.center,
               decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-              child: IconButton(
-                  icon: Icon(Icons.person_pin, color: Colors.white),
-                  onPressed: () {}),
+              child: GestureDetector(
+                child: Image.asset('asset/edit/icon_more_white.png', width: 26),
+                onTap: () {},
+              ),
             ),
           ],
         ),
