@@ -12,7 +12,7 @@ class TransparentRoute extends PageRoute<void> {
   @override
   bool get opaque => false;
   @override
-  Color get barrierColor => null;
+  Color get barrierColor => Color.fromRGBO(87, 92, 159, 1);
   @override
   String get barrierLabel => null;
   @override

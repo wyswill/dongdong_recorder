@@ -11,20 +11,15 @@ class ShowSoun extends StatefulWidget {
   ShowSounState createState() => ShowSounState();
 }
 
-class ShowSounState extends State<ShowSoun> {
-  List<double> recrodingData, cached;
-  Offset offset;
-
-  setRecrodingData(List<double> data) {
-    setState(() {
-      recrodingData = data;
-    });
-  }
-
+class ShowSounState extends State<ShowSoun>
+    with SingleTickerProviderStateMixin {
+  List<double> recrodingData = [];
+  AnimationController controller;
   @override
   void initState() {
     super.initState();
-    cached = recrodingData;
+    controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
   }
 
   @override
@@ -32,9 +27,14 @@ class ShowSounState extends State<ShowSoun> {
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 200,
-      child: CustomPaint(
-        painter: MyCanvas(recrodingData, widget.recriodingTime),
-      ),
+      child:
+          CustomPaint(painter: MyCanvas(recrodingData, widget.recriodingTime)),
     );
+  }
+
+  setRecrodingData(List<double> data) {
+    setState(() {
+      recrodingData = data;
+    });
   }
 }

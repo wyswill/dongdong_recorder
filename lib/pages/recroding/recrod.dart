@@ -16,7 +16,6 @@ class Recrod extends StatefulWidget {
 class _RecrodState extends State<Recrod> {
   FocusNode node = FocusNode();
   TextEditingController controller = TextEditingController();
-
   FlutterPluginRecord flutterPluginRecord = FlutterPluginRecord();
   bool statu = false;
   String filepath = '';
@@ -199,7 +198,6 @@ class _RecrodState extends State<Recrod> {
             s++;
             temp += 60;
             timeFormat();
-            setdata();
           });
         });
       });
@@ -212,12 +210,14 @@ class _RecrodState extends State<Recrod> {
   ///录音实时写入波形
   setdata() {
     List<double> newList;
-    if (this.recrodingData.length > 120) {
-      int end = recrodingData.length, start = end - 120;
-      newList = recrodingData.getRange(start, end);
-      key.currentState.setRecrodingData(newList);
-    } else {
+    if (recrodingData.length < 120) {
       key.currentState.setRecrodingData(recrodingData);
+    } else {
+      start++;
+      end = start + 120;
+      if (end >= recrodingData.length) end = recrodingData.length;
+      newList = recrodingData.getRange(start, end).toList();
+      key.currentState.setRecrodingData(newList);
     }
   }
 
@@ -247,14 +247,17 @@ class _RecrodState extends State<Recrod> {
     }
   }
 
+  int end = 0, start = 0;
   show(RecordResponse data) {
-    this.recrodingData.add((double.parse(data.msg) * 250).floorToDouble());
+    double value = (double.parse(data.msg) * 250 / 3).floorToDouble();
+    this.recrodingData.add(value);
+    setdata();
   }
 
   ///将数字音频信号转换成毫秒位单位的值
   Future<List> transfrom(List data) async {
     double recrodingtime = (data.length / 8000) * 1000, temp = 0;
-    int flag = (data.length / recrodingtime).floor(), stp = 0;
+    int flag = (data.length / (s * 1000)).floor(), stp = 0;
     List<double> res = [];
     print("音频时长:$recrodingtime ms");
     setState(() {
