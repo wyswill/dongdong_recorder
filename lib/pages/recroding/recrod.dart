@@ -19,7 +19,7 @@ class _RecrodState extends State<Recrod> {
   FlutterPluginRecord flutterPluginRecord = FlutterPluginRecord();
   bool statu = false;
   String filepath = '';
-  List<double> recrodingData = [];
+  List<double> recrodingData = [], templist = [];
   GlobalKey<ShowSounState> key = GlobalKey();
   double left = 0, right = 60;
   double audioTimeLength = 0;
@@ -239,17 +239,14 @@ class _RecrodState extends State<Recrod> {
   }
 
   show(RecordResponse data) {
-    double value = (double.parse(data.msg) * 250 / 3).floorToDouble();
+    double value = (double.parse(data.msg) * 250).floorToDouble();
     setdata(value);
-    //TODO:画布从右向左滚动
-    print('recrodingData.length========================================');
-    print(recrodingData.length);
   }
 
   ///录音实时写入波形
   setdata(double value) {
     List<double> newLists = [];
-    if (recrodingData.length < 120) {
+    if (recrodingData.length < 195) {
       this.recrodingData.add(value);
       key.currentState.setRecrodingData(recrodingData);
     } else {
@@ -258,6 +255,7 @@ class _RecrodState extends State<Recrod> {
       newLists.add(value);
       key.currentState.setRecrodingData(newLists);
     }
+    templist.add(value);
   }
 
   ///将数字音频信号转换成毫秒位单位的值
@@ -287,17 +285,17 @@ class _RecrodState extends State<Recrod> {
     double ofs = offset.floorToDouble();
     List<double> newList;
     left += ofs;
-    right = (-left) + 120;
+    right = (-left) + 195;
     if (-left.floor() < 0) {
       left -= ofs;
       return;
     }
-    if (right > recrodingData.length) {
+    if (right > templist.length) {
       left -= ofs;
-      right = recrodingData.length.toDouble();
+      right = templist.length.toDouble();
       return;
     }
-    var newList2 = recrodingData.getRange(-left.floor(), right.floor());
+    var newList2 = templist.getRange(-left.floor(), right.floor());
     newList = newList2.toList();
     key.currentState.setRecrodingData(newList);
   }
