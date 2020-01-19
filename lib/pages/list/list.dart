@@ -1,10 +1,12 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/pages/list/recrodingFileItems.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider.dart';
@@ -24,6 +26,8 @@ class _RecrodingListState extends State<RecrodingList> {
   List dataKeys = [];
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
   RecroderModule curentPlayRecrofing;
+  String cacheFile = '/file_cache/Audio/', path = '';
+  List<File> files = [];
   @override
   void initState() {
     super.initState();
@@ -35,10 +39,31 @@ class _RecrodingListState extends State<RecrodingList> {
   }
 
   @override
-  void didChangeDependencies() {
+  void didChangeDependencies() async {
     super.didChangeDependencies();
     datas = Provider.of<Modus>(context).recroderFiles;
     dataKeys = datas.keys.toList();
+    Directory directory = (await getExternalCacheDirectories())[0];
+    path = directory.path + cacheFile;
+    await _getTotalSizeOfFilesInDir(directory);
+  }
+
+  /// 递归方式获取录音文件
+  _getTotalSizeOfFilesInDir(final FileSystemEntity file) async {
+    try {
+      if (file is File) {
+        // files.add(file);
+        print(file.path);
+      }
+      if (file is Directory) {
+        final List<FileSystemEntity> children = file.listSync();
+        if (children != null)
+          for (final FileSystemEntity child in children)
+            await _getTotalSizeOfFilesInDir(child);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   @override

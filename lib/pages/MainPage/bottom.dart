@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/pages/recroding/recrod.dart';
+import 'package:asdasd/widgets/musicProgress.dart';
 import 'package:flutter/material.dart';
 
 import '../../event_bus.dart';
@@ -25,7 +26,7 @@ class _BottomshowBarState extends State<BottomshowBar>
     {'icon': 'asset/palying/icon_refresh2.png', 'title': '转文字'},
     {'icon': 'asset/palying/icon_more-menu_blue.png', 'title': '更多'},
   ];
-
+  GlobalKey<MusicProgressState> key = GlobalKey();
   Animation<double> animation;
   AnimationController controller;
 
@@ -60,11 +61,11 @@ class _BottomshowBarState extends State<BottomshowBar>
   @override
   Widget build(BuildContext context) {
     if (plaingFile != null) {
-      // Duration duration = Duration(milliseconds: plaingFile['rectimg']);
       return Transform.translate(
         offset: Offset(0, animation.value),
         child: Stack(
           children: <Widget>[
+            ///播放面板
             Positioned(
               child: Container(
                 width: MediaQuery.of(context).size.width,
@@ -110,34 +111,16 @@ class _BottomshowBarState extends State<BottomshowBar>
                     Row(
                       children: <Widget>[
                         IconButton(
-                            icon: Icon(
-                              this.plaingFile.isPlaying
-                                  ? Icons.pause
-                                  : Icons.play_arrow,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            onPressed: () {
-                              setState(() {
-                                this.plaingFile.isPlaying =
-                                    !this.plaingFile.isPlaying;
-                              });
-                              eventBus.fire(
-                                  PlayingState(this.plaingFile.isPlaying));
-                            }),
-                        Text('0:0:0', style: TextStyle(color: Colors.grey)),
-                        Expanded(
-                          child: Container(
-                            margin: EdgeInsets.symmetric(horizontal: 5),
-                            child: LinearProgressIndicator(
-                              value: 0.5,
-                              backgroundColor: Theme.of(context)
-                                  .primaryColor
-                                  .withOpacity(0.5),
-                              valueColor: AlwaysStoppedAnimation(
-                                  Theme.of(context).primaryColor),
-                            ),
+                          icon: Icon(
+                            this.plaingFile.isPlaying
+                                ? Icons.pause
+                                : Icons.play_arrow,
+                            color: Theme.of(context).primaryColor,
                           ),
+                          onPressed: play,
                         ),
+                        Text('0:0:0', style: TextStyle(color: Colors.grey)),
+                        Expanded(child: MusicProgress(key: key)),
                         Text(plaingFile.recrodingtime,
                             style: TextStyle(color: Colors.grey))
                       ],
@@ -146,6 +129,8 @@ class _BottomshowBarState extends State<BottomshowBar>
                 ),
               ),
             ),
+
+            ///右上角叉叉
             Positioned(
               right: 0,
               child: ClipOval(
@@ -221,6 +206,14 @@ class _BottomshowBarState extends State<BottomshowBar>
           ),
         ),
       );
+  }
+
+  ///播放音乐
+  void play() async {
+    setState(() {
+      this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
+    });
+    eventBus.fire(PlayingState(this.plaingFile.isPlaying));
   }
 
   ///定时选择

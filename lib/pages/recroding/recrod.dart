@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/utiles.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:flutter_plugin_record/response.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider.dart';
@@ -23,7 +25,7 @@ class _RecrodState extends State<Recrod> {
   TextEditingController controller = TextEditingController();
   FlutterPluginRecord flutterPluginRecord = FlutterPluginRecord();
   bool statu = false;
-  String filepath = '';
+  String filepath = '', cacheFile = '/file_cache/Audio/', path = '';
   List<double> recrodingData = [], templist = [];
   GlobalKey<ShowSounState> key = GlobalKey();
   double left = 0, right = 60;
@@ -38,6 +40,13 @@ class _RecrodState extends State<Recrod> {
     flutterPluginRecord.responseFromInit.listen(responseFromInitListen);
     flutterPluginRecord.response.listen(strartRecroding);
     flutterPluginRecord.responseFromAmplitude.listen(show);
+  }
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    Directory directory = (await getExternalCacheDirectories())[0];
+    path = directory.path + cacheFile;
   }
 
   @override
@@ -241,9 +250,12 @@ class _RecrodState extends State<Recrod> {
       alert(context, title: Text('警告!'), content: Text('文件标题不能为空'));
     else {
       int filesize = 16000 * s;
+      File file = File(filepath);
+      File newFile = file.copySync("$path$filename.wav");
+      file.delete();
       RecroderModule modu = RecroderModule(
         title: filename,
-        filepath: filepath,
+        filepath: newFile.path,
         recrodingtime: "$h:$m:$s",
         lastModified: '${now.hour}:${now.minute}:${now.second}',
         isPlaying: false,
@@ -254,7 +266,6 @@ class _RecrodState extends State<Recrod> {
       if (datas == null) datas = [];
       datas.add(modu);
       Provider.of<Modus>(context).recroderFiles[attr] = datas;
-      print(Provider.of<Modus>(context).recroderFiles);
       Navigator.pop(context);
     }
   }

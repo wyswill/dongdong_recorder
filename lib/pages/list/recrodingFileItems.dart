@@ -178,7 +178,9 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
     if (offset > 0) {
       controller.animateTo(0,
           duration: Duration(milliseconds: 100), curve: Curves.linear);
-    } else
+    } else {
+      widget.playRecroding(curentFile: widget.curentFile);
       return;
+    }
   }
 }
