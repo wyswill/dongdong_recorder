@@ -22,12 +22,11 @@ class RecrodingList extends StatefulWidget {
 
 class _RecrodingListState extends State<RecrodingList> {
   StreamSubscription streamSubscription;
-  Map datas = {};
+  Map<String, List<RecroderModule>> datas = {};
   List dataKeys = [];
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
   RecroderModule curentPlayRecrofing;
   String cacheFile = '/file_cache/Audio/', path = '';
-  List<File> files = [];
   @override
   void initState() {
     super.initState();
@@ -41,19 +40,49 @@ class _RecrodingListState extends State<RecrodingList> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    datas = Provider.of<Modus>(context).recroderFiles;
-    dataKeys = datas.keys.toList();
     Directory directory = (await getExternalCacheDirectories())[0];
     path = directory.path + cacheFile;
-    await _getTotalSizeOfFilesInDir(directory);
+    await _getTotalSizeOfFilesInDir(Directory(path));
   }
 
   /// 递归方式获取录音文件
   _getTotalSizeOfFilesInDir(final FileSystemEntity file) async {
     try {
       if (file is File) {
-        // files.add(file);
-        print(file.path);
+        String filename = file.path.replaceAll(path, '');
+        if (filename.indexOf(RegExp('.wav')) == 2) {
+          DateTime dateTime = await file.lastModified();
+          String attr = '${dateTime.year}年${dateTime.month}月';
+          if (this.datas[attr] == null) {
+            this.datas[attr] = [];
+            this.datas[attr].add(
+                  RecroderModule(
+                    title: filename,
+                    filepath: file.path,
+                    recrodingtime: "0",
+                    lastModified:
+                        '${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
+                    isPlaying: false,
+                    fileSize: "0kb",
+                  ),
+                );
+          } else {
+            this.datas[attr].add(
+                  RecroderModule(
+                    title: filename,
+                    filepath: file.path,
+                    recrodingtime: "0",
+                    lastModified:
+                        '${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
+                    isPlaying: false,
+                    fileSize: "0kb",
+                  ),
+                );
+          }
+          print(datas);
+          dataKeys = datas.keys.toList();
+          setState(() {});
+        }
       }
       if (file is Directory) {
         final List<FileSystemEntity> children = file.listSync();
@@ -80,7 +109,7 @@ class _RecrodingListState extends State<RecrodingList> {
   ///每组录音数据样式
   Widget buildRecrodingItem(int index) {
     String curnetKey = dataKeys[index];
-    List curentRecrodingFiles = this.datas[curnetKey];
+    List<RecroderModule> curentRecrodingFiles = this.datas[curnetKey];
     return SliverToBoxAdapter(
       child: Column(
         children: <Widget>[

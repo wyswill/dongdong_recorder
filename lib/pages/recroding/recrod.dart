@@ -249,23 +249,23 @@ class _RecrodState extends State<Recrod> {
     if (filename == '')
       alert(context, title: Text('警告!'), content: Text('文件标题不能为空'));
     else {
-      int filesize = 16000 * s;
+      // double filesize = 16000 * s / 1024;
       File file = File(filepath);
-      File newFile = file.copySync("$path$filename.wav");
+      file.copySync("$path$filename.wav");
       file.delete();
-      RecroderModule modu = RecroderModule(
-        title: filename,
-        filepath: newFile.path,
-        recrodingtime: "$h:$m:$s",
-        lastModified: '${now.hour}:${now.minute}:${now.second}',
-        isPlaying: false,
-        fileSize: "${filesize / 1024}kb",
-      );
-      List<RecroderModule> datas =
-          Provider.of<Modus>(context).recroderFiles[attr];
-      if (datas == null) datas = [];
-      datas.add(modu);
-      Provider.of<Modus>(context).recroderFiles[attr] = datas;
+      // RecroderModule modu = RecroderModule(
+      //   title: filename,
+      //   filepath: newFile.path,
+      //   recrodingtime: "$h:$m:$s",
+      //   lastModified: '${now.hour}:${now.minute}:${now.second}',
+      //   isPlaying: false,
+      //   fileSize: "${filesize}kb",
+      // );
+      // List<RecroderModule> datas =
+      //     Provider.of<Modus>(context).recroderFiles[attr];
+      // if (datas == null) datas = [];
+      // datas.add(modu);
+      // Provider.of<Modus>(context).recroderFiles[attr] = datas;
       Navigator.pop(context);
     }
   }
