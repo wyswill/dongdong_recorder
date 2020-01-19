@@ -19,12 +19,12 @@ class _MainPageState extends State<MainPage>
       "isActive": false,
       "widget": RecrodingList()
     },
-    {
-      "icon": 'asset/toolbar/icon_folder',
-      "router": 'list',
-      "isActive": false,
-      "widget": Folder()
-    },
+    // {
+    //   "icon": 'asset/toolbar/icon_folder',
+    //   "router": 'list',
+    //   "isActive": false,
+    //   "widget": Folder()
+    // },
     {
       "icon": "asset/toolbar/icon_calendar",
       "router": 'list',
@@ -54,7 +54,7 @@ class _MainPageState extends State<MainPage>
 
     ///设置tabbar
     menus[0]['isActive'] = true;
-    tabController = TabController(vsync: this, length: 5);
+    tabController = TabController(vsync: this, length: 4);
 
     ///设置tabView
     tabController.addListener(() {

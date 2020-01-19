@@ -35,6 +35,15 @@ public class MainActiveti extends FlutterActivity {
           result.success(_temp);
         }
         break;
+      case "getSize":
+        String path2 = methodCall.argument("path").toString();
+        wfr wfr = new wfr();
+        try {
+          wfr.openFile(path2);
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+        break;
       default:
         result.notImplemented();
     }
