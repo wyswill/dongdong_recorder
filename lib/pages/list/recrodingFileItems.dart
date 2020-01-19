@@ -1,10 +1,11 @@
+import 'package:asdasd/modus/record.dart';
 import 'package:flutter/material.dart';
 
 class RecrodingFileItems extends StatefulWidget {
   const RecrodingFileItems(
       {Key key, this.playRecroding, this.curentFile, this.index})
       : super(key: key);
-  final Map curentFile;
+  final RecroderModule curentFile;
   final Function playRecroding;
   final int index;
 
@@ -26,7 +27,6 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
 
   @override
   Widget build(BuildContext context) {
-    Duration duration = Duration(milliseconds: widget.curentFile['rectimg']);
     return Listener(
       onPointerUp: animateScroll,
       child: SingleChildScrollView(
@@ -42,7 +42,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                 padding: EdgeInsets.only(right: 20),
                 decoration: BoxDecoration(
                   border: Border(
-                    left: widget.curentFile['isPlaying']
+                    left: widget.curentFile.isPlaying
                         ? BorderSide(
                             width: 4, color: Theme.of(context).primaryColor)
                         : BorderSide(width: 0),
@@ -54,7 +54,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                   children: <Widget>[
                     Container(
                       child: IconButton(
-                        icon: widget.curentFile['isPlaying']
+                        icon: widget.curentFile.isPlaying
                             ? Icon(Icons.pause,
                                 color: Theme.of(context).primaryColor)
                             : Icon(Icons.play_arrow, color: Colors.grey),
@@ -69,7 +69,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                         children: <Widget>[
                           Row(children: <Widget>[
                             Text(
-                              widget.curentFile['title'],
+                              widget.curentFile.title,
                               style: TextStyle(fontSize: 14),
                             )
                           ]),
@@ -85,21 +85,21 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                                 child: Text(
-                                  "${duration.inHours}:${duration.inMinutes}:${duration.inSeconds}",
+                                  widget.curentFile.recrodingtime,
                                   style: textStyle,
                                 ),
                               ),
                               Container(
                                 margin: EdgeInsets.symmetric(horizontal: 5),
                                 child: Text(
-                                  widget.curentFile['fileSize'],
+                                  widget.curentFile.fileSize,
                                   style: textStyle,
                                 ),
                               ),
                               Expanded(child: Container()),
                               Container(
                                 child: Text(
-                                  widget.curentFile['lastDate'],
+                                  widget.curentFile.lastModified,
                                   style: textStyle,
                                 ),
                               )

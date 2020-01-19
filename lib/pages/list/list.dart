@@ -1,9 +1,13 @@
 import 'dart:async';
 
 import 'package:asdasd/event_bus.dart';
+import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/pages/list/recrodingFileItems.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+import '../../provider.dart';
 
 class RecrodingList extends StatefulWidget {
   RecrodingList({this.key, this.arguments}) : super(key: key);
@@ -16,74 +20,25 @@ class RecrodingList extends StatefulWidget {
 
 class _RecrodingListState extends State<RecrodingList> {
   StreamSubscription streamSubscription;
-  Map datas = {
-    "2019年12月": [
-      {
-        'title': "会议",
-        "rectimg": 2000,
-        "fileSize": "950kb",
-        'lastDate': DateTime.now().toLocal().toString(),
-        'filePath': 'asdasdds',
-        "isPlaying": false
-      },
-      {
-        'title': "会议",
-        "rectimg": 2000,
-        "fileSize": "950kb",
-        'lastDate': DateTime.now().toLocal().toString(),
-        'filePath': 'asdasdds',
-        "isPlaying": false
-      },
-      {
-        'title': "会议",
-        "rectimg": 2000,
-        "fileSize": "950kb",
-        'lastDate': DateTime.now().toLocal().toString(),
-        'filePath': 'asdasdds',
-        "isPlaying": false
-      },
-      {
-        'title': "会议",
-        "rectimg": 2000,
-        "fileSize": "950kb",
-        'lastDate': DateTime.now().toLocal().toString(),
-        'filePath': 'asdasdds',
-        "isPlaying": false
-      },
-    ],
-    "2019年11月": [
-      {
-        'title': "会议",
-        "rectimg": 2000,
-        "fileSize": "950kb",
-        'lastDate': DateTime.now().toLocal().toString(),
-        'filePath': 'asdasdds',
-        "isPlaying": false
-      }
-    ],
-    "2019年10月": [
-      {
-        'title': "会议",
-        "rectimg": 2000,
-        "fileSize": "950kb",
-        'lastDate': DateTime.now().toLocal().toString(),
-        'filePath': 'asdasdds',
-        "isPlaying": false
-      }
-    ],
-  };
+  Map datas = {};
   List dataKeys = [];
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
-  Map curentPlayRecrofing;
+  RecroderModule curentPlayRecrofing;
   @override
   void initState() {
     super.initState();
-    dataKeys = datas.keys.toList();
     streamSubscription = eventBus.on<PlayingState>().listen((event) {
       setState(() {
-        this.curentPlayRecrofing['isPlaying'] = event.state;
+        this.curentPlayRecrofing.isPlaying = event.state;
       });
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    datas = Provider.of<Modus>(context).recroderFiles;
+    dataKeys = datas.keys.toList();
   }
 
   @override
@@ -112,7 +67,7 @@ class _RecrodingListState extends State<RecrodingList> {
           ),
           Column(
             children: List.generate(curentRecrodingFiles.length, (int ind) {
-              Map curentFile = curentRecrodingFiles[ind];
+              RecroderModule curentFile = curentRecrodingFiles[ind];
               return RecrodingFileItems(
                 curentFile: curentFile,
                 playRecroding: this.playRecroding,
@@ -126,23 +81,23 @@ class _RecrodingListState extends State<RecrodingList> {
   }
 
   ///播放录音
-  void playRecroding({Map curentFile}) {
+  void playRecroding({RecroderModule curentFile}) {
     if (curentPlayRecrofing != null && curentPlayRecrofing == curentFile) {
       setState(() {
-        curentPlayRecrofing['isPlaying'] = !curentPlayRecrofing['isPlaying'];
+        curentPlayRecrofing.isPlaying = !curentPlayRecrofing.isPlaying;
       });
       eventBus.fire(PlayingFile(curentFile));
       return;
     }
-    if (curentPlayRecrofing != null && curentPlayRecrofing['isPlaying']) {
+    if (curentPlayRecrofing != null && curentPlayRecrofing.isPlaying) {
       setState(() {
-        curentPlayRecrofing['isPlaying'] = !curentPlayRecrofing['isPlaying'];
-        curentFile['isPlaying'] = !curentFile['isPlaying'];
+        curentPlayRecrofing.isPlaying = !curentPlayRecrofing.isPlaying;
+        curentFile.isPlaying = !curentFile.isPlaying;
         curentPlayRecrofing = curentFile;
       });
     } else {
       setState(() {
-        curentFile['isPlaying'] = !curentFile['isPlaying'];
+        curentFile.isPlaying = !curentFile.isPlaying;
         curentPlayRecrofing = curentFile;
       });
     }

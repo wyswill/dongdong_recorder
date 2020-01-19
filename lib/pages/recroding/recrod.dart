@@ -254,6 +254,7 @@ class _RecrodState extends State<Recrod> {
       if (datas == null) datas = [];
       datas.add(modu);
       Provider.of<Modus>(context).recroderFiles[attr] = datas;
+      print(Provider.of<Modus>(context).recroderFiles);
       Navigator.pop(context);
     }
   }

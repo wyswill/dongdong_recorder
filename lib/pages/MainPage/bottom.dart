@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/pages/recroding/recrod.dart';
-import 'package:asdasd/widgets/routerAnimate.dart';
 import 'package:flutter/material.dart';
 
 import '../../event_bus.dart';
@@ -15,7 +15,7 @@ class BottomshowBar extends StatefulWidget {
 
 class _BottomshowBarState extends State<BottomshowBar>
     with SingleTickerProviderStateMixin {
-  Map plaingFile;
+  RecroderModule plaingFile;
   StreamSubscription streamSubscription;
   List<Map> playerIocns = [
     {'icon': 'asset/palying/icon_timing.png', 'title': '定时'},
@@ -60,7 +60,7 @@ class _BottomshowBarState extends State<BottomshowBar>
   @override
   Widget build(BuildContext context) {
     if (plaingFile != null) {
-      Duration duration = Duration(milliseconds: plaingFile['rectimg']);
+      // Duration duration = Duration(milliseconds: plaingFile['rectimg']);
       return Transform.translate(
         offset: Offset(0, animation.value),
         child: Stack(
@@ -111,18 +111,18 @@ class _BottomshowBarState extends State<BottomshowBar>
                       children: <Widget>[
                         IconButton(
                             icon: Icon(
-                              this.plaingFile['isPlaying']
+                              this.plaingFile.isPlaying
                                   ? Icons.pause
                                   : Icons.play_arrow,
                               color: Theme.of(context).primaryColor,
                             ),
                             onPressed: () {
                               setState(() {
-                                this.plaingFile['isPlaying'] =
-                                    !this.plaingFile['isPlaying'];
+                                this.plaingFile.isPlaying =
+                                    !this.plaingFile.isPlaying;
                               });
                               eventBus.fire(
-                                  PlayingState(this.plaingFile['isPlaying']));
+                                  PlayingState(this.plaingFile.isPlaying));
                             }),
                         Text('0:0:0', style: TextStyle(color: Colors.grey)),
                         Expanded(
@@ -138,8 +138,7 @@ class _BottomshowBarState extends State<BottomshowBar>
                             ),
                           ),
                         ),
-                        Text(
-                            "${duration.inHours}:${duration.inMinutes}:${duration.inSeconds}",
+                        Text(plaingFile.recrodingtime,
                             style: TextStyle(color: Colors.grey))
                       ],
                     )

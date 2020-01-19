@@ -4,7 +4,7 @@ class RecroderModule {
   final String fileSize;
   final String lastModified;
   final String filepath;
-  final bool isPlaying;
+  bool isPlaying;
   RecroderModule({
     this.title,
     this.recrodingtime,

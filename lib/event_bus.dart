@@ -1,10 +1,12 @@
 import 'package:event_bus/event_bus.dart';
 
+import 'modus/record.dart';
+
 EventBus eventBus = EventBus();
 
 class PlayingFile {
   PlayingFile(this.file);
-  final Map file;
+  final RecroderModule file;
 }
 
 class PlayingState {
