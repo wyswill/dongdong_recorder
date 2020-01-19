@@ -26,7 +26,6 @@ class _RecrodState extends State<Recrod> {
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
   int h = 0, m = 0, s = 0, temp = 0;
   Timer timer;
-
   @override
   void initState() {
     super.initState();
@@ -80,7 +79,7 @@ class _RecrodState extends State<Recrod> {
                   child:
                       Image.asset('asset/flag/icon_flag_white.png', width: 40),
                   onTap: setTimeStap,
-                )
+                ),
               ],
             ),
           ),
@@ -101,14 +100,9 @@ class _RecrodState extends State<Recrod> {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           ClipOval(
-            child: Container(
-              width: 40,
-              height: 40,
-              child: IconButton(
-                color: Colors.white,
-                icon: Icon(Icons.redo),
-                onPressed: () {},
-              ),
+            child: GestureDetector(
+              child: Image.asset('asset/icon_repeat.png', width: 40),
+              onTap: reset,
             ),
           ),
           ClipOval(
@@ -170,6 +164,19 @@ class _RecrodState extends State<Recrod> {
     );
   }
 
+  ///重置
+  reset() {
+    setState(() {
+      ///消除时间
+      h = 0;
+      m = 0;
+      s = 0;
+
+      ///清除画布
+      key.currentState.setRecrodingData([]);
+    });
+  }
+
   ///设置时间戳
   setTimeStap() {}
 
@@ -207,20 +214,6 @@ class _RecrodState extends State<Recrod> {
     });
   }
 
-  ///录音实时写入波形
-  setdata() {
-    List<double> newList;
-    if (recrodingData.length < 120) {
-      key.currentState.setRecrodingData(recrodingData);
-    } else {
-      start++;
-      end = start + 120;
-      if (end >= recrodingData.length) end = recrodingData.length;
-      newList = recrodingData.getRange(start, end).toList();
-      key.currentState.setRecrodingData(newList);
-    }
-  }
-
   ///时间转换
   timeFormat() {
     if (s == 60) {
@@ -242,16 +235,29 @@ class _RecrodState extends State<Recrod> {
       setState(() {
         filepath = data.path;
       });
-    } else if (data.msg == "onStart") {
-      print("开始录音----------------------");
     }
   }
 
-  int end = 0, start = 0;
   show(RecordResponse data) {
     double value = (double.parse(data.msg) * 250 / 3).floorToDouble();
-    this.recrodingData.add(value);
-    setdata();
+    setdata(value);
+    //TODO:画布从右向左滚动
+    print('recrodingData.length========================================');
+    print(recrodingData.length);
+  }
+
+  ///录音实时写入波形
+  setdata(double value) {
+    List<double> newLists = [];
+    if (recrodingData.length < 120) {
+      this.recrodingData.add(value);
+      key.currentState.setRecrodingData(recrodingData);
+    } else {
+      newLists = recrodingData;
+      newLists.removeAt(0);
+      newLists.add(value);
+      key.currentState.setRecrodingData(newLists);
+    }
   }
 
   ///将数字音频信号转换成毫秒位单位的值

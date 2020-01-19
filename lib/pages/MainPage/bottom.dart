@@ -229,17 +229,19 @@ class _BottomshowBarState extends State<BottomshowBar>
 
   /// 跳转到录音页面
   void showRecroding() {
-    Navigator.push(context, TransparentRoute(builder: (context) => Recrod())
-        // PageRouteBuilder(
-        //   pageBuilder: (BuildContext context, Animation animation,
-        //       Animation secondaryAnimation) {
-        //     return ScaleTransition(
-        //       scale: animation,
-        //       alignment: Alignment.bottomCenter,
-        //       child: Recrod(),
-        //     );
-        //   },
-        // ),
-        );
+    Navigator.push(
+      context,
+      //     TransparentRoute(builder: (context) => Transform.scale(child: Recrod()))
+      PageRouteBuilder(
+        pageBuilder: (BuildContext context, Animation animation,
+            Animation secondaryAnimation) {
+          return ScaleTransition(
+            scale: animation,
+            alignment: Alignment.bottomCenter,
+            child: Recrod(),
+          );
+        },
+      ),
+    );
   }
 }

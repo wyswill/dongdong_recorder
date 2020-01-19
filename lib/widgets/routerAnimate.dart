@@ -21,7 +21,7 @@ class TransparentRoute extends PageRoute<void> {
 
   /// 这里时长设置为0，是因为我们的布局一开始
   /// 并不包含任何内容，所以直接砍掉跳转时间。
-  Duration get transitionDuration => Duration.zero;
+  Duration get transitionDuration => Duration(milliseconds: 200);
 
   @override
   Widget buildPage(BuildContext context, Animation<double> animation,

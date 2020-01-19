@@ -32,9 +32,19 @@ class ShowSounState extends State<ShowSoun>
     );
   }
 
+  ///滑动窗口
   setRecrodingData(List<double> data) {
     setState(() {
       recrodingData = data;
+      controller.forward();
+    });
+  }
+
+  ///录音实时数据
+  double curentHeight = 0;
+  setRecrodingSingledata(double data) {
+    setState(() {
+      curentHeight = data;
     });
   }
 }
