@@ -177,14 +177,13 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
   ///删除文件
   deleteFile() async {
     File file = File(widget.curentFile.filepath);
-
     String cacheFile = '/file_cache/delete/',
         newPath = ((await getExternalCacheDirectories())[0]).path;
     Directory directory = Directory(newPath + cacheFile);
     if (!directory.existsSync()) directory.createSync();
-    File newfile = file.copySync(newPath + cacheFile + widget.curentFile.title);
+    file.copySync(newPath + cacheFile + widget.curentFile.title);
     file.delete();
-    print(newfile);
+    cancle();
     eventBus.fire(DeleteFileSync(attr: widget.curnetKey, index: widget.index));
   }
 

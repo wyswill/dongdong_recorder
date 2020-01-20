@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/record.dart';
 import 'package:flutter/material.dart';
@@ -16,9 +18,27 @@ class ListItem extends StatefulWidget {
 
 class _ListItemState extends State<ListItem> {
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
-  List<RecroderModule> get datas => widget.datas;
+  List<RecroderModule> datas;
   bool get isRecrodingFile => widget.isRecrodingFile;
   RecroderModule rm;
+  int index;
+  StreamSubscription streamSubscription;
+  @override
+  void initState() {
+    super.initState();
+    datas = widget.datas;
+  }
+
+  @override
+  void didChangeDependencies() {
+    streamSubscription = eventBus.on<Trash_option>().listen((event) {
+      setState(() {
+        this.datas.removeAt(event.index);
+      });
+    });
+    super.didChangeDependencies();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
@@ -28,7 +48,14 @@ class _ListItemState extends State<ListItem> {
     );
   }
 
-  ///
+  @override
+  void dispose() {
+    eventBus.fire(NullEvent());
+    streamSubscription.cancel();
+    super.dispose();
+  }
+
+  ///下划线
   Widget folderseparatorBuilder(BuildContext context, int index) {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -42,7 +69,7 @@ class _ListItemState extends State<ListItem> {
     RecroderModule curent = this.datas[index];
     return GestureDetector(
       onTap: () {
-        showOptions(curent);
+        showOptions(curent, index);
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
@@ -101,17 +128,15 @@ class _ListItemState extends State<ListItem> {
   }
 
   ///显示选项
-  void showOptions(RecroderModule data) {
-    eventBus.fire(Trash_option(data));
+  void showOptions(RecroderModule data, index) {
+    eventBus.fire(Trash_option(data, index));
     if (rm == null) {
       setState(() {
         rm = data;
         rm.isPlaying = !rm.isPlaying;
       });
     } else if (rm.recrodingtime == data.recrodingtime)
-      setState(() {
-        rm.isPlaying = !rm.isPlaying;
-      });
+      return;
     else
       setState(() {
         rm.isPlaying = !rm.isPlaying;

@@ -1,13 +1,17 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/pages/recroding/recrod.dart';
 import 'package:asdasd/widgets/musicProgress.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../event_bus.dart';
 import '../../utiles.dart';
+
+enum bottomState { recrod, playRecroding, deleteFiles }
 
 class BottomshowBar extends StatefulWidget {
   BottomshowBar({Key key}) : super(key: key);
@@ -18,7 +22,7 @@ class BottomshowBar extends StatefulWidget {
 
 class _BottomshowBarState extends State<BottomshowBar>
     with SingleTickerProviderStateMixin {
-  RecroderModule plaingFile;
+  RecroderModule plaingFile, trashFile;
   StreamSubscription streamSubscription;
   List<Map> playerIocns = [
     {'icon': 'asset/palying/icon_timing.png', 'title': '定时'},
@@ -34,7 +38,8 @@ class _BottomshowBarState extends State<BottomshowBar>
   AudioPlayer audioPlayer = AudioPlayer();
   double totalTime = 0;
   String currenttime = '0:0:0';
-  bool showTrash = false;
+  int index;
+  bottomState curentState = bottomState.recrod;
   @override
   void initState() {
     super.initState();
@@ -76,16 +81,25 @@ class _BottomshowBarState extends State<BottomshowBar>
       totalTime = double.parse(plaingFile.recrodingtime);
       await audioPlayer.setUrl(plaingFile.filepath, isLocal: true);
       await audioPlayer.setReleaseMode(ReleaseMode.RELEASE);
-      showTrash = false;
+      this.curentState = bottomState.playRecroding;
       setState(() {});
     });
     streamSubscription = eventBus.on<Trash_option>().listen((event) async {
+      setState(() {
+        trashFile = event.rm;
+        index = event.index;
+        this.curentState = bottomState.deleteFiles;
+      });
       controller.reset();
       controller.forward();
+    });
+    streamSubscription = eventBus.on<NullEvent>().listen((event) async {
       setState(() {
-        showTrash = true;
-        plaingFile = event.rm;
+        plaingFile = null;
+        this.curentState = bottomState.recrod;
       });
+      controller.reset();
+      controller.forward();
     });
   }
 
@@ -99,72 +113,63 @@ class _BottomshowBarState extends State<BottomshowBar>
 
   @override
   Widget build(BuildContext context) {
-    if (showTrash) {
-      return Transform.translate(
-        offset: Offset(0, animation.value),
-        child: Container(
-          padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            boxShadow: <BoxShadow>[
-              BoxShadow(
-                  color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
-            ],
+    switch (this.curentState) {
+      case bottomState.recrod:
+        return Transform.translate(
+          offset: Offset(0, animation.value),
+          child: Container(
+            padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                      color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
+                ]),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                ClipOval(
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    color: Theme.of(context).primaryColor,
+                    child: IconButton(
+                      color: Colors.white,
+                      icon: Icon(Icons.timer),
+                      onPressed: showSelect,
+                    ),
+                  ),
+                ),
+                ClipOval(
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    color: Theme.of(context).primaryColor,
+                    child: IconButton(
+                      color: Colors.white,
+                      icon: Icon(Icons.mic),
+                      onPressed: showRecroding,
+                    ),
+                  ),
+                ),
+                ClipOval(
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    color: Theme.of(context).primaryColor,
+                    child: IconButton(
+                      color: Colors.white,
+                      icon: Icon(Icons.text_rotation_down),
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Container(
-                width: 100,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                        color: Color.fromRGBO(187, 187, 187, 0.4),
-                        offset: Offset(0, 0),
-                        blurRadius: 5)
-                  ],
-                ),
-                child: FlatButton(child: Text('删除'), onPressed: delete),
-              ),
-              Container(
-                width: 100,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                        color: Color.fromRGBO(187, 187, 187, 0.4),
-                        offset: Offset(0, 0),
-                        blurRadius: 5)
-                  ],
-                ),
-                child: FlatButton(child: Text('还原'), onPressed: reset),
-              ),
-              Container(
-                width: 100,
-                height: 40,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(5)),
-                  boxShadow: <BoxShadow>[
-                    BoxShadow(
-                        color: Color.fromRGBO(187, 187, 187, 0.4),
-                        offset: Offset(0, 0),
-                        blurRadius: 5)
-                  ],
-                ),
-                child: FlatButton(child: Text('取消'), onPressed: cancel),
-              ),
-            ],
-          ),
-        ),
-      );
-    } else {
-      if (plaingFile != null) {
+        );
+        break;
+      case bottomState.playRecroding:
         return Transform.translate(
           offset: Offset(0, animation.value),
           child: Stack(
@@ -261,60 +266,72 @@ class _BottomshowBarState extends State<BottomshowBar>
             ],
           ),
         );
-      } else
+        break;
+      case bottomState.deleteFiles:
         return Transform.translate(
           offset: Offset(0, animation.value),
           child: Container(
             padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
             decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                      color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
-                ]),
+              color: Colors.white,
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                    color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
+              ],
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                ClipOval(
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    color: Theme.of(context).primaryColor,
-                    child: IconButton(
-                      color: Colors.white,
-                      icon: Icon(Icons.timer),
-                      onPressed: showSelect,
-                    ),
+                Container(
+                  width: 100,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                          color: Color.fromRGBO(187, 187, 187, 0.4),
+                          offset: Offset(0, 0),
+                          blurRadius: 5)
+                    ],
                   ),
+                  child: FlatButton(child: Text('删除'), onPressed: delete),
                 ),
-                ClipOval(
-                  child: Container(
-                    width: 60,
-                    height: 60,
-                    color: Theme.of(context).primaryColor,
-                    child: IconButton(
-                      color: Colors.white,
-                      icon: Icon(Icons.mic),
-                      onPressed: showRecroding,
-                    ),
+                Container(
+                  width: 100,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                          color: Color.fromRGBO(187, 187, 187, 0.4),
+                          offset: Offset(0, 0),
+                          blurRadius: 5)
+                    ],
                   ),
+                  child: FlatButton(child: Text('还原'), onPressed: reset),
                 ),
-                ClipOval(
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    color: Theme.of(context).primaryColor,
-                    child: IconButton(
-                      color: Colors.white,
-                      icon: Icon(Icons.text_rotation_down),
-                      onPressed: () {},
-                    ),
+                Container(
+                  width: 100,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(5)),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                          color: Color.fromRGBO(187, 187, 187, 0.4),
+                          offset: Offset(0, 0),
+                          blurRadius: 5)
+                    ],
                   ),
+                  child: FlatButton(child: Text('取消'), onPressed: cancel),
                 ),
               ],
             ),
           ),
         );
+        break;
     }
   }
 
@@ -322,15 +339,24 @@ class _BottomshowBarState extends State<BottomshowBar>
   void delete() {}
 
   ///还原
-  void reset() {}
+  void reset() async {
+    File file = File(trashFile.filepath);
+    String cacheFile = '/file_cache/Audio/',
+        newPath = ((await getExternalCacheDirectories())[0]).path;
+    Directory directory = Directory(newPath + cacheFile);
+    if (!directory.existsSync()) directory.createSync();
+    file.copySync(newPath + cacheFile + trashFile.title);
+    file.delete();
+    controller.reset();
+    controller.reverse();
+  }
 
   ///取消
   void cancel() {
     controller.reset();
     controller.forward();
     setState(() {
-      showTrash = false;
-      plaingFile = null;
+      trashFile = null;
     });
   }
 

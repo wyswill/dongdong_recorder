@@ -16,7 +16,6 @@ class Trash extends StatefulWidget {
 class _TrashState extends State<Trash> {
   String cacheFile = '/file_cache/delete/', path = '';
   List<RecroderModule> datas = [];
-  List dataKeys = [];
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
 
   @override

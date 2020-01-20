@@ -21,6 +21,9 @@ class DeleteFileSync {
 }
 
 class Trash_option {
-  Trash_option(this.rm);
+  Trash_option(this.rm, this.index);
   final RecroderModule rm;
+  final int index;
 }
+
+class NullEvent {}
