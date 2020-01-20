@@ -243,7 +243,7 @@ class _RecrodState extends State<Recrod> {
     else {
       File file = File(filepath);
       file.copySync("$path$filename.wav");
-      file.delete();
+      await file.delete();
       Navigator.pop(context);
     }
   }

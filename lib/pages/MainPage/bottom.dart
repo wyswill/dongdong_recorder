@@ -33,9 +33,7 @@ class _BottomshowBarState extends State<BottomshowBar>
   AnimationController controller;
   AudioPlayer audioPlayer = AudioPlayer();
   double totalTime = 0;
-  double s2 = 0;
-  double m2 = 0;
-  double h2 = 0;
+  String currenttime = '0:0:0';
   @override
   void initState() {
     super.initState();
@@ -61,15 +59,7 @@ class _BottomshowBarState extends State<BottomshowBar>
       double curentProgress = (d.inMilliseconds / totalTime);
       key.currentState.setCurentTime(curentProgress);
       setState(() {
-        s2 = d.inSeconds.toDouble() + 1;
-        if (s2 >= 60) {
-          s2 = 0;
-          m2++;
-        }
-        if (m2 >= 60) {
-          m2 = 0;
-          h2++;
-        }
+        currenttime = formatTime(d.inMilliseconds);
       });
     });
     audioPlayer.onPlayerStateChanged.listen((AudioPlayerState s) {
@@ -79,7 +69,7 @@ class _BottomshowBarState extends State<BottomshowBar>
         });
         eventBus.fire(PlayingState(this.plaingFile.isPlaying));
       }
-      if (s == AudioPlayerState.STOPPED) key.currentState.setCurentTime(1);
+      if (s == AudioPlayerState.STOPPED) key.currentState.setCurentTime(2);
     });
   }
 
@@ -152,8 +142,7 @@ class _BottomshowBarState extends State<BottomshowBar>
                           ),
                           onPressed: play,
                         ),
-                        Text('${h2.round()}:${m2.round()}:${s2.round()}',
-                            style: TextStyle(color: Colors.grey)),
+                        Text(currenttime, style: TextStyle(color: Colors.grey)),
                         Expanded(child: MusicProgress(key: key)),
                         Text(formatTime(totalTime.toInt()),
                             style: TextStyle(color: Colors.grey))

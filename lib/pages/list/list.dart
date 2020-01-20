@@ -41,6 +41,8 @@ class _RecrodingListState extends State<RecrodingList> {
     Directory directory = (await getExternalCacheDirectories())[0];
     path = directory.path + cacheFile;
     await _getTotalSizeOfFilesInDir(Directory(path));
+    dataKeys = datas.keys.toList();
+    setState(() {});
   }
 
   /// 递归方式获取录音文件
@@ -48,7 +50,7 @@ class _RecrodingListState extends State<RecrodingList> {
     try {
       if (file is File) {
         String filename = file.path.replaceAll(path, '');
-        if (filename.indexOf(RegExp('.wav')) == 2) {
+        if (filename.indexOf(RegExp('.wav')) > 0) {
           DateTime dateTime = await file.lastModified();
           String attr = '${dateTime.year}年${dateTime.month}月';
           var res = await channel.invokeMethod('getSize', {"path": file.path});
@@ -79,8 +81,6 @@ class _RecrodingListState extends State<RecrodingList> {
                   ),
                 );
           }
-          dataKeys = datas.keys.toList();
-          setState(() {});
         }
       }
       if (file is Directory) {
