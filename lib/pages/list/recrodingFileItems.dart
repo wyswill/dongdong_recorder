@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:asdasd/modus/record.dart';
 import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../../event_bus.dart';
 import '../../utiles.dart';
@@ -174,7 +175,14 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
   ///删除文件
   deleteFile() async {
     File file = File(widget.curentFile.filepath);
-    if (await file.exists()) await file.delete();
+
+    String cacheFile = '/file_cache/delete/',
+        newPath = ((await getExternalCacheDirectories())[0]).path;
+    Directory directory = Directory(newPath + cacheFile);
+    if (!directory.existsSync()) directory.createSync();
+    File newfile = file.copySync(newPath + cacheFile + widget.curentFile.title);
+    file.delete();
+    print(newfile);
     eventBus.fire(DeleteFileSync(attr: widget.curnetKey, index: widget.index));
   }
 

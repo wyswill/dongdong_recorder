@@ -42,12 +42,9 @@ class _RecrodingListState extends State<RecrodingList> {
     streamSubscription = eventBus.on<DeleteFileSync>().listen((event) {
       String attr = event.attr;
       int index = event.index;
-      print(attr);
-      print(index);
       setState(() {
         datas[attr].removeAt(index);
       });
-      print(datas);
     });
   }
 
@@ -101,31 +98,20 @@ class _RecrodingListState extends State<RecrodingList> {
           String attr = '${dateTime.year}年${dateTime.month}月';
           var res = await channel.invokeMethod('getSize', {"path": file.path});
           double s = (res % (1000 * 60) / 1000);
+          RecroderModule rm = RecroderModule(
+            title: filename,
+            filepath: file.path,
+            recrodingtime: "$res",
+            lastModified:
+                '${dateTime.day}日${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
+            isPlaying: false,
+            fileSize: "${16000 * s / 1024}kb",
+          );
           if (this.datas[attr] == null) {
             this.datas[attr] = [];
-            this.datas[attr].add(
-                  RecroderModule(
-                    title: filename,
-                    filepath: file.path,
-                    recrodingtime: "$res",
-                    lastModified:
-                        '${dateTime.day}日${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
-                    isPlaying: false,
-                    fileSize: "${16000 * s / 1024}kb",
-                  ),
-                );
+            this.datas[attr].add(rm);
           } else {
-            this.datas[attr].add(
-                  RecroderModule(
-                    title: filename,
-                    filepath: file.path,
-                    recrodingtime: "$res",
-                    lastModified:
-                        '${dateTime.day}日${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
-                    isPlaying: false,
-                    fileSize: "${16000 * s / 1024}kb",
-                  ),
-                );
+            this.datas[attr].add(rm);
           }
         }
       }

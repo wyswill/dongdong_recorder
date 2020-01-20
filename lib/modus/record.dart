@@ -5,6 +5,8 @@ class RecroderModule {
   final String lastModified;
   final String filepath;
   bool isPlaying;
+  bool isDeleted;
+
   RecroderModule({
     this.title,
     this.recrodingtime,
@@ -12,5 +14,6 @@ class RecroderModule {
     this.lastModified,
     this.filepath,
     this.isPlaying,
+    this.isDeleted,
   });
 }

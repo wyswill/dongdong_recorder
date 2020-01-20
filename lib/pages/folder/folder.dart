@@ -1,3 +1,4 @@
+import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/widgets/listItem.dart';
 import 'package:flutter/material.dart';
 
@@ -9,26 +10,7 @@ class Folder extends StatefulWidget {
 }
 
 class _FolderState extends State<Folder> {
-  List<Map> datas = [
-    {
-      'title': "会议",
-      "files": 3,
-      "fileSize": "950kb",
-      'lastDate': DateTime.now().toLocal().toString(),
-    },
-    {
-      'title': "会议",
-      "files": 3,
-      "fileSize": "950kb",
-      'lastDate': DateTime.now().toLocal().toString(),
-    },
-    {
-      'title': "会议",
-      "files": 3,
-      "fileSize": "950kb",
-      'lastDate': DateTime.now().toLocal().toString(),
-    },
-  ];
+  List<RecroderModule> datas = [];
 
   @override
   Widget build(BuildContext context) {

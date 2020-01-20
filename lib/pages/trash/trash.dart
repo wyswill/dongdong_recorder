@@ -1,5 +1,10 @@
+import 'dart:io';
+
+import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/widgets/listItem.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Trash extends StatefulWidget {
   Trash({Key key}) : super(key: key);
@@ -9,26 +14,54 @@ class Trash extends StatefulWidget {
 }
 
 class _TrashState extends State<Trash> {
+  String cacheFile = '/file_cache/delete/', path = '';
+  List<RecroderModule> datas = [];
+  List dataKeys = [];
+  MethodChannel channel = const MethodChannel("com.lanwanhudong");
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    Directory directory = (await getExternalCacheDirectories())[0];
+    path = directory.path + cacheFile;
+    await _getTotalSizeOfFilesInDir(Directory(path));
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
-    List<Map> datas = [
-      {
-        'title': "会议",
-        "rectimg": 2000,
-        "fileSize": "950kb",
-        'lastDate': DateTime.now().toLocal().toString(),
-        'filePath': 'asdasdds',
-        "isPlaying": false
-      },
-      {
-        'title': "会议",
-        "rectimg": 2000,
-        "fileSize": "950kb",
-        'lastDate': DateTime.now().toLocal().toString(),
-        'filePath': 'asdasdds',
-        "isPlaying": false
-      },
-    ];
     return ListItem(datas: datas, isRecrodingFile: true);
+  }
+
+  /// 递归方式获取录音文件
+  _getTotalSizeOfFilesInDir(final FileSystemEntity file) async {
+    try {
+      if (file is File) {
+        String filename = file.path.replaceAll(path, '');
+        if (filename.indexOf(RegExp('.wav')) > 0) {
+          DateTime dateTime = await file.lastModified();
+          var res = await channel.invokeMethod('getSize', {"path": file.path});
+          double s = (res % (1000 * 60) / 1000);
+          RecroderModule rm = RecroderModule(
+            title: filename,
+            filepath: file.path,
+            recrodingtime: "$res",
+            lastModified:
+                '${dateTime.day}日${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
+            isPlaying: false,
+            fileSize: "${16000 * s / 1024}kb",
+          );
+          this.datas.add(rm);
+        }
+      }
+      if (file is Directory) {
+        final List<FileSystemEntity> children = file.listSync();
+        if (children != null)
+          for (final FileSystemEntity child in children)
+            await _getTotalSizeOfFilesInDir(child);
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 }

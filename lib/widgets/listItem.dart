@@ -1,9 +1,12 @@
+import 'package:asdasd/modus/record.dart';
 import 'package:flutter/material.dart';
+
+import '../utiles.dart';
 
 class ListItem extends StatefulWidget {
   ListItem({Key key, this.datas, this.isRecrodingFile, this.cb})
       : super(key: key);
-  final List<Map> datas;
+  final List<RecroderModule> datas;
   final bool isRecrodingFile;
   final Function cb;
   @override
@@ -12,7 +15,7 @@ class ListItem extends StatefulWidget {
 
 class _ListItemState extends State<ListItem> {
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
-  List<Map> get datas => widget.datas;
+  List<RecroderModule> get datas => widget.datas;
   bool get isRecrodingFile => widget.isRecrodingFile;
   @override
   Widget build(BuildContext context) {
@@ -33,11 +36,7 @@ class _ListItemState extends State<ListItem> {
 
   ///文件菜单样式
   Widget folderItemStyle(BuildContext context, int index) {
-    Map curent = this.datas[index];
-    Duration duration;
-    if (isRecrodingFile) {
-      duration = Duration(milliseconds: curent['rectimg']);
-    }
+    RecroderModule curent = this.datas[index];
     return GestureDetector(
       onTap: widget.cb,
       child: Container(
@@ -54,7 +53,7 @@ class _ListItemState extends State<ListItem> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(curent['title']),
+                  Text(curent.title),
                   SizedBox(
                     child: Row(
                       children: <Widget>[
@@ -67,14 +66,14 @@ class _ListItemState extends State<ListItem> {
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                                 child: Text(
-                                  "${duration.inHours}:${duration.inMinutes}:${duration.inSeconds}",
+                                  formatTime(int.parse(curent.recrodingtime)),
                                   style: textStyle,
                                 ),
                               )
-                            : Text("${curent['files']}个文件", style: textStyle),
-                        Text(curent['fileSize'], style: textStyle),
+                            : Text("个文件", style: textStyle),
+                        Text(curent.fileSize, style: textStyle),
                         Expanded(child: Container()),
-                        Text(curent['lastDate'], style: textStyle),
+                        Text(curent.lastModified, style: textStyle),
                       ],
                     ),
                   )
