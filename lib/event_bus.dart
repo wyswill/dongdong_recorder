@@ -13,3 +13,9 @@ class PlayingState {
   PlayingState(this.state);
   final bool state;
 }
+
+class DeleteFileSync {
+  DeleteFileSync({this.index, this.attr});
+  final int index;
+  final String attr;
+}

@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 import 'bottom.dart';
 
 class MainPage extends StatefulWidget {
+  MainPage({this.arguments});
+  final arguments;
   @override
   _MainPageState createState() => _MainPageState();
 }

@@ -1,15 +1,23 @@
+import 'dart:io';
+
 import 'package:asdasd/modus/record.dart';
 import 'package:flutter/material.dart';
 
+import '../../event_bus.dart';
 import '../../utiles.dart';
 
 class RecrodingFileItems extends StatefulWidget {
-  const RecrodingFileItems(
-      {Key key, this.playRecroding, this.curentFile, this.index})
-      : super(key: key);
+  const RecrodingFileItems({
+    Key key,
+    this.playRecroding,
+    this.curentFile,
+    this.index,
+    this.curnetKey,
+  }) : super(key: key);
   final RecroderModule curentFile;
   final Function playRecroding;
   final int index;
+  final String curnetKey;
 
   @override
   _RecrodingFileItemsState createState() => _RecrodingFileItemsState();
@@ -144,7 +152,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
               child: GestureDetector(
                 child:
                     Image.asset('asset/edit/icon_delete_white.png', width: 26),
-                onTap: () {},
+                onTap: deleteFile,
               ),
             ),
             Container(
@@ -161,6 +169,13 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
         ),
       ),
     );
+  }
+
+  ///删除文件
+  deleteFile() async {
+    File file = File(widget.curentFile.filepath);
+    if (await file.exists()) await file.delete();
+    eventBus.fire(DeleteFileSync(attr: widget.curnetKey, index: widget.index));
   }
 
   ///滚动动画

@@ -1,9 +1,8 @@
-import 'package:asdasd/pages/list/list.dart';
+import 'package:asdasd/pages/MainPage/MainPage.dart';
 import 'package:flutter/material.dart';
 
 Map routes = {
-  "/RecrodingList": (context, {arguments}) =>
-      RecrodingList(arguments: arguments),
+  "/mainPage": (context, {arguments}) => MainPage(arguments: arguments),
 };
 
 generateRoute(RouteSettings settings) {

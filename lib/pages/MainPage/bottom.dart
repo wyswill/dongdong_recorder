@@ -49,6 +49,7 @@ class _BottomshowBarState extends State<BottomshowBar>
         controller.reset();
         controller.forward();
       }
+      currenttime = '0:0:0';
       plaingFile = event.file;
       totalTime = double.parse(plaingFile.recrodingtime);
       await audioPlayer.setUrl(plaingFile.filepath, isLocal: true);

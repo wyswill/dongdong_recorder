@@ -25,15 +25,6 @@ class _RecrodingListState extends State<RecrodingList> {
   RecroderModule curentPlayRecrofing;
   String cacheFile = '/file_cache/Audio/', path = '';
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
-  @override
-  void initState() {
-    super.initState();
-    streamSubscription = eventBus.on<PlayingState>().listen((event) {
-      setState(() {
-        this.curentPlayRecrofing.isPlaying = event.state;
-      });
-    });
-  }
 
   @override
   void didChangeDependencies() async {
@@ -43,6 +34,61 @@ class _RecrodingListState extends State<RecrodingList> {
     await _getTotalSizeOfFilesInDir(Directory(path));
     dataKeys = datas.keys.toList();
     setState(() {});
+    streamSubscription = eventBus.on<PlayingState>().listen((event) {
+      setState(() {
+        this.curentPlayRecrofing.isPlaying = event.state;
+      });
+    });
+    streamSubscription = eventBus.on<DeleteFileSync>().listen((event) {
+      String attr = event.attr;
+      int index = event.index;
+      print(attr);
+      print(index);
+      setState(() {
+        datas[attr].removeAt(index);
+      });
+      print(datas);
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: CustomScrollView(
+        slivers: List.generate(this.dataKeys.length, (int index) {
+          return buildRecrodingItem(index);
+        }),
+      ),
+    );
+  }
+
+  ///每组录音数据样式
+  Widget buildRecrodingItem(int index) {
+    String curnetKey = dataKeys[index];
+    List<RecroderModule> curentRecrodingFiles = this.datas[curnetKey];
+    return SliverToBoxAdapter(
+      child: Column(
+        children: <Widget>[
+          Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.only(left: 20),
+            color: Color.fromRGBO(242, 241, 244, 1),
+            child: Text(curnetKey),
+          ),
+          Column(
+            children: List.generate(curentRecrodingFiles.length, (int ind) {
+              RecroderModule curentFile = curentRecrodingFiles[ind];
+              return RecrodingFileItems(
+                curentFile: curentFile,
+                playRecroding: this.playRecroding,
+                index: ind,
+                curnetKey: curnetKey,
+              );
+            }),
+          )
+        ],
+      ),
+    );
   }
 
   /// 递归方式获取录音文件
@@ -94,47 +140,8 @@ class _RecrodingListState extends State<RecrodingList> {
     }
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      child: CustomScrollView(
-        slivers: List.generate(this.dataKeys.length, (int index) {
-          return buildRecrodingItem(index);
-        }),
-      ),
-    );
-  }
-
-  ///每组录音数据样式
-  Widget buildRecrodingItem(int index) {
-    String curnetKey = dataKeys[index];
-    List<RecroderModule> curentRecrodingFiles = this.datas[curnetKey];
-    return SliverToBoxAdapter(
-      child: Column(
-        children: <Widget>[
-          Container(
-            width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.only(left: 20),
-            color: Color.fromRGBO(242, 241, 244, 1),
-            child: Text(curnetKey),
-          ),
-          Column(
-            children: List.generate(curentRecrodingFiles.length, (int ind) {
-              RecroderModule curentFile = curentRecrodingFiles[ind];
-              return RecrodingFileItems(
-                curentFile: curentFile,
-                playRecroding: this.playRecroding,
-                index: ind,
-              );
-            }),
-          )
-        ],
-      ),
-    );
-  }
-
   ///播放录音
-  void playRecroding({RecroderModule curentFile}) {
+  playRecroding({RecroderModule curentFile}) {
     setState(() {
       curentPlayRecrofing = curentFile;
     });
