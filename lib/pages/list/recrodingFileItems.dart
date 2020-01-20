@@ -59,7 +59,9 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                             width: 4, color: Theme.of(context).primaryColor)
                         : BorderSide(width: 0),
                     bottom: BorderSide(
-                        width: 1, color: Color.fromRGBO(240, 240, 246, 1)),
+                      width: 1,
+                      color: Color.fromRGBO(240, 240, 246, 1),
+                    ),
                   ),
                 ),
                 child: Row(

@@ -1,3 +1,4 @@
+import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/record.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,7 @@ class _ListItemState extends State<ListItem> {
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
   List<RecroderModule> get datas => widget.datas;
   bool get isRecrodingFile => widget.isRecrodingFile;
+  RecroderModule rm;
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
@@ -26,6 +28,7 @@ class _ListItemState extends State<ListItem> {
     );
   }
 
+  ///
   Widget folderseparatorBuilder(BuildContext context, int index) {
     return Container(
       width: MediaQuery.of(context).size.width,
@@ -38,9 +41,20 @@ class _ListItemState extends State<ListItem> {
   Widget folderItemStyle(BuildContext context, int index) {
     RecroderModule curent = this.datas[index];
     return GestureDetector(
-      onTap: widget.cb,
+      onTap: () {
+        showOptions(curent);
+      },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          border: Border(
+            left: rm != null &&
+                    rm.recrodingtime == curent.recrodingtime &&
+                    rm.isPlaying
+                ? BorderSide(width: 4, color: Theme.of(context).primaryColor)
+                : BorderSide(width: 0),
+          ),
+        ),
         child: Row(
           children: <Widget>[
             Container(
@@ -84,5 +98,25 @@ class _ListItemState extends State<ListItem> {
         ),
       ),
     );
+  }
+
+  ///显示选项
+  void showOptions(RecroderModule data) {
+    eventBus.fire(Trash_option(data));
+    if (rm == null) {
+      setState(() {
+        rm = data;
+        rm.isPlaying = !rm.isPlaying;
+      });
+    } else if (rm.recrodingtime == data.recrodingtime)
+      setState(() {
+        rm.isPlaying = !rm.isPlaying;
+      });
+    else
+      setState(() {
+        rm.isPlaying = !rm.isPlaying;
+        data.isPlaying = true;
+        rm = data;
+      });
   }
 }

@@ -34,6 +34,7 @@ class _BottomshowBarState extends State<BottomshowBar>
   AudioPlayer audioPlayer = AudioPlayer();
   double totalTime = 0;
   String currenttime = '0:0:0';
+  bool showTrash = false;
   @override
   void initState() {
     super.initState();
@@ -42,18 +43,6 @@ class _BottomshowBarState extends State<BottomshowBar>
     animation = Tween<double>(begin: 200, end: 0).animate(controller);
     controller.forward();
     controller.addListener(() {
-      setState(() {});
-    });
-    streamSubscription = eventBus.on<PlayingFile>().listen((event) async {
-      if (plaingFile == null) {
-        controller.reset();
-        controller.forward();
-      }
-      currenttime = '0:0:0';
-      plaingFile = event.file;
-      totalTime = double.parse(plaingFile.recrodingtime);
-      await audioPlayer.setUrl(plaingFile.filepath, isLocal: true);
-      await audioPlayer.setReleaseMode(ReleaseMode.RELEASE);
       setState(() {});
     });
     audioPlayer.onAudioPositionChanged.listen((Duration d) {
@@ -75,6 +64,32 @@ class _BottomshowBarState extends State<BottomshowBar>
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    streamSubscription = eventBus.on<PlayingFile>().listen((event) async {
+      if (plaingFile == null) {
+        controller.reset();
+        controller.forward();
+      }
+      currenttime = '0:0:0';
+      plaingFile = event.file;
+      totalTime = double.parse(plaingFile.recrodingtime);
+      await audioPlayer.setUrl(plaingFile.filepath, isLocal: true);
+      await audioPlayer.setReleaseMode(ReleaseMode.RELEASE);
+      showTrash = false;
+      setState(() {});
+    });
+    streamSubscription = eventBus.on<Trash_option>().listen((event) async {
+      controller.reset();
+      controller.forward();
+      setState(() {
+        showTrash = true;
+        plaingFile = event.rm;
+      });
+    });
+  }
+
+  @override
   void dispose() {
     super.dispose();
     streamSubscription.cancel();
@@ -84,152 +99,239 @@ class _BottomshowBarState extends State<BottomshowBar>
 
   @override
   Widget build(BuildContext context) {
-    if (plaingFile != null) {
-      return Transform.translate(
-        offset: Offset(0, animation.value),
-        child: Stack(
-          children: <Widget>[
-            ///播放面板
-            Positioned(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(right: 13, top: 15, bottom: 30),
-                decoration: BoxDecoration(
-                    color: Colors.white,
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                          color: Colors.grey,
-                          offset: Offset(0, 7),
-                          blurRadius: 20)
-                    ]),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: this
-                            .playerIocns
-                            .map((e) => Container(
-                                  child: Column(
-                                    children: <Widget>[
-                                      GestureDetector(
-                                        onTap: () {},
-                                        child: Image.asset(
-                                          e['icon'],
-                                          width: 25,
-                                        ),
-                                      ),
-                                      Text(
-                                        e['title'],
-                                        style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize: 14,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ))
-                            .toList(),
-                      ),
-                    ),
-                    Row(
-                      children: <Widget>[
-                        IconButton(
-                          icon: Icon(
-                            this.plaingFile.isPlaying
-                                ? Icons.pause
-                                : Icons.play_arrow,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          onPressed: play,
-                        ),
-                        Text(currenttime, style: TextStyle(color: Colors.grey)),
-                        Expanded(child: MusicProgress(key: key)),
-                        Text(formatTime(totalTime.toInt()),
-                            style: TextStyle(color: Colors.grey))
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-
-            ///右上角叉叉
-            Positioned(
-              right: 0,
-              child: ClipOval(
-                child: Container(
-                  width: 20,
-                  height: 20,
-                  color: Theme.of(context).primaryColor,
-                  child: GestureDetector(
-                    child: Icon(Icons.close, size: 20, color: Colors.white),
-                    onTap: () {
-                      setState(() {
-                        plaingFile = null;
-                      });
-                      controller.reset();
-                      controller.forward();
-                      eventBus.fire(PlayingState(false));
-                    },
-                  ),
-                ),
-              ),
-            )
-          ],
-        ),
-      );
-    } else
+    if (showTrash) {
       return Transform.translate(
         offset: Offset(0, animation.value),
         child: Container(
           padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
-          decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[
-            BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
-          ]),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: <BoxShadow>[
+              BoxShadow(
+                  color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
+            ],
+          ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              ClipOval(
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  color: Theme.of(context).primaryColor,
-                  child: IconButton(
-                    color: Colors.white,
-                    icon: Icon(Icons.timer),
-                    onPressed: showSelect,
-                  ),
+              Container(
+                width: 100,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: Color.fromRGBO(187, 187, 187, 0.4),
+                        offset: Offset(0, 0),
+                        blurRadius: 5)
+                  ],
                 ),
+                child: FlatButton(child: Text('删除'), onPressed: delete),
               ),
-              ClipOval(
-                child: Container(
-                  width: 60,
-                  height: 60,
-                  color: Theme.of(context).primaryColor,
-                  child: IconButton(
-                    color: Colors.white,
-                    icon: Icon(Icons.mic),
-                    onPressed: showRecroding,
-                  ),
+              Container(
+                width: 100,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: Color.fromRGBO(187, 187, 187, 0.4),
+                        offset: Offset(0, 0),
+                        blurRadius: 5)
+                  ],
                 ),
+                child: FlatButton(child: Text('还原'), onPressed: reset),
               ),
-              ClipOval(
-                child: Container(
-                  width: 40,
-                  height: 40,
-                  color: Theme.of(context).primaryColor,
-                  child: IconButton(
-                    color: Colors.white,
-                    icon: Icon(Icons.text_rotation_down),
-                    onPressed: () {},
-                  ),
+              Container(
+                width: 100,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: Color.fromRGBO(187, 187, 187, 0.4),
+                        offset: Offset(0, 0),
+                        blurRadius: 5)
+                  ],
                 ),
+                child: FlatButton(child: Text('取消'), onPressed: cancel),
               ),
             ],
           ),
         ),
       );
+    } else {
+      if (plaingFile != null) {
+        return Transform.translate(
+          offset: Offset(0, animation.value),
+          child: Stack(
+            children: <Widget>[
+              ///播放面板
+              Positioned(
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.only(right: 13, top: 15, bottom: 30),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                            color: Colors.grey,
+                            offset: Offset(0, 7),
+                            blurRadius: 20)
+                      ]),
+                  child: Column(
+                    children: <Widget>[
+                      Container(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: this
+                              .playerIocns
+                              .map((e) => Container(
+                                    child: Column(
+                                      children: <Widget>[
+                                        GestureDetector(
+                                          onTap: () {},
+                                          child: Image.asset(
+                                            e['icon'],
+                                            width: 25,
+                                          ),
+                                        ),
+                                        Text(
+                                          e['title'],
+                                          style: TextStyle(
+                                            color:
+                                                Theme.of(context).primaryColor,
+                                            fontSize: 14,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ))
+                              .toList(),
+                        ),
+                      ),
+                      Row(
+                        children: <Widget>[
+                          IconButton(
+                            icon: Icon(
+                              this.plaingFile.isPlaying
+                                  ? Icons.pause
+                                  : Icons.play_arrow,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            onPressed: play,
+                          ),
+                          Text(currenttime,
+                              style: TextStyle(color: Colors.grey)),
+                          Expanded(child: MusicProgress(key: key)),
+                          Text(formatTime(totalTime.toInt()),
+                              style: TextStyle(color: Colors.grey))
+                        ],
+                      )
+                    ],
+                  ),
+                ),
+              ),
+
+              ///右上角叉叉
+              Positioned(
+                right: 0,
+                child: ClipOval(
+                  child: Container(
+                    width: 20,
+                    height: 20,
+                    color: Theme.of(context).primaryColor,
+                    child: GestureDetector(
+                      child: Icon(Icons.close, size: 20, color: Colors.white),
+                      onTap: () {
+                        setState(() {
+                          plaingFile = null;
+                        });
+                        controller.reset();
+                        controller.forward();
+                        eventBus.fire(PlayingState(false));
+                      },
+                    ),
+                  ),
+                ),
+              )
+            ],
+          ),
+        );
+      } else
+        return Transform.translate(
+          offset: Offset(0, animation.value),
+          child: Container(
+            padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                      color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
+                ]),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                ClipOval(
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    color: Theme.of(context).primaryColor,
+                    child: IconButton(
+                      color: Colors.white,
+                      icon: Icon(Icons.timer),
+                      onPressed: showSelect,
+                    ),
+                  ),
+                ),
+                ClipOval(
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    color: Theme.of(context).primaryColor,
+                    child: IconButton(
+                      color: Colors.white,
+                      icon: Icon(Icons.mic),
+                      onPressed: showRecroding,
+                    ),
+                  ),
+                ),
+                ClipOval(
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    color: Theme.of(context).primaryColor,
+                    child: IconButton(
+                      color: Colors.white,
+                      icon: Icon(Icons.text_rotation_down),
+                      onPressed: () {},
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+    }
+  }
+
+  ///删除
+  void delete() {}
+
+  ///还原
+  void reset() {}
+
+  ///取消
+  void cancel() {
+    controller.reset();
+    controller.forward();
+    setState(() {
+      showTrash = false;
+      plaingFile = null;
+    });
   }
 
   ///播放音乐
