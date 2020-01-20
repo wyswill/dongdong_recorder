@@ -7,6 +7,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 import '../../event_bus.dart';
+import '../../utiles.dart';
 
 class BottomshowBar extends StatefulWidget {
   BottomshowBar({Key key}) : super(key: key);
@@ -31,6 +32,10 @@ class _BottomshowBarState extends State<BottomshowBar>
   Animation<double> animation;
   AnimationController controller;
   AudioPlayer audioPlayer = AudioPlayer();
+  double totalTime = 0;
+  double s2 = 0;
+  double m2 = 0;
+  double h2 = 0;
   @override
   void initState() {
     super.initState();
@@ -41,19 +46,40 @@ class _BottomshowBarState extends State<BottomshowBar>
     controller.addListener(() {
       setState(() {});
     });
-    streamSubscription = eventBus.on<PlayingFile>().listen((event) {
+    streamSubscription = eventBus.on<PlayingFile>().listen((event) async {
       if (plaingFile == null) {
         controller.reset();
         controller.forward();
       }
-      setState(() async {
-        plaingFile = event.file;
-        await audioPlayer.setUrl(plaingFile.filepath, isLocal: true);
-        await audioPlayer.setReleaseMode(ReleaseMode.RELEASE);
-      });
+      plaingFile = event.file;
+      totalTime = double.parse(plaingFile.recrodingtime);
+      await audioPlayer.setUrl(plaingFile.filepath, isLocal: true);
+      await audioPlayer.setReleaseMode(ReleaseMode.RELEASE);
+      setState(() {});
     });
     audioPlayer.onAudioPositionChanged.listen((Duration d) {
-      print(d);
+      double curentProgress = (d.inMilliseconds / totalTime);
+      key.currentState.setCurentTime(curentProgress);
+      setState(() {
+        s2 = d.inSeconds.toDouble() + 1;
+        if (s2 >= 60) {
+          s2 = 0;
+          m2++;
+        }
+        if (m2 >= 60) {
+          m2 = 0;
+          h2++;
+        }
+      });
+    });
+    audioPlayer.onPlayerStateChanged.listen((AudioPlayerState s) {
+      if (s == AudioPlayerState.COMPLETED) {
+        setState(() {
+          this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
+        });
+        eventBus.fire(PlayingState(this.plaingFile.isPlaying));
+      }
+      if (s == AudioPlayerState.STOPPED) key.currentState.setCurentTime(1);
     });
   }
 
@@ -126,9 +152,10 @@ class _BottomshowBarState extends State<BottomshowBar>
                           ),
                           onPressed: play,
                         ),
-                        Text('0:0:0', style: TextStyle(color: Colors.grey)),
+                        Text('${h2.round()}:${m2.round()}:${s2.round()}',
+                            style: TextStyle(color: Colors.grey)),
                         Expanded(child: MusicProgress(key: key)),
-                        Text(plaingFile.recrodingtime,
+                        Text(formatTime(totalTime.toInt()),
                             style: TextStyle(color: Colors.grey))
                       ],
                     )

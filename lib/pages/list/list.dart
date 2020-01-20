@@ -53,17 +53,15 @@ class _RecrodingListState extends State<RecrodingList> {
           String attr = '${dateTime.year}年${dateTime.month}月';
           var res = await channel.invokeMethod('getSize', {"path": file.path});
           double s = (res % (1000 * 60) / 1000);
-          double m = (res % (1000 * 60 * 60)) / (1000 * 60);
-          double h = (res % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
           if (this.datas[attr] == null) {
             this.datas[attr] = [];
             this.datas[attr].add(
                   RecroderModule(
                     title: filename,
                     filepath: file.path,
-                    recrodingtime: "${h.round()}:${m.round()}:${s.round()}",
+                    recrodingtime: "$res",
                     lastModified:
-                        '${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
+                        '${dateTime.day}日${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
                     isPlaying: false,
                     fileSize: "${16000 * s / 1024}kb",
                   ),
@@ -73,9 +71,9 @@ class _RecrodingListState extends State<RecrodingList> {
                   RecroderModule(
                     title: filename,
                     filepath: file.path,
-                    recrodingtime: "${h.round()}:${m.round()}:${s.round()}",
+                    recrodingtime: "$res",
                     lastModified:
-                        '${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
+                        '${dateTime.day}日${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
                     isPlaying: false,
                     fileSize: "${16000 * s / 1024}kb",
                   ),
@@ -137,25 +135,9 @@ class _RecrodingListState extends State<RecrodingList> {
 
   ///播放录音
   void playRecroding({RecroderModule curentFile}) {
-    // if (curentPlayRecrofing != null && curentPlayRecrofing == curentFile) {
-    //   setState(() {
-    //     curentPlayRecrofing.isPlaying = !curentPlayRecrofing.isPlaying;
-    //   });
-    //   eventBus.fire(PlayingFile(curentFile));
-    //   return;
-    // }
-    // if (curentPlayRecrofing != null && curentPlayRecrofing.isPlaying) {
-    //   setState(() {
-    //     curentPlayRecrofing.isPlaying = !curentPlayRecrofing.isPlaying;
-    //     curentFile.isPlaying = !curentFile.isPlaying;
-    //     curentPlayRecrofing = curentFile;
-    //   });
-    // } else {
-    // }
-      setState(() {
-        // curentFile.isPlaying = !curentFile.isPlaying;
-        curentPlayRecrofing = curentFile;
-      });
+    setState(() {
+      curentPlayRecrofing = curentFile;
+    });
     eventBus.fire(PlayingFile(curentFile));
   }
 }

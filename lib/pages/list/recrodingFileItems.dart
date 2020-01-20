@@ -1,6 +1,8 @@
 import 'package:asdasd/modus/record.dart';
 import 'package:flutter/material.dart';
 
+import '../../utiles.dart';
+
 class RecrodingFileItems extends StatefulWidget {
   const RecrodingFileItems(
       {Key key, this.playRecroding, this.curentFile, this.index})
@@ -18,6 +20,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
 
   double get winWidth => MediaQuery.of(context).size.width;
+  double get time => double.parse(widget.curentFile.recrodingtime);
 
   @override
   void dispose() {
@@ -85,7 +88,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                                 child: Text(
-                                  widget.curentFile.recrodingtime,
+                                  formatTime(time.toInt()),
                                   style: textStyle,
                                 ),
                               ),
