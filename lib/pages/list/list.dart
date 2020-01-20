@@ -137,25 +137,25 @@ class _RecrodingListState extends State<RecrodingList> {
 
   ///播放录音
   void playRecroding({RecroderModule curentFile}) {
-    if (curentPlayRecrofing != null && curentPlayRecrofing == curentFile) {
+    // if (curentPlayRecrofing != null && curentPlayRecrofing == curentFile) {
+    //   setState(() {
+    //     curentPlayRecrofing.isPlaying = !curentPlayRecrofing.isPlaying;
+    //   });
+    //   eventBus.fire(PlayingFile(curentFile));
+    //   return;
+    // }
+    // if (curentPlayRecrofing != null && curentPlayRecrofing.isPlaying) {
+    //   setState(() {
+    //     curentPlayRecrofing.isPlaying = !curentPlayRecrofing.isPlaying;
+    //     curentFile.isPlaying = !curentFile.isPlaying;
+    //     curentPlayRecrofing = curentFile;
+    //   });
+    // } else {
+    // }
       setState(() {
-        curentPlayRecrofing.isPlaying = !curentPlayRecrofing.isPlaying;
-      });
-      eventBus.fire(PlayingFile(curentFile));
-      return;
-    }
-    if (curentPlayRecrofing != null && curentPlayRecrofing.isPlaying) {
-      setState(() {
-        curentPlayRecrofing.isPlaying = !curentPlayRecrofing.isPlaying;
-        curentFile.isPlaying = !curentFile.isPlaying;
+        // curentFile.isPlaying = !curentFile.isPlaying;
         curentPlayRecrofing = curentFile;
       });
-    } else {
-      setState(() {
-        curentFile.isPlaying = !curentFile.isPlaying;
-        curentPlayRecrofing = curentFile;
-      });
-    }
     eventBus.fire(PlayingFile(curentFile));
   }
 }

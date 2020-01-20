@@ -46,9 +46,14 @@ class _BottomshowBarState extends State<BottomshowBar>
         controller.reset();
         controller.forward();
       }
-      setState(() {
+      setState(() async {
         plaingFile = event.file;
+        await audioPlayer.setUrl(plaingFile.filepath, isLocal: true);
+        await audioPlayer.setReleaseMode(ReleaseMode.RELEASE);
       });
+    });
+    audioPlayer.onAudioPositionChanged.listen((Duration d) {
+      print(d);
     });
   }
 
@@ -216,8 +221,10 @@ class _BottomshowBarState extends State<BottomshowBar>
       this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
     });
     eventBus.fire(PlayingState(this.plaingFile.isPlaying));
-    int res = await audioPlayer.play(plaingFile.filepath, isLocal: true);
-    print(res);
+    if (plaingFile.isPlaying)
+      await audioPlayer.play(plaingFile.filepath, isLocal: true);
+    else
+      await audioPlayer.pause();
   }
 
   ///定时选择
@@ -227,7 +234,6 @@ class _BottomshowBarState extends State<BottomshowBar>
   void showRecroding() {
     Navigator.push(
       context,
-      //     TransparentRoute(builder: (context) => Transform.scale(child: Recrod()))
       PageRouteBuilder(
         pageBuilder: (BuildContext context, Animation animation,
             Animation secondaryAnimation) {
