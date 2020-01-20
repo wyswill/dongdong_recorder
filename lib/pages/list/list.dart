@@ -1,15 +1,12 @@
 import 'dart:async';
 import 'dart:io';
-
 import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/pages/list/recrodingFileItems.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
-
-import '../../provider.dart';
 
 class RecrodingList extends StatefulWidget {
   RecrodingList({this.key, this.arguments}) : super(key: key);
@@ -27,6 +24,7 @@ class _RecrodingListState extends State<RecrodingList> {
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
   RecroderModule curentPlayRecrofing;
   String cacheFile = '/file_cache/Audio/', path = '';
+  MethodChannel channel = const MethodChannel("com.lanwanhudong");
   @override
   void initState() {
     super.initState();
@@ -53,17 +51,21 @@ class _RecrodingListState extends State<RecrodingList> {
         if (filename.indexOf(RegExp('.wav')) == 2) {
           DateTime dateTime = await file.lastModified();
           String attr = '${dateTime.year}年${dateTime.month}月';
+          var res = await channel.invokeMethod('getSize', {"path": file.path});
+          double s = (res % (1000 * 60) / 1000);
+          double m = (res % (1000 * 60 * 60)) / (1000 * 60);
+          double h = (res % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60);
           if (this.datas[attr] == null) {
             this.datas[attr] = [];
             this.datas[attr].add(
                   RecroderModule(
                     title: filename,
                     filepath: file.path,
-                    recrodingtime: "0",
+                    recrodingtime: "${h.round()}:${m.round()}:${s.round()}",
                     lastModified:
                         '${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
                     isPlaying: false,
-                    fileSize: "0kb",
+                    fileSize: "${16000 * s / 1024}kb",
                   ),
                 );
           } else {
@@ -71,15 +73,14 @@ class _RecrodingListState extends State<RecrodingList> {
                   RecroderModule(
                     title: filename,
                     filepath: file.path,
-                    recrodingtime: "0",
+                    recrodingtime: "${h.round()}:${m.round()}:${s.round()}",
                     lastModified:
                         '${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
                     isPlaying: false,
-                    fileSize: "0kb",
+                    fileSize: "${16000 * s / 1024}kb",
                   ),
                 );
           }
-          print(datas);
           dataKeys = datas.keys.toList();
           setState(() {});
         }

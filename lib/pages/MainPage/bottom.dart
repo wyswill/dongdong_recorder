@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/pages/recroding/recrod.dart';
 import 'package:asdasd/widgets/musicProgress.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 
 import '../../event_bus.dart';
@@ -29,7 +30,7 @@ class _BottomshowBarState extends State<BottomshowBar>
   GlobalKey<MusicProgressState> key = GlobalKey();
   Animation<double> animation;
   AnimationController controller;
-
+  AudioPlayer audioPlayer = AudioPlayer();
   @override
   void initState() {
     super.initState();
@@ -56,6 +57,7 @@ class _BottomshowBarState extends State<BottomshowBar>
     super.dispose();
     streamSubscription.cancel();
     controller.dispose();
+    audioPlayer.dispose();
   }
 
   @override
@@ -214,6 +216,8 @@ class _BottomshowBarState extends State<BottomshowBar>
       this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
     });
     eventBus.fire(PlayingState(this.plaingFile.isPlaying));
+    int res = await audioPlayer.play(plaingFile.filepath, isLocal: true);
+    print(res);
   }
 
   ///定时选择

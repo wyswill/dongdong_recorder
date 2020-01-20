@@ -1,17 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/utiles.dart';
 import 'package:asdasd/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:flutter_plugin_record/response.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:provider/provider.dart';
-
-import '../../provider.dart';
 
 class Recrod extends StatefulWidget {
   Recrod({Key key}) : super(key: key);
@@ -30,7 +25,6 @@ class _RecrodState extends State<Recrod> {
   GlobalKey<ShowSounState> key = GlobalKey();
   double left = 0, right = 60;
   double audioTimeLength = 0;
-  MethodChannel channel = const MethodChannel("com.lanwanhudong");
   int h = 0, m = 0, s = 0, temp = 0;
   Timer timer;
   @override
@@ -244,28 +238,12 @@ class _RecrodState extends State<Recrod> {
   ///保存录音
   saveData() async {
     String filename = this.controller.text.trim();
-    DateTime now = DateTime.now();
-    String attr = "${now.year}年${now.month}月";
     if (filename == '')
       alert(context, title: Text('警告!'), content: Text('文件标题不能为空'));
     else {
-      // double filesize = 16000 * s / 1024;
       File file = File(filepath);
       file.copySync("$path$filename.wav");
       file.delete();
-      // RecroderModule modu = RecroderModule(
-      //   title: filename,
-      //   filepath: newFile.path,
-      //   recrodingtime: "$h:$m:$s",
-      //   lastModified: '${now.hour}:${now.minute}:${now.second}',
-      //   isPlaying: false,
-      //   fileSize: "${filesize}kb",
-      // );
-      // List<RecroderModule> datas =
-      //     Provider.of<Modus>(context).recroderFiles[attr];
-      // if (datas == null) datas = [];
-      // datas.add(modu);
-      // Provider.of<Modus>(context).recroderFiles[attr] = datas;
       Navigator.pop(context);
     }
   }
