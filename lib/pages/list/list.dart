@@ -22,10 +22,12 @@ class _RecrodingListState extends State<RecrodingList> {
   Map<String, List<RecroderModule>> datas = {};
   List dataKeys = [];
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
-  RecroderModule curentPlayRecrofing;
+  RecroderModule curentPlayRecroding;
+  String key;
+  int curentindex;
   String cacheFile = '/file_cache/Audio/', path = '';
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
-
+  bool isActive = false;
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
@@ -36,7 +38,8 @@ class _RecrodingListState extends State<RecrodingList> {
     setState(() {});
     streamSubscription = eventBus.on<PlayingState>().listen((event) {
       setState(() {
-        this.curentPlayRecrofing.isPlaying = event.state;
+        // print(datas[key]);
+        // datas[key][curentindex].isPlaying = event.state;
       });
     });
     streamSubscription = eventBus.on<DeleteFileSync>().listen((event) {
@@ -80,6 +83,7 @@ class _RecrodingListState extends State<RecrodingList> {
                 playRecroding: this.playRecroding,
                 index: ind,
                 curnetKey: curnetKey,
+                isActive: isActive,
               );
             }),
           )
@@ -127,9 +131,12 @@ class _RecrodingListState extends State<RecrodingList> {
   }
 
   ///播放录音
-  playRecroding({RecroderModule curentFile}) {
+  playRecroding({RecroderModule curentFile, int index, String key}) {
     setState(() {
-      curentPlayRecrofing = curentFile;
+      // curentPlayRecroding = curentFile;
+      key = key;
+      curentindex = index;
+      isActive = true;
     });
     eventBus.fire(PlayingFile(curentFile));
   }

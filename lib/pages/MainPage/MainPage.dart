@@ -78,7 +78,11 @@ class _MainPageState extends State<MainPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.account_circle),
+        leading: IconButton(
+            icon: Icon(Icons.account_circle),
+            onPressed: () {
+              Navigator.pushNamed(context, '/mine');
+            }),
         title: Center(child: Text('录音机')),
         actions: <Widget>[Icon(Icons.list)],
       ),
