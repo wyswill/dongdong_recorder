@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:asdasd/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+//import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:flutter_plugin_record/response.dart';
 
@@ -21,7 +21,7 @@ class _RecrodingState extends State<Recroding> {
   double left = 0, right = 60;
   double audioTimeLength = 0;
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
-  FlutterFFmpeg fFmpeg = FlutterFFmpeg();
+//  FlutterFFmpeg fFmpeg = FlutterFFmpeg();
 
   @override
   void initState() {

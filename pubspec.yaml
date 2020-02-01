@@ -9,7 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_ffmpeg: ^0.2.8
+#  flutter_ffmpeg: ^0.2.8
   cupertino_icons: ^0.1.2
   path_provider: ^1.5.0
   flutter_plugin_record: ^0.1.2
