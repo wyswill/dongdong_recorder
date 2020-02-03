@@ -20,6 +20,7 @@ class RecrodingList extends StatefulWidget {
 class _RecrodingListState extends State<RecrodingList> {
   StreamSubscription streamSubscription;
   Map<String, List<RecroderModule>> datas = {};
+  Set<RecroderModule> ds = Set();
   List dataKeys = [];
   List<bool> activeManages = [];
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
@@ -113,11 +114,13 @@ class _RecrodingListState extends State<RecrodingList> {
             isActive: false,
             fileSize: "${16000 * s / 1024}kb",
           );
+          ds.add(rm);
           if (this.datas[attr] == null) {
             this.datas[attr] = [];
             this.datas[attr].add(rm);
           } else {
-            this.datas[attr].add(rm);
+            bool flag = this.datas[attr].any((ele) => ele.title == rm.title);
+            if (!flag) this.datas[attr].add(rm);
           }
         }
       }
