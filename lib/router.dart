@@ -1,10 +1,12 @@
 import 'package:asdasd/pages/MainPage/MainPage.dart';
 import 'package:asdasd/pages/mine/mine.dart';
+import 'package:asdasd/widgets/editor.dart';
 import 'package:flutter/material.dart';
 
 Map routes = {
   "/mainPage": (context, {arguments}) => MainPage(arguments: arguments),
   "/mine": (context, {arguments}) => Mine(arguments: arguments),
+  "/editor": (context, {arguments}) => Editor(arguments: arguments),
 };
 
 generateRoute(RouteSettings settings) {
