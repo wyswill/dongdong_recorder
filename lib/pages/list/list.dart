@@ -21,13 +21,14 @@ class _RecrodingListState extends State<RecrodingList> {
   StreamSubscription streamSubscription;
   Map<String, List<RecroderModule>> datas = {};
   List dataKeys = [];
+  List<bool> activeManages = [];
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
   RecroderModule curentPlayRecroding;
   String key;
   int curentindex;
   String cacheFile = '/file_cache/Audio/', path = '';
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
-  bool isActive = false;
+
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
@@ -35,11 +36,11 @@ class _RecrodingListState extends State<RecrodingList> {
     path = directory.path + cacheFile;
     await _getTotalSizeOfFilesInDir(Directory(path));
     dataKeys = datas.keys.toList();
+
     setState(() {});
     streamSubscription = eventBus.on<PlayingState>().listen((event) {
       setState(() {
-        // print(datas[key]);
-        // datas[key][curentindex].isPlaying = event.state;
+        datas[key][curentindex].isPlaying = event.state;
       });
     });
     streamSubscription = eventBus.on<DeleteFileSync>().listen((event) {
@@ -83,7 +84,6 @@ class _RecrodingListState extends State<RecrodingList> {
                 playRecroding: this.playRecroding,
                 index: ind,
                 curnetKey: curnetKey,
-                isActive: isActive,
               );
             }),
           )
@@ -109,6 +109,7 @@ class _RecrodingListState extends State<RecrodingList> {
             lastModified:
                 '${dateTime.day}日${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
             isPlaying: false,
+            isActive: false,
             fileSize: "${16000 * s / 1024}kb",
           );
           if (this.datas[attr] == null) {
@@ -132,11 +133,18 @@ class _RecrodingListState extends State<RecrodingList> {
 
   ///播放录音
   playRecroding({RecroderModule curentFile, int index, String key}) {
+    List<RecroderModule> rms = datas[key];
+    for (int i = 0; i < rms.length; i++) {
+      RecroderModule curentrm = rms[i];
+      if (index == i)
+        curentrm.isActive = !curentrm.isActive;
+      else
+        curentrm.isActive = false;
+    }
     setState(() {
-      // curentPlayRecroding = curentFile;
       key = key;
+      curentPlayRecroding = curentFile;
       curentindex = index;
-      isActive = true;
     });
     eventBus.fire(PlayingFile(curentFile));
   }

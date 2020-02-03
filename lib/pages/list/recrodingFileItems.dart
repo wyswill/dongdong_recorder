@@ -14,13 +14,11 @@ class RecrodingFileItems extends StatefulWidget {
     this.curentFile,
     this.index,
     this.curnetKey,
-    this.isActive,
   }) : super(key: key);
   final RecroderModule curentFile;
   final Function playRecroding;
   final int index;
   final String curnetKey;
-  final bool isActive;
 
   @override
   _RecrodingFileItemsState createState() => _RecrodingFileItemsState();
@@ -31,6 +29,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
 
   double get winWidth => MediaQuery.of(context).size.width;
+
   double get time => double.parse(widget.curentFile.recrodingtime);
 
   @override
@@ -56,7 +55,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                 padding: EdgeInsets.only(right: 20),
                 decoration: BoxDecoration(
                   border: Border(
-                    left: widget.isActive
+                    left: widget.curentFile.isActive
                         ? BorderSide(
                             width: 4, color: Theme.of(context).primaryColor)
                         : BorderSide(width: 0),
@@ -213,7 +212,6 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
         index: widget.index,
         key: widget.curnetKey,
       );
-      return;
     }
   }
 }
