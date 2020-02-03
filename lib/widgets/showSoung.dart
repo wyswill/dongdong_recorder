@@ -1,12 +1,13 @@
+import 'package:asdasd/widgets/editorCanvas.dart';
 import 'package:flutter/material.dart';
 
 import 'mycanvas.dart';
 
 class ShowSoun extends StatefulWidget {
-  ShowSoun({this.key, this.recriodingTime}) : super(key: key);
+  ShowSoun({this.key, this.recriodingTime, this.isEditor}) : super(key: key);
   final key;
   final double recriodingTime;
-
+  final bool isEditor;
   @override
   ShowSounState createState() => ShowSounState();
 }
@@ -27,8 +28,11 @@ class ShowSounState extends State<ShowSoun>
     return Container(
       width: MediaQuery.of(context).size.width,
       height: 200,
-      child:
-          CustomPaint(painter: MyCanvas(recrodingData, widget.recriodingTime)),
+      child: CustomPaint(
+        painter: widget.isEditor != null
+            ? EditorCanvas(recrodingData, widget.recriodingTime)
+            : MyCanvas(recrodingData, widget.recriodingTime),
+      ),
     );
   }
 
