@@ -198,14 +198,34 @@ class _BottomshowBarState extends State<BottomshowBar>
                           children: this
                               .playerIocns
                               .map((e) => Container(
+                                      child: GestureDetector(
+                                    onTap: () {
+                                      switch (e['title']) {
+                                        case "定时":
+                                          this.setTimeout();
+                                          break;
+                                        case "全部循环":
+                                          this.circulation();
+                                          break;
+                                        case "倍速":
+                                          this.pias();
+                                          break;
+                                        case "剪辑":
+                                          this.editor();
+                                          break;
+                                        case "转文字":
+                                          this.transiton();
+                                          break;
+                                        case "更多":
+                                          this.more();
+                                          break;
+                                      }
+                                    },
                                     child: Column(
                                       children: <Widget>[
-                                        GestureDetector(
-                                          onTap: () {},
-                                          child: Image.asset(
-                                            e['icon'],
-                                            width: 25,
-                                          ),
+                                        Image.asset(
+                                          e['icon'],
+                                          width: 20,
                                         ),
                                         Text(
                                           e['title'],
@@ -217,7 +237,7 @@ class _BottomshowBarState extends State<BottomshowBar>
                                         )
                                       ],
                                     ),
-                                  ))
+                                  )))
                               .toList(),
                         ),
                       ),
@@ -356,6 +376,10 @@ class _BottomshowBarState extends State<BottomshowBar>
     });
   }
 
+  void showSelect() {}
+
+  /***********播放器设置***********/
+
   ///播放音乐
   void play() async {
     setState(() {
@@ -380,7 +404,26 @@ class _BottomshowBarState extends State<BottomshowBar>
   }
 
   ///定时选择
-  void showSelect() {}
+  void setTimeout() {}
+
+  ///全部循环
+  void circulation() {}
+
+  ///倍速
+  void pias() {}
+
+  ///剪辑
+  void editor() {
+    Navigator.pushNamed(context, '/editor');
+  }
+
+  ///转文字
+  void transiton() {}
+
+  ///更多
+  void more() {}
+
+/*******************************/
 
   /// 跳转到录音页面
   void showRecroding() {
