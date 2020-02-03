@@ -40,7 +40,8 @@ class _RecrodingListState extends State<RecrodingList> {
     setState(() {});
     streamSubscription = eventBus.on<PlayingState>().listen((event) {
       setState(() {
-        datas[key][curentindex].isPlaying = event.state;
+        curentPlayRecroding.isPlaying = event.state;
+        curentPlayRecroding.isActive = event.state;
       });
     });
     streamSubscription = eventBus.on<DeleteFileSync>().listen((event) {

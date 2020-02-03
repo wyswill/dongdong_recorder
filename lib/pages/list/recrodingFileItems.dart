@@ -73,9 +73,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                             ? Icon(Icons.pause,
                                 color: Theme.of(context).primaryColor)
                             : Icon(Icons.play_arrow, color: Colors.grey),
-                        onPressed: () {
-                          widget.playRecroding(curentFile: widget.curentFile);
-                        },
+                        onPressed: playMusic,
                       ),
                     ),
                     Expanded(
@@ -213,5 +211,10 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
         key: widget.curnetKey,
       );
     }
+  }
+
+  ///播放音乐
+  void playMusic() {
+
   }
 }

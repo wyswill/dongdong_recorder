@@ -40,6 +40,7 @@ class _BottomshowBarState extends State<BottomshowBar>
   String currenttime = '0:0:0';
   int index;
   bottomState curentState = bottomState.recrod;
+
   @override
   void initState() {
     super.initState();
@@ -253,14 +254,7 @@ class _BottomshowBarState extends State<BottomshowBar>
                     color: Theme.of(context).primaryColor,
                     child: GestureDetector(
                       child: Icon(Icons.close, size: 20, color: Colors.white),
-                      onTap: () {
-                        setState(() {
-                          plaingFile = null;
-                        });
-                        controller.reset();
-                        controller.forward();
-                        eventBus.fire(PlayingState(false));
-                      },
+                      onTap: closePlayer,
                     ),
                   ),
                 ),
@@ -372,6 +366,17 @@ class _BottomshowBarState extends State<BottomshowBar>
       await audioPlayer.play(plaingFile.filepath, isLocal: true);
     else
       await audioPlayer.pause();
+  }
+
+  ///右上角叉叉
+  void closePlayer() {
+    controller.reset();
+    controller.forward();
+    eventBus.fire(PlayingState(false));
+    setState(() {
+      plaingFile = null;
+      this.curentState = bottomState.recrod;
+    });
   }
 
   ///定时选择
