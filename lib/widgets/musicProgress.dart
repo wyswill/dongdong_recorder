@@ -17,7 +17,7 @@ class MusicProgressState extends State<MusicProgress> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 5),
+      margin: EdgeInsets.symmetric(horizontal: 10,vertical: 20),
       child: LinearProgressIndicator(
         value: curentTime,
         backgroundColor: Theme.of(context).primaryColor.withOpacity(0.5),

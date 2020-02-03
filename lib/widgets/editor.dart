@@ -36,6 +36,9 @@ class _EditorState extends State<Editor> {
   double totalTime = 0, left = 0, right = 60, audioTimeLength = 0;
   List<double> recrodingData = [], templist = [];
 
+  Color gary = Colors.grey;
+  Color get mainColor => Theme.of(context).primaryColor;
+
   @override
   void initState() {
     super.initState();
@@ -50,6 +53,7 @@ class _EditorState extends State<Editor> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).primaryColor.withOpacity(0.5),
       appBar: AppBar(
         leading: Center(
           child: GestureDetector(
@@ -77,10 +81,10 @@ class _EditorState extends State<Editor> {
               child: Column(
                 children: <Widget>[
                   setCanvas(),
-                  setOptions(),
                 ],
               ),
             ),
+            setOptions(),
             setButtom(),
           ],
         ),
@@ -119,7 +123,11 @@ class _EditorState extends State<Editor> {
         double offset = e.delta.dx;
         recrodingOffset(offset);
       },
-      child: ShowSoun(key: showSounkey, recriodingTime: this.audioTimeLength,isEditor: true,),
+      child: ShowSoun(
+        key: showSounkey,
+        recriodingTime: this.audioTimeLength,
+        isEditor: true,
+      ),
     );
   }
 
@@ -127,7 +135,7 @@ class _EditorState extends State<Editor> {
   Widget setOptions() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.symmetric(horizontal: 20),
+      margin: EdgeInsets.only(left: 20, right: 20, bottom: 40),
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       decoration: BoxDecoration(
           boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey)],
@@ -234,12 +242,50 @@ class _EditorState extends State<Editor> {
                   .toList(),
             ),
           ),
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 20),
+            child: Row(
+              children: <Widget>[
+                Text(currenttime, style: TextStyle(color: Colors.grey)),
+                Expanded(child: MusicProgress(key: key)),
+                Text(formatTime(totalTime.toInt()),
+                    style: TextStyle(color: Colors.grey))
+              ],
+            ),
+          ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Text(currenttime, style: TextStyle(color: Colors.grey)),
-              Expanded(child: MusicProgress(key: key)),
-              Text(formatTime(totalTime.toInt()),
-                  style: TextStyle(color: Colors.grey))
+              IconButton(
+                  icon: Icon(
+                    Icons.skip_previous,
+                    color: gary,
+                  ),
+                  onPressed: () {}),
+              IconButton(
+                  icon: Icon(
+                    Icons.replay,
+                    color: gary,
+                  ),
+                  onPressed: () {}),
+              IconButton(
+                  icon: Icon(
+                    Icons.play_arrow,
+                    color: mainColor,
+                  ),
+                  onPressed: () {}),
+              IconButton(
+                  icon: Icon(
+                    Icons.refresh,
+                    color: gary,
+                  ),
+                  onPressed: () {}),
+              IconButton(
+                  icon: Icon(
+                    Icons.skip_next,
+                    color: gary,
+                  ),
+                  onPressed: () {}),
             ],
           )
         ],
