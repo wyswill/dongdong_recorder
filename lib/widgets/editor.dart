@@ -24,11 +24,11 @@ class _EditorState extends State<Editor> {
     {'icon': 'asset/palying/icon_more-menu_blue.png', 'title': '更多'},
   ],
       options = [
-    {'icon': 'asset/palying/icon_timing.png', 'title': '剪切'},
-    {'icon': 'asset/palying/icon_Circulat_blue.png', 'title': '复制'},
-    {'icon': 'asset/palying/icon_speed_normal.png', 'title': '粘贴'},
-    {'icon': 'asset/palying/icon_Sheared_blue.png', 'title': '删除'},
-    {'icon': 'asset/palying/icon_refresh2.png', 'title': '保留'},
+    {'icon': 'asset/sheared/icon_Sheared.png', 'title': '剪切'},
+    {'icon': 'asset/sheared/icon_Pasting_blue.png', 'title': '复制'},
+    {'icon': 'asset/sheared/icon_copy_blue.png', 'title': '粘贴'},
+    {'icon': 'asset/sheared/icon_remove_blue.png', 'title': '删除'},
+    {'icon': 'asset/sheared/icon_saved_blue.png', 'title': '保留'},
   ];
   String currenttime = '0:0:0';
   GlobalKey<MusicProgressState> key = GlobalKey();
@@ -147,10 +147,9 @@ class _EditorState extends State<Editor> {
           return Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              Icon(
-                Icons.access_time,
-                size: 22,
-                color: Theme.of(context).primaryColor,
+              Image.asset(
+                e['icon'],
+                width: 20,
               ),
               Text(
                 e['title'],
@@ -294,16 +293,7 @@ class _EditorState extends State<Editor> {
   }
 
   ///播放音乐
-  void play() async {
-//    setState(() {
-//      this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
-//    });
-//    eventBus.fire(PlayingState(this.plaingFile.isPlaying));
-//    if (plaingFile.isPlaying)
-//      await audioPlayer.play(plaingFile.filepath, isLocal: true);
-//    else
-//      await audioPlayer.pause();
-  }
+  void play() async {}
 
   ///定时选择
   void setTimeout() {}
