@@ -59,7 +59,8 @@ class _EditorState extends State<Editor> {
     var data =
         await this.channel.invokeListMethod('fft', {"path": rm.filepath});
     recrodingData = await transfrom(data.toList());
-    showSounkey.currentState.setRecrodingData(this.recrodingData);
+    recrodingOffset(0);
+//    showSounkey.currentState.setRecrodingData(this.recrodingData);
   }
 
   @override
@@ -299,7 +300,7 @@ class _EditorState extends State<Editor> {
     double ofs = offset.floorToDouble();
     List<double> newList;
     left += ofs;
-    right = (-left) + 195;
+    right = (-left) + 120;
     if (-left.floor() < 0) {
       left -= ofs;
       return;
@@ -332,17 +333,29 @@ class _EditorState extends State<Editor> {
   ///更多
   void more() {}
 
-  ///将数字音频信号转换成毫秒位单位的值
+  List<double> addHeadOrTail(List<double> arr) {
+    int columns_count = 80;
+    for (int i = 0; i < columns_count; i++) {
+      arr.add(2);
+    }
+    return arr;
+  }
+
+  ///将波形按照毫秒的时域进行转换
   Future<List> transfrom(List data) async {
-    double recrodingtime = (data.length / 8000) * 100, temp = 0;
+    ///获取录音时间
+    double recrodingtime = (data.length / 8000) * 100;
+
+    ///总数据长度除以录音时长
     int flag = (data.length / recrodingtime).floor(), stp = 0;
     List<double> res = [];
+    res = addHeadOrTail(res);
     for (int i = 0; i < data.length; i++) {
       if ((i + 1) < data.length) {
         double curent = data[i],
             next = data[i + 1],
             cha = curent - next,
-            flag2 = 10;
+            flag2 = 0;
         if (stp == flag) {
           if (cha > flag2) res.add(curent);
           stp = 0;
@@ -350,6 +363,7 @@ class _EditorState extends State<Editor> {
         stp++;
       }
     }
+    res = addHeadOrTail(res);
     return res;
   }
 }
