@@ -1,3 +1,4 @@
+import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/cancasRectModu.dart';
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/widgets/showSoung.dart';
@@ -44,6 +45,7 @@ class _EditorState extends State<Editor> {
   Color get mainColor => Theme.of(context).primaryColor;
 
   RecroderModule get rm => widget.arguments;
+  String timestamp = '0:0:0';
 
   @override
   void initState() {
@@ -61,6 +63,11 @@ class _EditorState extends State<Editor> {
         await this.channel.invokeListMethod('fft', {"path": rm.filepath});
     recrodingData = await transfrom(data.toList());
     recrodingOffset(0);
+    eventBus.on<SetTimestamp>().listen((val) {
+      setState(() {
+        timestamp = val.timestamp;
+      });
+    });
   }
 
   @override
@@ -107,6 +114,9 @@ class _EditorState extends State<Editor> {
                   ),
                 ],
               ),
+            ),
+            Container(
+              child: Text(timestamp),
             ),
             setOptions(),
           ],
