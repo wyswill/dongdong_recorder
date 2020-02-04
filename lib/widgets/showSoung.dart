@@ -8,6 +8,7 @@ class ShowSoun extends StatefulWidget {
   final key;
   final double recriodingTime;
   final bool isEditor;
+
   @override
   ShowSounState createState() => ShowSounState();
 }
@@ -16,6 +17,7 @@ class ShowSounState extends State<ShowSoun>
     with SingleTickerProviderStateMixin {
   List<double> recrodingData = [];
   AnimationController controller;
+
   @override
   void initState() {
     super.initState();
@@ -29,7 +31,9 @@ class ShowSounState extends State<ShowSoun>
       width: MediaQuery.of(context).size.width,
       height: 200,
       child: CustomPaint(
-        painter:  MyCanvas(recrodingData, widget.recriodingTime),
+        painter: widget.isEditor != null
+            ? EditorCanvas(recrodingData, widget.recriodingTime)
+            : MyCanvas(recrodingData, widget.recriodingTime),
       ),
     );
   }
@@ -44,6 +48,7 @@ class ShowSounState extends State<ShowSoun>
 
   ///录音实时数据
   double curentHeight = 0;
+
   setRecrodingSingledata(double data) {
     setState(() {
       curentHeight = data;

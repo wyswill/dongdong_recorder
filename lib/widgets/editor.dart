@@ -35,7 +35,7 @@ class _EditorState extends State<Editor> {
   String currenttime = '0:0:0';
   GlobalKey<MusicProgressState> key = GlobalKey();
   GlobalKey<ShowSounState> showSounkey = GlobalKey();
-  double totalTime = 0, left = 0, right = 60, audioTimeLength = 0;
+  double left = 0, right = 60, audioTimeLength = 0;
   List<double> recrodingData = [], templist = [];
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
   Color gary = Colors.grey;
@@ -108,10 +108,10 @@ class _EditorState extends State<Editor> {
               ),
             ),
             setOptions(),
-            setButtom(),
           ],
         ),
       ),
+      bottomNavigationBar: setButtom(),
     );
   }
 
@@ -188,7 +188,7 @@ class _EditorState extends State<Editor> {
   ///底部
   Widget setButtom() {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      height: 200,
       padding: EdgeInsets.only(right: 13, top: 15, bottom: 30),
       decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[
         BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
@@ -246,7 +246,7 @@ class _EditorState extends State<Editor> {
               children: <Widget>[
                 Text(currenttime, style: TextStyle(color: Colors.grey)),
                 Expanded(child: MusicProgress(key: key)),
-                Text(formatTime(totalTime.toInt()),
+                Text(formatTime(int.parse(rm.recrodingtime)),
                     style: TextStyle(color: Colors.grey))
               ],
             ),
@@ -304,12 +304,12 @@ class _EditorState extends State<Editor> {
       left -= ofs;
       return;
     }
-    if (right > templist.length) {
+    if (right > recrodingData.length) {
       left -= ofs;
-      right = templist.length.toDouble();
+      right = recrodingData.length.toDouble();
       return;
     }
-    var newList2 = templist.getRange(-left.floor(), right.floor());
+    var newList2 = recrodingData.getRange(-left.floor(), right.floor());
     newList = newList2.toList();
     showSounkey.currentState.setRecrodingData(newList);
   }
@@ -337,19 +337,18 @@ class _EditorState extends State<Editor> {
     double recrodingtime = (data.length / 8000) * 100, temp = 0;
     int flag = (data.length / recrodingtime).floor(), stp = 0;
     List<double> res = [];
-    print("音频时长:$recrodingtime ms");
-    setState(() {
-      audioTimeLength = recrodingtime;
-    });
     for (int i = 0; i < data.length; i++) {
-      if (stp == flag) {
-        double avg = temp / stp;
-        res.add(avg);
-        stp = 0;
-        temp = 0;
+      if ((i + 1) < data.length) {
+        double curent = data[i],
+            next = data[i + 1],
+            cha = curent - next,
+            flag2 = 10;
+        if (stp == flag) {
+          if (cha > flag2) res.add(curent);
+          stp = 0;
+        }
+        stp++;
       }
-      temp += data[i];
-      stp++;
     }
     return res;
   }
