@@ -1,3 +1,4 @@
+import 'package:asdasd/modus/cancasRectModu.dart';
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
@@ -36,7 +37,7 @@ class _EditorState extends State<Editor> {
   GlobalKey<MusicProgressState> key = GlobalKey();
   GlobalKey<ShowSounState> showSounkey = GlobalKey();
   double left = 0, right = 60, audioTimeLength = 0;
-  List<double> recrodingData = [], templist = [];
+  List<CanvasRectModu> recrodingData = [], templist = [];
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
   Color gary = Colors.grey;
 
@@ -60,7 +61,6 @@ class _EditorState extends State<Editor> {
         await this.channel.invokeListMethod('fft', {"path": rm.filepath});
     recrodingData = await transfrom(data.toList());
     recrodingOffset(0);
-//    showSounkey.currentState.setRecrodingData(this.recrodingData);
   }
 
   @override
@@ -298,7 +298,7 @@ class _EditorState extends State<Editor> {
   ///数据左右滑动
   recrodingOffset(double offset) {
     double ofs = offset.floorToDouble();
-    List<double> newList;
+    List<CanvasRectModu> newList;
     left += ofs;
     right = (-left) + 120;
     if (-left.floor() < 0) {
@@ -333,10 +333,10 @@ class _EditorState extends State<Editor> {
   ///更多
   void more() {}
 
-  List<double> addHeadOrTail(List<double> arr) {
+  List<CanvasRectModu> addHeadOrTail(List<CanvasRectModu> arr) {
     int columns_count = 80;
     for (int i = 0; i < columns_count; i++) {
-      arr.add(2);
+      arr.add(CanvasRectModu(vlaue: 2, type: CanvasRectTypes.point));
     }
     return arr;
   }
@@ -348,7 +348,7 @@ class _EditorState extends State<Editor> {
 
     ///总数据长度除以录音时长
     int flag = (data.length / recrodingtime).floor(), stp = 0;
-    List<double> res = [];
+    List<CanvasRectModu> res = [];
     res = addHeadOrTail(res);
     for (int i = 0; i < data.length; i++) {
       if ((i + 1) < data.length) {
@@ -357,7 +357,7 @@ class _EditorState extends State<Editor> {
             cha = curent - next,
             flag2 = 0;
         if (stp == flag) {
-          if (cha > flag2) res.add(curent);
+          if (cha > flag2) res.add(CanvasRectModu(vlaue: curent));
           stp = 0;
         }
         stp++;

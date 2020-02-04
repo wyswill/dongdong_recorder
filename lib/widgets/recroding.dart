@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:asdasd/modus/cancasRectModu.dart';
 import 'package:asdasd/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,7 +17,7 @@ class _RecrodingState extends State<Recroding> {
   bool statu = false;
   String filepath = '';
   List<String> paths = [];
-  List<double> recrodingData;
+  List<CanvasRectModu> recrodingData;
   GlobalKey<ShowSounState> key = GlobalKey();
   double left = 0, right = 60;
   double audioTimeLength = 0;
@@ -99,7 +100,7 @@ class _RecrodingState extends State<Recroding> {
   ///数据左右滑动
   recrodingOffset(double offset) {
     double ofs = offset.floorToDouble();
-    List<double> newList;
+    List<CanvasRectModu> newList;
     left += ofs;
     right = (-left) + 100;
     if (-left.floor() < 0) {

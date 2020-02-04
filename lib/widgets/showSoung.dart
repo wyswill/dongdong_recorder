@@ -1,3 +1,4 @@
+import 'package:asdasd/modus/cancasRectModu.dart';
 import 'package:asdasd/widgets/editorCanvas.dart';
 import 'package:flutter/material.dart';
 
@@ -15,7 +16,7 @@ class ShowSoun extends StatefulWidget {
 
 class ShowSounState extends State<ShowSoun>
     with SingleTickerProviderStateMixin {
-  List<double> recrodingData = [];
+  List<CanvasRectModu> recrodingData = [];
   AnimationController controller;
 
   @override
@@ -39,7 +40,7 @@ class ShowSounState extends State<ShowSoun>
   }
 
   ///滑动窗口
-  setRecrodingData(List<double> data) {
+  setRecrodingData(List<CanvasRectModu> data) {
     setState(() {
       recrodingData = data;
       controller.forward();

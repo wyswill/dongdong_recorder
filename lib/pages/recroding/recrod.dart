@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:asdasd/modus/cancasRectModu.dart';
 import 'package:asdasd/utiles.dart';
 import 'package:asdasd/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
@@ -21,7 +22,7 @@ class _RecrodState extends State<Recrod> {
   FlutterPluginRecord flutterPluginRecord = FlutterPluginRecord();
   bool statu = false;
   String filepath = '', cacheFile = '/file_cache/Audio/', path = '';
-  List<double> recrodingData = [], templist = [];
+  List<CanvasRectModu> recrodingData = [], templist = [];
   GlobalKey<ShowSounState> key = GlobalKey();
   double left = 0, right = 60;
   double audioTimeLength = 0;
@@ -264,17 +265,17 @@ class _RecrodState extends State<Recrod> {
 
   ///录音实时写入波形
   setdata(double value) {
-    List<double> newLists = [];
+    List<CanvasRectModu> newLists = [];
     if (recrodingData.length < 195) {
-      this.recrodingData.add(value);
+      this.recrodingData.add(CanvasRectModu(vlaue: value,type: CanvasRectTypes.data));
       key.currentState.setRecrodingData(recrodingData);
     } else {
       newLists = recrodingData;
       newLists.removeAt(0);
-      newLists.add(value);
+      newLists.add(CanvasRectModu(vlaue: value,type: CanvasRectTypes.data));
       key.currentState.setRecrodingData(newLists);
     }
-    templist.add(value);
+    templist.add(CanvasRectModu(vlaue: value,type: CanvasRectTypes.data));
   }
 
   ///将数字音频信号转换成毫秒位单位的值
@@ -302,7 +303,7 @@ class _RecrodState extends State<Recrod> {
   ///数据左右滑动
   recrodingOffset(double offset) {
     double ofs = offset.floorToDouble();
-    List<double> newList;
+    List<CanvasRectModu> newList;
     left += ofs;
     right = (-left) + 195;
     if (-left.floor() < 0) {

@@ -1,10 +1,11 @@
+import 'package:asdasd/modus/cancasRectModu.dart';
 import 'package:flutter/material.dart';
 
 class MyCanvas extends CustomPainter {
   MyCanvas(this.canvasData, this.recriodingTime);
 
   final double recriodingTime;
-  final List<double> canvasData;
+  final List<CanvasRectModu> canvasData;
   int columns_count = 120;
 
   @override
@@ -22,10 +23,10 @@ class MyCanvas extends CustomPainter {
     // 挨个画频谱柱子
     for (int i = 0; i < canvasData.length; i++) {
       double volume = 2.0;
-      volume = canvasData[i] * step;
+      CanvasRectModu curent = canvasData[i];
+      volume = curent.vlaue * step;
       Rect column = Rect.fromLTWH(columnWidth * i, (size.height - volume) / 2,
           columnWidth.ceil().toDouble(), volume);
-      volume = canvasData[i] * step;
       canvas.drawRect(column, Paint()..color = Colors.white);
     }
   }
