@@ -29,9 +29,7 @@ class ShowSounState extends State<ShowSoun>
       width: MediaQuery.of(context).size.width,
       height: 200,
       child: CustomPaint(
-        painter: widget.isEditor != null
-            ? EditorCanvas(recrodingData, widget.recriodingTime)
-            : MyCanvas(recrodingData, widget.recriodingTime),
+        painter:  MyCanvas(recrodingData, widget.recriodingTime),
       ),
     );
   }

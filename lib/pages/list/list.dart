@@ -105,7 +105,7 @@ class _RecrodingListState extends State<RecrodingList> {
           var res = await channel.invokeMethod('getSize', {"path": file.path});
           double s = (res % (1000 * 60) / 1000);
           RecroderModule rm = RecroderModule(
-            title: filename,
+            title: filename.replaceAll('.wav', ''),
             filepath: file.path,
             recrodingtime: "$res",
             lastModified:

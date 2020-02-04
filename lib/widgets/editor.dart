@@ -1,5 +1,7 @@
+import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import '../utiles.dart';
 import 'musicProgress.dart';
@@ -35,25 +37,42 @@ class _EditorState extends State<Editor> {
   GlobalKey<ShowSounState> showSounkey = GlobalKey();
   double totalTime = 0, left = 0, right = 60, audioTimeLength = 0;
   List<double> recrodingData = [], templist = [];
-
+  MethodChannel channel = const MethodChannel("com.lanwanhudong");
   Color gary = Colors.grey;
+
   Color get mainColor => Theme.of(context).primaryColor;
+
+  RecroderModule get rm => widget.arguments;
 
   @override
   void initState() {
     super.initState();
+    controller.text = rm.title;
+    node.addListener(() {
+      print("焦点被几激活了");
+    });
+  }
+
+  @override
+  void didChangeDependencies() async {
+    super.didChangeDependencies();
+    var data =
+        await this.channel.invokeListMethod('fft', {"path": rm.filepath});
+    recrodingData = await transfrom(data.toList());
+    showSounkey.currentState.setRecrodingData(this.recrodingData);
   }
 
   @override
   void dispose() {
     controller.dispose();
+    node.unfocus();
+    node.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).primaryColor.withOpacity(0.5),
       appBar: AppBar(
         leading: Center(
           child: GestureDetector(
@@ -80,7 +99,11 @@ class _EditorState extends State<Editor> {
             Expanded(
               child: Column(
                 children: <Widget>[
-                  setCanvas(),
+                  Container(
+                    margin: EdgeInsets.only(top: 40),
+                    height: 190,
+                    child: setCanvas(),
+                  ),
                 ],
               ),
             ),
@@ -89,31 +112,7 @@ class _EditorState extends State<Editor> {
           ],
         ),
       ),
-      //  bottomNavigationBar:
     );
-  }
-
-  ///保存
-  void save() {}
-
-  ///数据左右滑动
-  recrodingOffset(double offset) {
-    double ofs = offset.floorToDouble();
-    List<double> newList;
-    left += ofs;
-    right = (-left) + 195;
-    if (-left.floor() < 0) {
-      left -= ofs;
-      return;
-    }
-    if (right > templist.length) {
-      left -= ofs;
-      right = templist.length.toDouble();
-      return;
-    }
-    var newList2 = templist.getRange(-left.floor(), right.floor());
-    newList = newList2.toList();
-    showSounkey.currentState.setRecrodingData(newList);
   }
 
   ///设置音频波形画布
@@ -292,6 +291,29 @@ class _EditorState extends State<Editor> {
     );
   }
 
+  ///保存
+  void save() {}
+
+  ///数据左右滑动
+  recrodingOffset(double offset) {
+    double ofs = offset.floorToDouble();
+    List<double> newList;
+    left += ofs;
+    right = (-left) + 195;
+    if (-left.floor() < 0) {
+      left -= ofs;
+      return;
+    }
+    if (right > templist.length) {
+      left -= ofs;
+      right = templist.length.toDouble();
+      return;
+    }
+    var newList2 = templist.getRange(-left.floor(), right.floor());
+    newList = newList2.toList();
+    showSounkey.currentState.setRecrodingData(newList);
+  }
+
   ///播放音乐
   void play() async {}
 
@@ -309,4 +331,26 @@ class _EditorState extends State<Editor> {
 
   ///更多
   void more() {}
+
+  ///将数字音频信号转换成毫秒位单位的值
+  Future<List> transfrom(List data) async {
+    double recrodingtime = (data.length / 8000) * 100, temp = 0;
+    int flag = (data.length / recrodingtime).floor(), stp = 0;
+    List<double> res = [];
+    print("音频时长:$recrodingtime ms");
+    setState(() {
+      audioTimeLength = recrodingtime;
+    });
+    for (int i = 0; i < data.length; i++) {
+      if (stp == flag) {
+        double avg = temp / stp;
+        res.add(avg);
+        stp = 0;
+        temp = 0;
+      }
+      temp += data[i];
+      stp++;
+    }
+    return res;
+  }
 }

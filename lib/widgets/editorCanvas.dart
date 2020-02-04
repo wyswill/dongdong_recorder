@@ -8,7 +8,7 @@ class EditorCanvas extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     var rect = Offset.zero & size;
-    canvas.drawRect(rect, Paint()..color = Colors.white);
+    canvas.drawRect(rect, Paint()..color = Color.fromRGBO(87, 92, 159, 1));
   }
 
   @override

@@ -414,7 +414,7 @@ class _BottomshowBarState extends State<BottomshowBar>
 
   ///剪辑
   void editor() {
-    Navigator.pushNamed(context, '/editor');
+    Navigator.pushNamed(context, '/editor',arguments: this.plaingFile);
   }
 
   ///转文字
