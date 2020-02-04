@@ -1,3 +1,4 @@
+import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/cancasRectModu.dart';
 import 'package:asdasd/utiles.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class EditorCanvas extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     var rect = Offset.zero & size;
     canvas.drawRect(rect, Paint()..color = Color.fromRGBO(87, 92, 159, 1));
+    final double middleWidth = size.width / 2;
 
     /// 每个柱子的宽度
     double columnWidth = 2;
@@ -21,18 +23,19 @@ class EditorCanvas extends CustomPainter {
     double step = size.height / 300;
 
     ///计算时间轴跨度
-    double preMs = 25;
-    double spacing = size.width / preMs;
+    double preMs = 25, spacing = size.width / preMs;
 
     /// 挨个画频谱柱子
     for (int i = 0; i < canvasData.length; i++) {
       double volume = 2.0;
       CanvasRectModu curent = canvasData[i];
       volume = curent.vlaue * step;
-//      if (curent.type == CanvasRectTypes.data) {}
-//      if ((columnWidth + 2) * i == size.width / 2) {
-//        print(curent.timestamp);
-//      }
+
+      if (curent.type == CanvasRectTypes.data) {
+        if (canvasData.length / 2 == i) {
+          eventBus.fire(SetTimestamp(curent.timestamp));
+        }
+      }
 
       ///柱子
       Rect column = Rect.fromLTWH((columnWidth + 2) * i,
@@ -42,13 +45,12 @@ class EditorCanvas extends CustomPainter {
       Rect timeLine = Rect.fromLTWH((columnWidth + spacing) * i, 0, 1, 10);
 
       ///指针
-      Rect pointLine = Rect.fromLTWH(size.width / 2, 0, 2, size.height);
+      Rect pointLine = Rect.fromLTWH(middleWidth, 0, 2, size.height);
 
       ///画指针的圆点
+      canvas.drawCircle(Offset(middleWidth, 0), 8, Paint()..color = Colors.red);
       canvas.drawCircle(
-          Offset(size.width / 2, 0), 8, Paint()..color = Colors.red);
-      canvas.drawCircle(
-          Offset(size.width / 2, size.height), 8, Paint()..color = Colors.red);
+          Offset(middleWidth, size.height), 8, Paint()..color = Colors.red);
 
       ///波形柱子
       canvas.drawRect(column, Paint()..color = Colors.white);
