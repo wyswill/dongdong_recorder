@@ -346,18 +346,20 @@ class _EditorState extends State<Editor> {
     ///获取录音时间
     double recrodingtime = (data.length / 8000) * 100;
 
-    ///总数据长度除以录音时长
-    int flag = (data.length / recrodingtime).floor(), stp = 0;
+    ///以1毫秒为间隔提取一次数据
+    int flag = (data.length / recrodingtime).floor() * 10, stp = 0;
     List<CanvasRectModu> res = [];
     res = addHeadOrTail(res);
     for (int i = 0; i < data.length; i++) {
       if ((i + 1) < data.length) {
-        double curent = data[i],
-            next = data[i + 1],
-            cha = curent - next,
-            flag2 = 0;
+        double curent = data[i];
         if (stp == flag) {
-          if (cha > flag2) res.add(CanvasRectModu(vlaue: curent));
+          int t = (i / flag).floor().toInt();
+          res.add(CanvasRectModu(
+            vlaue: curent,
+            type: CanvasRectTypes.data,
+            timestamp: formatTime(t * 100),
+          ));
           stp = 0;
         }
         stp++;

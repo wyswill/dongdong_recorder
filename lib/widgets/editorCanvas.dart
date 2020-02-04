@@ -1,4 +1,5 @@
 import 'package:asdasd/modus/cancasRectModu.dart';
+import 'package:asdasd/utiles.dart';
 import 'package:flutter/material.dart';
 
 class EditorCanvas extends CustomPainter {
@@ -28,6 +29,10 @@ class EditorCanvas extends CustomPainter {
       double volume = 2.0;
       CanvasRectModu curent = canvasData[i];
       volume = curent.vlaue * step;
+//      if (curent.type == CanvasRectTypes.data) {}
+//      if ((columnWidth + 2) * i == size.width / 2) {
+//        print(curent.timestamp);
+//      }
 
       ///柱子
       Rect column = Rect.fromLTWH((columnWidth + 2) * i,
@@ -38,12 +43,20 @@ class EditorCanvas extends CustomPainter {
 
       ///指针
       Rect pointLine = Rect.fromLTWH(size.width / 2, 0, 2, size.height);
+
+      ///画指针的圆点
       canvas.drawCircle(
           Offset(size.width / 2, 0), 8, Paint()..color = Colors.red);
       canvas.drawCircle(
           Offset(size.width / 2, size.height), 8, Paint()..color = Colors.red);
+
+      ///波形柱子
       canvas.drawRect(column, Paint()..color = Colors.white);
+
+      ///时间轴
       canvas.drawRect(timeLine, Paint()..color = Colors.white);
+
+      ///指针
       canvas.drawRect(pointLine, Paint()..color = Colors.red);
     }
   }
