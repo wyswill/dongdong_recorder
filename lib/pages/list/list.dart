@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/pages/list/recrodingFileItems.dart';
-import 'package:asdasd/utiles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -19,7 +18,6 @@ class RecrodingList extends StatefulWidget {
 }
 
 class _RecrodingListState extends State<RecrodingList> {
-  StreamSubscription streamSubscription;
   Map<String, List<RecroderModule>> datas = {};
   List dataKeys = [];
   List<bool> activeManages = [];
@@ -29,7 +27,7 @@ class _RecrodingListState extends State<RecrodingList> {
   int curentindex;
   String cacheFile = '/file_cache/Audio/', path = '';
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
-
+  StreamSubscription streamSubscription;
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();

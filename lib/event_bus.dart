@@ -24,8 +24,8 @@ class DeleteFileSync {
   final String attr;
 }
 
-class Trash_option {
-  Trash_option(this.rm, this.index);
+class TrashOption {
+  TrashOption(this.rm, this.index);
 
   final RecroderModule rm;
   final int index;

@@ -6,8 +6,6 @@ class MyCanvas extends CustomPainter {
 
   final double recriodingTime;
   final List<CanvasRectModu> canvasData;
-  int columns_count = 120;
-
   @override
   void paint(Canvas canvas, Size size) {
     init(canvas, size);

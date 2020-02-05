@@ -85,7 +85,7 @@ class _BottomshowBarState extends State<BottomshowBar>
       this.curentState = bottomState.playRecroding;
       setState(() {});
     });
-    streamSubscription = eventBus.on<Trash_option>().listen((event) async {
+    streamSubscription = eventBus.on<TrashOption>().listen((event) async {
       setState(() {
         trashFile = event.rm;
         index = event.index;

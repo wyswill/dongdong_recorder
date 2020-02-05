@@ -31,7 +31,7 @@ class _ListItemState extends State<ListItem> {
 
   @override
   void didChangeDependencies() {
-    streamSubscription = eventBus.on<Trash_option>().listen((event) {
+    streamSubscription = eventBus.on<TrashOption>().listen((event) {
       // setState(() {
       //   this.datas.removeAt(event.index);
       // });
@@ -129,7 +129,7 @@ class _ListItemState extends State<ListItem> {
 
   ///显示选项
   void showOptions(RecroderModule data, index) {
-    eventBus.fire(Trash_option(data, index));
+    eventBus.fire(TrashOption(data, index));
     if (rm == null) {
       setState(() {
         rm = data;
