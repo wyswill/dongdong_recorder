@@ -2,8 +2,10 @@ import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/cancasRectModu.dart';
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/widgets/showSoung.dart';
+import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 
 import '../utiles.dart';
 import 'musicProgress.dart';
@@ -39,14 +41,24 @@ class _EditorState extends State<Editor> {
   GlobalKey<ShowSounState> showSounkey = GlobalKey();
   double left = 0, right = 60, audioTimeLength = 0;
   List<CanvasRectModu> recrodingData = [], templist = [];
+
+  ///和native通讯
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
+
+  ///全局颜色
   Color gary = Colors.grey;
 
   Color get mainColor => Theme.of(context).primaryColor;
 
+  ///音乐播放
+  AudioPlayer audioPlayer = AudioPlayer();
+
   RecroderModule get rm => widget.arguments;
   CanvasRectModu canvasRectModu;
   int startIndex, endIndex;
+
+  FlutterFFmpeg fFmpeg = FlutterFFmpeg();
+
   @override
   void initState() {
     super.initState();
@@ -75,6 +87,7 @@ class _EditorState extends State<Editor> {
     controller.dispose();
     node.unfocus();
     node.dispose();
+    audioPlayer.dispose();
     super.dispose();
   }
 
