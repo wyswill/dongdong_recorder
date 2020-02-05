@@ -30,7 +30,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
 
   double get winWidth => MediaQuery.of(context).size.width;
 
-  double get time => double.parse(widget.curentFile.recrodingtime);
+  int get time => int.parse(widget.curentFile.recrodingtime);
 
   @override
   void dispose() {
@@ -214,7 +214,5 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
   }
 
   ///播放音乐
-  void playMusic() {
-
-  }
+  void playMusic() {}
 }

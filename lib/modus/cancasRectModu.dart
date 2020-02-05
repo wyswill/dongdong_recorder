@@ -1,14 +1,15 @@
-enum CanvasRectTypes { point, data, flag }
+enum CanvasRectTypes { point, data, start, end }
 
 class CanvasRectModu {
   final String timestamp;
   final double vlaue;
-  final CanvasRectTypes type;
+  CanvasRectTypes type;
+  int index;
 
-  CanvasRectModu({this.vlaue, this.type, this.timestamp});
+  CanvasRectModu({this.vlaue, this.type, this.timestamp, this.index});
 
   @override
   String toString() {
-    return "index====$timestamp    value====$vlaue  type====$type ";
+    return "timestamp====$timestamp    value====$vlaue  type====$type  index====$index";
   }
 }

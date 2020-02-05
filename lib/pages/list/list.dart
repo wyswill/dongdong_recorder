@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/pages/list/recrodingFileItems.dart';
+import 'package:asdasd/utiles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,7 +21,6 @@ class RecrodingList extends StatefulWidget {
 class _RecrodingListState extends State<RecrodingList> {
   StreamSubscription streamSubscription;
   Map<String, List<RecroderModule>> datas = {};
-  Set<RecroderModule> ds = Set();
   List dataKeys = [];
   List<bool> activeManages = [];
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
@@ -39,6 +39,8 @@ class _RecrodingListState extends State<RecrodingList> {
     dataKeys = datas.keys.toList();
 
     setState(() {});
+
+    ///event_bus订阅消息
     streamSubscription = eventBus.on<PlayingState>().listen((event) {
       setState(() {
         curentPlayRecroding.isPlaying = event.state;
@@ -114,7 +116,6 @@ class _RecrodingListState extends State<RecrodingList> {
             isActive: false,
             fileSize: "${16000 * s / 1024}kb",
           );
-          ds.add(rm);
           if (this.datas[attr] == null) {
             this.datas[attr] = [];
             this.datas[attr].add(rm);

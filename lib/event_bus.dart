@@ -1,3 +1,4 @@
+import 'package:asdasd/modus/cancasRectModu.dart';
 import 'package:event_bus/event_bus.dart';
 
 import 'modus/record.dart';
@@ -32,8 +33,8 @@ class Trash_option {
 
 class NullEvent {}
 
-class SetTimestamp {
-  final String timestamp;
+class SetCurentTime {
+  final CanvasRectModu canvasRectModu;
 
-  SetTimestamp(this.timestamp);
+  SetCurentTime(this.canvasRectModu);
 }

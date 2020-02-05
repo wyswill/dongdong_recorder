@@ -1,6 +1,5 @@
 import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/cancasRectModu.dart';
-import 'package:asdasd/utiles.dart';
 import 'package:flutter/material.dart';
 
 class EditorCanvas extends CustomPainter {
@@ -8,8 +7,6 @@ class EditorCanvas extends CustomPainter {
 
   final double recriodingTime;
   final List<CanvasRectModu> canvasData;
-  int columns_count = 120;
-
   @override
   void paint(Canvas canvas, Size size) {
     var rect = Offset.zero & size;
@@ -32,8 +29,9 @@ class EditorCanvas extends CustomPainter {
       volume = curent.vlaue * step;
 
       if (curent.type == CanvasRectTypes.data) {
-        if (canvasData.length / 2 == i) {
-          eventBus.fire(SetTimestamp(curent.timestamp));
+        if (i == canvasData.length / 2) {
+          curent.index = i;
+          eventBus.fire(SetCurentTime(curent));
         }
       }
 
@@ -53,13 +51,19 @@ class EditorCanvas extends CustomPainter {
           Offset(middleWidth, size.height), 8, Paint()..color = Colors.red);
 
       ///波形柱子
-      canvas.drawRect(column, Paint()..color = Colors.white);
-
-      ///时间轴
-      canvas.drawRect(timeLine, Paint()..color = Colors.white);
-
-      ///指针
-      canvas.drawRect(pointLine, Paint()..color = Colors.red);
+      switch (curent.type) {
+        case CanvasRectTypes.data:
+          canvas.drawRect(column, Paint()..color = Colors.white);
+          break;
+        case CanvasRectTypes.start:
+          canvas.drawRect(column, Paint()..color = Colors.yellow);
+          break;
+        case CanvasRectTypes.point:
+          canvas.drawRect(pointLine, Paint()..color = Colors.red);
+          break;
+        default:
+          canvas.drawRect(timeLine, Paint()..color = Colors.white);
+      }
     }
   }
 

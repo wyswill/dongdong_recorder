@@ -45,7 +45,7 @@ class _EditorState extends State<Editor> {
   Color get mainColor => Theme.of(context).primaryColor;
 
   RecroderModule get rm => widget.arguments;
-  String timestamp = '0:0:0';
+  CanvasRectModu canvasRectModu;
 
   @override
   void initState() {
@@ -63,9 +63,9 @@ class _EditorState extends State<Editor> {
         await this.channel.invokeListMethod('fft', {"path": rm.filepath});
     recrodingData = await transfrom(data.toList());
     recrodingOffset(0);
-    eventBus.on<SetTimestamp>().listen((val) {
+    eventBus.on<SetCurentTime>().listen((val) {
       setState(() {
-        timestamp = val.timestamp;
+        canvasRectModu = val.canvasRectModu;
       });
     });
   }
@@ -116,7 +116,22 @@ class _EditorState extends State<Editor> {
               ),
             ),
             Container(
-              child: Text(timestamp),
+              child: Text(
+                  canvasRectModu != null ? canvasRectModu.timestamp : "0:0:0"),
+            ),
+            Row(
+              children: <Widget>[
+                FlatButton(
+                  color: Colors.blue,
+                  child: Text('开始'),
+                  onPressed: setStart,
+                ),
+                FlatButton(
+                  color: Colors.red,
+                  child: Text('结束'),
+                  onPressed: setEnd,
+                ),
+              ],
             ),
             setOptions(),
           ],
@@ -302,6 +317,18 @@ class _EditorState extends State<Editor> {
     );
   }
 
+  ///设置截取开始指针
+  setStart() {
+    if (canvasRectModu != null) {
+      print(canvasRectModu);
+      recrodingData[canvasRectModu.index + (-left.floor()) - 11].type =
+          CanvasRectTypes.start;
+    }
+  }
+
+  ///设置结束指针
+  setEnd() {}
+
   ///保存
   void save() {}
 
@@ -344,9 +371,10 @@ class _EditorState extends State<Editor> {
   void more() {}
 
   List<CanvasRectModu> addHeadOrTail(List<CanvasRectModu> arr) {
-    int columns_count = 80;
-    for (int i = 0; i < columns_count; i++) {
-      arr.add(CanvasRectModu(vlaue: 2, type: CanvasRectTypes.point));
+    int columnsCount = 80;
+    for (int i = 0; i < columnsCount; i++) {
+      arr.add(CanvasRectModu(
+          vlaue: 2, type: CanvasRectTypes.point, timestamp: "0:0:0"));
     }
     return arr;
   }
@@ -361,19 +389,18 @@ class _EditorState extends State<Editor> {
     List<CanvasRectModu> res = [];
     res = addHeadOrTail(res);
     for (int i = 0; i < data.length; i++) {
-      if ((i + 1) < data.length) {
-        double curent = data[i];
-        if (stp == flag) {
-          int t = (i / flag).floor().toInt();
-          res.add(CanvasRectModu(
-            vlaue: curent,
-            type: CanvasRectTypes.data,
-            timestamp: formatTime(t * 100),
-          ));
-          stp = 0;
-        }
-        stp++;
+      double curent = data[i];
+      if (stp == flag) {
+        int t = (i / flag).floor().toInt();
+        res.add(CanvasRectModu(
+          vlaue: curent,
+          type: CanvasRectTypes.data,
+          index: i,
+          timestamp: formatTime(t * 100),
+        ));
+        stp = 0;
       }
+      stp++;
     }
     res = addHeadOrTail(res);
     return res;

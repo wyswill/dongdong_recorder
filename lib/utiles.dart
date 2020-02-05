@@ -51,6 +51,5 @@ formatTime(int totalTime) {
     hour = (minute / 60).round();
     minute = minute % 60;
   }
-  return '$hour:$minute:$second';
+  return "$hour:$minute:$second";
 }
-
