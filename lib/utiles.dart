@@ -1,3 +1,5 @@
+import 'dart:core';
+
 import 'package:flutter/material.dart';
 
 alert(
@@ -36,20 +38,11 @@ alert(
 }
 
 formatTime(int totalTime) {
-  int hour = 0;
-  int minute = 0;
-  int second = 0;
-  second = (totalTime / 1000).round();
-  if (totalTime <= 1000 && totalTime > 0) {
-    second = 1;
-  }
-  if (second > 60) {
-    minute = (second / 60).round();
-    second = second % 60;
-  }
-  if (minute > 60) {
-    hour = (minute / 60).round();
-    minute = minute % 60;
-  }
-  return "$hour:$minute:$second";
+   Duration d = Duration(milliseconds: totalTime);
+  return "${d.inHours}:${d.inMinutes}:${d.inSeconds}:${d.inMilliseconds - (d.inSeconds * 1000)}";
+}
+
+format2(int totalTime) {
+  Duration d = Duration(milliseconds: totalTime);
+  return "${d.inHours}:${d.inMinutes}:${d.inSeconds}:${d.inMilliseconds - (d.inSeconds * 1000)}";
 }

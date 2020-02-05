@@ -46,7 +46,7 @@ class _EditorState extends State<Editor> {
 
   RecroderModule get rm => widget.arguments;
   CanvasRectModu canvasRectModu;
-
+  int startIndex, endIndex;
   @override
   void initState() {
     super.initState();
@@ -320,14 +320,34 @@ class _EditorState extends State<Editor> {
   ///设置截取开始指针
   setStart() {
     if (canvasRectModu != null) {
-      print(canvasRectModu);
-      recrodingData[canvasRectModu.index + (-left.floor()) - 11].type =
-          CanvasRectTypes.start;
+      int index = canvasRectModu.index + (-left.floor()) - 11;
+      if (startIndex == null) {
+        recrodingData[index].type = CanvasRectTypes.start;
+      } else {
+        recrodingData[startIndex].type = CanvasRectTypes.data;
+        recrodingData[index].type = CanvasRectTypes.start;
+      }
+      setState(() {
+        startIndex = index;
+      });
     }
   }
 
   ///设置结束指针
-  setEnd() {}
+  setEnd() {
+    if (canvasRectModu != null) {
+      int index = canvasRectModu.index + (-left.floor()) - 11;
+      if (endIndex == null) {
+        recrodingData[index].type = CanvasRectTypes.end;
+      } else {
+        recrodingData[endIndex].type = CanvasRectTypes.data;
+        recrodingData[index].type = CanvasRectTypes.end;
+      }
+      setState(() {
+        endIndex = index;
+      });
+    }
+  }
 
   ///保存
   void save() {}

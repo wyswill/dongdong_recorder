@@ -49,6 +49,8 @@ class EditorCanvas extends CustomPainter {
       canvas.drawCircle(Offset(middleWidth, 0), 8, Paint()..color = Colors.red);
       canvas.drawCircle(
           Offset(middleWidth, size.height), 8, Paint()..color = Colors.red);
+      canvas.drawRect(pointLine, Paint()..color = Colors.red);
+      // canvas.drawRect(timeLine, Paint()..color = Colors.white);
 
       ///波形柱子
       switch (curent.type) {
@@ -56,13 +58,24 @@ class EditorCanvas extends CustomPainter {
           canvas.drawRect(column, Paint()..color = Colors.white);
           break;
         case CanvasRectTypes.start:
-          canvas.drawRect(column, Paint()..color = Colors.yellow);
+          Rect startFlag = Rect.fromLTWH(
+            (columnWidth + 2) * i,
+            0,
+            columnWidth.ceil().toDouble(),
+            size.height,
+          );
+          canvas.drawRect(startFlag, Paint()..color = Colors.yellow);
           break;
-        case CanvasRectTypes.point:
-          canvas.drawRect(pointLine, Paint()..color = Colors.red);
+        case CanvasRectTypes.end:
+          Rect endFlag = Rect.fromLTWH(
+            (columnWidth + 2) * i,
+            0,
+            columnWidth.ceil().toDouble(),
+            size.height,
+          );
+          canvas.drawRect(endFlag, Paint()..color = Colors.red);
           break;
         default:
-          canvas.drawRect(timeLine, Paint()..color = Colors.white);
       }
     }
   }
