@@ -7,6 +7,7 @@ class EditorCanvas extends CustomPainter {
 
   final double recriodingTime;
   final List<CanvasRectModu> canvasData;
+
   @override
   void paint(Canvas canvas, Size size) {
     var rect = Offset.zero & size;
@@ -28,19 +29,12 @@ class EditorCanvas extends CustomPainter {
       CanvasRectModu curent = canvasData[i];
       volume = curent.vlaue * step;
 
-      if (curent.type == CanvasRectTypes.data) {
-        if (i == canvasData.length / 2) {
-          curent.index = i;
-          eventBus.fire(SetCurentTime(curent));
-        }
-      }
-
       ///柱子
       Rect column = Rect.fromLTWH((columnWidth + 2) * i,
           (size.height - volume) / 2, columnWidth.ceil().toDouble(), volume);
 
       ///时间轴
-      Rect timeLine = Rect.fromLTWH((columnWidth + spacing) * i, 0, 1, 10);
+//      Rect timeLine = Rect.fromLTWH((columnWidth + spacing) * i, 0, 1, 10);
 
       ///指针
       Rect pointLine = Rect.fromLTWH(middleWidth, 0, 2, size.height);
@@ -77,11 +71,17 @@ class EditorCanvas extends CustomPainter {
           break;
         default:
       }
+      if (curent.type == CanvasRectTypes.data) {
+        if (i == canvasData.length / 2) {
+          curent.index = i;
+          eventBus.fire(SetCurentTime(curent));
+        }
+      }
     }
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return true;
+  bool shouldRepaint(EditorCanvas oldDelegate) {
+    return oldDelegate.canvasData != canvasData;
   }
 }

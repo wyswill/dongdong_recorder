@@ -54,8 +54,10 @@ class _EditorState extends State<Editor> {
   AudioPlayer audioPlayer = AudioPlayer();
 
   RecroderModule get rm => widget.arguments;
+
+  ///与canvas交互的参数
   CanvasRectModu canvasRectModu;
-  int startIndex, endIndex;
+  int startIndex, endIndex, startTimestamp, endTimestamp;
 
   FlutterFFmpeg fFmpeg = FlutterFFmpeg();
 
@@ -83,7 +85,7 @@ class _EditorState extends State<Editor> {
   }
 
   @override
-  void dispose() {
+  void dispose() async {
     controller.dispose();
     node.unfocus();
     node.dispose();
@@ -181,22 +183,25 @@ class _EditorState extends State<Editor> {
           borderRadius: BorderRadius.all(Radius.circular(5))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: this.options.map((e) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: <Widget>[
-              Image.asset(
-                e['icon'],
-                width: 20,
-              ),
-              Text(
-                e['title'],
-                style: TextStyle(
-                    color: Theme.of(context).primaryColor, fontSize: 12),
-              )
-            ],
-          );
-        }).toList(),
+        children: <Widget>[
+          GestureDetector(
+            onTap: cut,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Image.asset(
+                  'asset/sheared/icon_Sheared.png',
+                  width: 20,
+                ),
+                Text(
+                  '剪切',
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor, fontSize: 12),
+                )
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
@@ -330,6 +335,12 @@ class _EditorState extends State<Editor> {
     );
   }
 
+  ///音频剪切
+  void cut() {}
+
+  ///音频选项
+  void optionsChoes() {}
+
   ///设置截取开始指针
   setStart() {
     if (canvasRectModu != null) {
@@ -342,6 +353,7 @@ class _EditorState extends State<Editor> {
       }
       setState(() {
         startIndex = index;
+        startTimestamp = canvasRectModu.ms;
       });
     }
   }
@@ -356,9 +368,16 @@ class _EditorState extends State<Editor> {
         recrodingData[endIndex].type = CanvasRectTypes.data;
         recrodingData[index].type = CanvasRectTypes.end;
       }
-      setState(() {
-        endIndex = index;
-      });
+      if (startTimestamp != null) {
+        if (canvasRectModu.ms >= startTimestamp) {
+
+        } else {
+          setState(() {
+            endIndex = index;
+            startTimestamp = canvasRectModu.ms;
+          });
+        }
+      }
     }
   }
 
@@ -386,7 +405,10 @@ class _EditorState extends State<Editor> {
   }
 
   ///播放音乐
-  void play() async {}
+  void play() async {
+    print(rm.filepath);
+    audioPlayer.play(rm.filepath);
+  }
 
   ///定时选择
   void setTimeout() {}
@@ -430,6 +452,7 @@ class _EditorState extends State<Editor> {
           type: CanvasRectTypes.data,
           index: i,
           timestamp: formatTime(t * 100),
+          ms: t * 100,
         ));
         stp = 0;
       }
