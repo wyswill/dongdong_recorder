@@ -41,8 +41,3 @@ formatTime(int totalTime) {
    Duration d = Duration(milliseconds: totalTime);
   return "${d.inHours}:${d.inMinutes}:${d.inSeconds}:${d.inMilliseconds - (d.inSeconds * 1000)}";
 }
-
-format2(int totalTime) {
-  Duration d = Duration(milliseconds: totalTime);
-  return "${d.inHours}:${d.inMinutes}:${d.inSeconds}:${d.inMilliseconds - (d.inSeconds * 1000)}";
-}

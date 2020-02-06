@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/cancasRectModu.dart';
 import 'package:asdasd/modus/record.dart';
@@ -6,6 +8,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
+import 'package:path_provider/path_provider.dart';
 
 import '../utiles.dart';
 import 'musicProgress.dart';
@@ -60,6 +63,7 @@ class _EditorState extends State<Editor> {
   int startIndex, endIndex, startTimestamp, endTimestamp;
 
   FlutterFFmpeg fFmpeg = FlutterFFmpeg();
+  FlutterFFmpegConfig flutterFFmpegConfig = FlutterFFmpegConfig();
 
   @override
   void initState() {
@@ -336,7 +340,35 @@ class _EditorState extends State<Editor> {
   }
 
   ///音频剪切
-  void cut() {}
+  void cut() async {
+    int start = startTimestamp, end = endTimestamp;
+    String filePaht = rm.filepath, savePath;
+    Directory directory = (await getExternalCacheDirectories())[0];
+    savePath = directory.path +
+        '/file_cache/Audio/${rm.title}${rm.title.hashCode}.wav';
+    if (startTimestamp < endTimestamp) {
+      start = endTimestamp;
+      end = startTimestamp;
+    }
+    var arg = [
+      '-i',
+      filePaht,
+      '-vn',
+      '-acodec',
+      'copy',
+      '-ss',
+      '$start',
+      '-t',
+      '$end',
+      savePath
+    ];
+
+//    fFmpeg.executeWithArguments(arg).then((value) {
+//      print(value);
+//    });
+    print('剪辑完成');
+    print(await flutterFFmpegConfig.getFFmpegVersion());
+  }
 
   ///音频选项
   void optionsChoes() {}
@@ -368,16 +400,10 @@ class _EditorState extends State<Editor> {
         recrodingData[endIndex].type = CanvasRectTypes.data;
         recrodingData[index].type = CanvasRectTypes.end;
       }
-      if (startTimestamp != null) {
-        if (canvasRectModu.ms >= startTimestamp) {
-
-        } else {
-          setState(() {
-            endIndex = index;
-            startTimestamp = canvasRectModu.ms;
-          });
-        }
-      }
+      setState(() {
+        endIndex = index;
+        endTimestamp = canvasRectModu.ms;
+      });
     }
   }
 

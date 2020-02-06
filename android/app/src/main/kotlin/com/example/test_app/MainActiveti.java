@@ -2,7 +2,6 @@ package com.example.test_app;
 
 import android.os.Bundle;
 
-import java.io.IOException;
 
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.MethodCall;
