@@ -1,4 +1,5 @@
 import 'package:asdasd/pages/list/list.dart';
+import 'package:asdasd/pages/search/search.dart';
 import 'package:asdasd/pages/trash/trash.dart';
 import 'package:flutter/material.dart';
 
@@ -26,12 +27,12 @@ class _MainPageState extends State<MainPage>
     //   "isActive": false,
     //   "widget": Folder()
     // },
-    {
-      "icon": "asset/toolbar/icon_calendar",
-      "router": 'list',
-      "isActive": false,
-      "widget": Text('asd')
-    },
+    // {
+    //   "icon": "asset/toolbar/icon_calendar",
+    //   "router": 'list',
+    //   "isActive": false,
+    //   "widget": Text('asd')
+    // },
     {
       "icon": 'asset/toolbar/icon_trash',
       "router": 'list',
@@ -42,7 +43,7 @@ class _MainPageState extends State<MainPage>
       "icon": 'asset/toolbar/icon_Search',
       "router": 'list',
       "isActive": false,
-      "widget": Text('asd')
+      "widget": SearchPage()
     },
   ];
 
@@ -55,7 +56,7 @@ class _MainPageState extends State<MainPage>
 
     ///设置tabbar
     menus[0]['isActive'] = true;
-    tabController = TabController(vsync: this, length: 4);
+    tabController = TabController(vsync: this, length: 3);
 
     ///设置tabView
     tabController.addListener(() {

@@ -11,11 +11,11 @@ class Mine extends StatefulWidget {
 class _MineState extends State<Mine> {
   List<Map<String, dynamic>> data = [
     {"icon": Icons.access_alarms, "title": "使用帮助", "router": '/'},
-    {"icon": Icons.access_alarms, "title": "使用帮助", "router": '/'},
-    {"icon": Icons.access_alarms, "title": "使用帮助", "router": '/'},
-    {"icon": Icons.access_alarms, "title": "使用帮助", "router": '/'},
-    {"icon": Icons.access_alarms, "title": "使用帮助", "router": '/'},
-    {"icon": Icons.access_alarms, "title": "使用帮助", "router": '/'},
+    {"icon": Icons.access_alarms, "title": "快捷指令", "router": '/'},
+    {"icon": Icons.access_alarms, "title": "录音设置", "router": '/'},
+    {"icon": Icons.access_alarms, "title": "分享给朋友", "router": '/'},
+    {"icon": Icons.access_alarms, "title": "关于", "router": '/'},
+    {"icon": Icons.access_alarms, "title": "意见设置", "router": '/'},
   ];
 
   @override
@@ -57,12 +57,17 @@ class _MineState extends State<Mine> {
         borderRadius: BorderRadius.all(Radius.circular(2)),
       ),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          Icon(
-            curent['icon'],
-            color: Theme.of(context).primaryColor,
+          // Icon(
+          //   curent['icon'],
+          //   color: Theme.of(context).primaryColor,
+          // ),
+          Padding(
+            padding: EdgeInsets.only(left: 20),
+            child: Text(curent['title']),
           ),
-          Text(curent['title']),
+          Icon(Icons.arrow_right)
         ],
       ),
     );

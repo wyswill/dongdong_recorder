@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:asdasd/modus/record.dart';
+import 'package:asdasd/utiles.dart';
 import 'package:asdasd/widgets/listItem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,10 +22,12 @@ class _TrashState extends State<Trash> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    Directory directory = (await getExternalCacheDirectories())[0];
-    path = directory.path + cacheFile;
-    await _getTotalSizeOfFilesInDir(Directory(path));
-    setState(() {});
+    path = await FileUtile().getRecrodPath(isDelete: true);
+    if (Directory(path).existsSync()) {
+      await _getTotalSizeOfFilesInDir(Directory(path));
+      setState(() {});
+    } else
+      Directory(path).createSync();
   }
 
   @override

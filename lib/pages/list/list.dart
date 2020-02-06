@@ -3,10 +3,10 @@ import 'dart:io';
 import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/pages/list/recrodingFileItems.dart';
+import 'package:asdasd/utiles.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
 
 class RecrodingList extends StatefulWidget {
   RecrodingList({this.key, this.arguments}) : super(key: key);
@@ -28,14 +28,13 @@ class _RecrodingListState extends State<RecrodingList> {
   String cacheFile = '/file_cache/Audio/', path = '';
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
   StreamSubscription streamSubscription;
+
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    Directory directory = (await getExternalCacheDirectories())[0];
-    path = directory.path + cacheFile;
+    path = await FileUtile().getRecrodPath();
     await _getTotalSizeOfFilesInDir(Directory(path));
     dataKeys = datas.keys.toList();
-
     setState(() {});
 
     ///event_bus订阅消息
