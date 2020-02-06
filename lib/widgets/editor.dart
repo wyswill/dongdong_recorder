@@ -7,7 +7,6 @@ import 'package:asdasd/widgets/showSoung.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../utiles.dart';
@@ -63,7 +62,7 @@ class _EditorState extends State<Editor> {
   int startIndex, endIndex, startTimestamp, endTimestamp;
 
 //  FlutterFFmpeg fFmpeg = FlutterFFmpeg();
-  FlutterFFmpegConfig flutterFFmpegConfig = FlutterFFmpegConfig();
+//  FlutterFFmpegConfig flutterFFmpegConfig = FlutterFFmpegConfig();
 
   @override
   void initState() {
@@ -81,7 +80,7 @@ class _EditorState extends State<Editor> {
         await this.channel.invokeListMethod('fft', {"path": rm.filepath});
     recrodingData = await transfrom(data.toList());
     recrodingOffset(0);
-    print(await flutterFFmpegConfig.getFFmpegVersion());
+//    print(await flutterFFmpegConfig.getFFmpegVersion());
     eventBus.on<SetCurentTime>().listen((val) {
       setState(() {
         canvasRectModu = val.canvasRectModu;
