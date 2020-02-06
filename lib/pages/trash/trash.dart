@@ -23,11 +23,14 @@ class _TrashState extends State<Trash> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
     path = await FileUtile().getRecrodPath(isDelete: true);
-    if (Directory(path).existsSync()) {
+    if (await Directory(path).exists()) {
       await _getTotalSizeOfFilesInDir(Directory(path));
       setState(() {});
-    } else
+    } else {
       Directory(path).createSync();
+      await _getTotalSizeOfFilesInDir(Directory(path));
+      setState(() {});
+    }
   }
 
   @override
@@ -54,6 +57,7 @@ class _TrashState extends State<Trash> {
             fileSize: "${16000 * s / 1024}kb",
           );
           this.datas.add(rm);
+          print(datas);
         }
       }
       if (file is Directory) {

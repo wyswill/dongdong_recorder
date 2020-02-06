@@ -69,15 +69,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_custom_calendar:
-    dependency: "direct main"
-    description:
-      path: "."
-      ref: HEAD
-      resolved-ref: ecd90edbc4002f8587823c8d44ddfa7ac1795eed
-      url: "https://github.com/LXD312569496/flutter_custom_calendar.git"
-    source: git
-    version: "0.0.1"
   flutter_ffmpeg:
     dependency: "direct main"
     description:

@@ -125,16 +125,16 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                 ),
               ),
             ),
-            Container(
-              width: 50,
-              height: 50,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-              child: GestureDetector(
-                child: Image.asset('asset/edit/icon_edit_white.png', width: 26),
-                onTap: () {},
-              ),
-            ),
+//            Container(
+//              width: 50,
+//              height: 50,
+//              alignment: Alignment.center,
+//              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+//              child: GestureDetector(
+//                child: Image.asset('asset/edit/icon_edit_white.png', width: 26),
+//                onTap: () {},
+//              ),
+//            ),
             Container(
               width: 50,
               height: 50,
@@ -157,16 +157,16 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                 onTap: deleteFile,
               ),
             ),
-            Container(
-              width: 50,
-              height: 50,
-              alignment: Alignment.center,
-              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-              child: GestureDetector(
-                child: Image.asset('asset/edit/icon_more_white.png', width: 26),
-                onTap: () {},
-              ),
-            ),
+//            Container(
+//              width: 50,
+//              height: 50,
+//              alignment: Alignment.center,
+//              decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+//              child: GestureDetector(
+//                child: Image.asset('asset/edit/icon_more_white.png', width: 26),
+//                onTap: () {},
+//              ),
+//            ),
           ],
         ),
       ),

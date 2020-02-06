@@ -62,7 +62,7 @@ class _EditorState extends State<Editor> {
   CanvasRectModu canvasRectModu;
   int startIndex, endIndex, startTimestamp, endTimestamp;
 
-  FlutterFFmpeg fFmpeg = FlutterFFmpeg();
+//  FlutterFFmpeg fFmpeg = FlutterFFmpeg();
   FlutterFFmpegConfig flutterFFmpegConfig = FlutterFFmpegConfig();
 
   @override
@@ -81,6 +81,7 @@ class _EditorState extends State<Editor> {
         await this.channel.invokeListMethod('fft', {"path": rm.filepath});
     recrodingData = await transfrom(data.toList());
     recrodingOffset(0);
+    print(await flutterFFmpegConfig.getFFmpegVersion());
     eventBus.on<SetCurentTime>().listen((val) {
       setState(() {
         canvasRectModu = val.canvasRectModu;
@@ -367,7 +368,6 @@ class _EditorState extends State<Editor> {
 //      print(value);
 //    });
     print('剪辑完成');
-    print(await flutterFFmpegConfig.getFFmpegVersion());
   }
 
   ///音频选项
