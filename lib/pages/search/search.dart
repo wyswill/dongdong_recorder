@@ -16,7 +16,7 @@ class _SearchPageState extends State<SearchPage> {
   FocusNode node = FocusNode();
   TextEditingController controller = TextEditingController();
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
-  List dataKeys = [];
+  List dataKeys = [], searchKeys = [];
 
   @override
   void didChangeDependencies() async {
@@ -41,7 +41,7 @@ class _SearchPageState extends State<SearchPage> {
           setInput(),
           Expanded(
             child: CustomScrollView(
-              slivers: List.generate(this.dataKeys.length, (int index) {
+              slivers: List.generate(this.searchKeys.length, (int index) {
                 return buildRecrodingItem(index);
               }),
             ),
@@ -53,8 +53,8 @@ class _SearchPageState extends State<SearchPage> {
 
   ///每组录音数据样式
   Widget buildRecrodingItem(int index) {
-    String curnetKey = dataKeys[index];
-    List<RecroderModule> curentRecrodingFiles = this.datas[curnetKey];
+    String curnetKey = searchKeys[index];
+    List<RecroderModule> curentRecrodingFiles = this.searchResault[curnetKey];
     return SliverToBoxAdapter(
       child: Column(
         children: <Widget>[
@@ -152,15 +152,15 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void EditingComplete() {
-    String keyWord = controller.text.trim();
+    String inputStr = controller.text.trim();
     Map<String, List<RecroderModule>> searchMap = {};
-    for (int i = 0; i < keyWord.length; i++) {
+    for (int i = 0; i < dataKeys.length; i++) {
       String curnetKey = dataKeys[i];
       List<RecroderModule> curentRecrodingFiles = this.datas[curnetKey],
           searchList = [];
       bool flg;
       curentRecrodingFiles.forEach((RecroderModule ele) {
-        flg = RegExp(keyWord).hasMatch(ele.title);
+        flg = ele.title.contains(inputStr);
         if (flg) searchList.add(ele);
       });
       if (flg) {
@@ -168,6 +168,7 @@ class _SearchPageState extends State<SearchPage> {
       }
     }
     setState(() {
+      searchKeys = searchMap.keys.toList();
       searchResault = searchMap;
     });
     node.unfocus();

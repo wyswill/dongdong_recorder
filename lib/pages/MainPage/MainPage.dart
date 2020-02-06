@@ -85,7 +85,7 @@ class _MainPageState extends State<MainPage>
               Navigator.pushNamed(context, '/mine');
             }),
         title: Center(child: Text('录音机')),
-        actions: <Widget>[Icon(Icons.list)],
+//        actions: <Widget>[Icon(Icons.list)],
       ),
       body: Column(
         children: <Widget>[
