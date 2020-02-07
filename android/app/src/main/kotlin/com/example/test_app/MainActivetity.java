@@ -8,7 +8,7 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 import io.flutter.plugins.GeneratedPluginRegistrant;
 
-public class MainActiveti extends FlutterActivity {
+public class MainActivetity extends FlutterActivity {
   MethodChannel channel;
 
   protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +38,14 @@ public class MainActiveti extends FlutterActivity {
         String paths = methodCall.argument("path").toString();
         long size = WavUtil.getWavLength(paths);
         result.success(size);
+        break;
+      case "cat":
+        String oringPath = methodCall.argument("originPath").toString();
+        String savePath = methodCall.argument("savePath").toString();
+        String startTime = methodCall.argument("startTime").toString();
+        String endTime = methodCall.argument("endTime").toString();
+        AudioCat audioCat = new AudioCat(oringPath, savePath, startTime, endTime);
+        result.success("ok");
         break;
       default:
         result.notImplemented();

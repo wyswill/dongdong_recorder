@@ -5,7 +5,6 @@ import 'package:asdasd/utiles.dart';
 import 'package:asdasd/widgets/listItem.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
 
 class Trash extends StatefulWidget {
   Trash({Key key}) : super(key: key);

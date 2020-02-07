@@ -21,7 +21,7 @@ class EditorCanvas extends CustomPainter {
     double step = size.height / 300;
 
     ///计算时间轴跨度
-    double preMs = 25, spacing = size.width / preMs;
+    double preMs = 25;
 
     /// 挨个画频谱柱子
     for (int i = 0; i < canvasData.length; i++) {
