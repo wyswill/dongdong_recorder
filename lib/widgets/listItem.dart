@@ -31,11 +31,6 @@ class _ListItemState extends State<ListItem> {
 
   @override
   void didChangeDependencies() {
-    streamSubscription = eventBus.on<TrashOption>().listen((event) {
-      // setState(() {
-      //   this.datas.removeAt(event.index);
-      // });
-    });
     super.didChangeDependencies();
   }
 

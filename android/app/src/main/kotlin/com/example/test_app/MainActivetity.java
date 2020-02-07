@@ -38,9 +38,8 @@ public class MainActivetity extends FlutterActivity {
         break;
       case "getSize":
         String paths = methodCall.argument("path").toString();
-//        long size = WavUtil.getWavLength(paths);
-        Audio audio = new AudioCat().getAudioFromPath(paths);
-        result.success(audio.getTimeMillis());
+        long size = WavUtil.getWavLength(paths);
+        result.success(size);
         break;
       case "cat":
         String oringPath = methodCall.argument("originPath").toString();

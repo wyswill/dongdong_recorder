@@ -33,6 +33,10 @@ class _RecrodingListState extends State<RecrodingList> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
     path = await FileUtile().getRecrodPath();
+    String TrashPath = await FileUtile().getRecrodPath(isDelete: true);
+    if (!await Directory(path).exists()) await Directory(path).create();
+    if (!await Directory(TrashPath).exists())
+      await Directory(TrashPath).create();
     await _getTotalSizeOfFilesInDir(Directory(path));
     dataKeys = datas.keys.toList();
     setState(() {});
@@ -97,6 +101,7 @@ class _RecrodingListState extends State<RecrodingList> {
   _getTotalSizeOfFilesInDir(final FileSystemEntity file) async {
     try {
       if (file is File) {
+        print(file);
         String filename = file.path.replaceAll(path, '');
         if (filename.indexOf(RegExp('.wav')) > 0) {
           DateTime dateTime = await file.lastModified();

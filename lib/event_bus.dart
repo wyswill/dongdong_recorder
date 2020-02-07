@@ -31,6 +31,12 @@ class TrashOption {
   final int index;
 }
 
+class TrashDeleted {
+  TrashDeleted({this.index});
+
+  final int index;
+}
+
 class NullEvent {}
 
 class SetCurentTime {

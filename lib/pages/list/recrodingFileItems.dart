@@ -180,7 +180,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
         newPath = ((await getExternalCacheDirectories())[0]).path;
     Directory directory = Directory(newPath + cacheFile);
     if (!directory.existsSync()) directory.createSync();
-    file.copySync(newPath + cacheFile + widget.curentFile.title);
+    await file.copy('$newPath$cacheFile${widget.curentFile.title}.wav');
     file.delete();
     cancle();
     eventBus.fire(DeleteFileSync(attr: widget.curnetKey, index: widget.index));

@@ -352,7 +352,14 @@ class _BottomshowBarState extends State<BottomshowBar>
   }
 
   ///删除
-  void delete() {}
+  void delete() async {
+    await File(trashFile.filepath).delete();
+    setState(() {
+      trashFile = null;
+      curentState = bottomState.recrod;
+    });
+    eventBus.fire(TrashDeleted(index: index));
+  }
 
   ///还原
   void reset() async {
@@ -361,19 +368,20 @@ class _BottomshowBarState extends State<BottomshowBar>
         newPath = ((await getExternalCacheDirectories())[0]).path;
     Directory directory = Directory(newPath + cacheFile);
     if (!directory.existsSync()) directory.createSync();
-    file.copySync(newPath + cacheFile + trashFile.title);
+    await file.copy('$newPath$cacheFile${trashFile.title}.wav');
     file.delete();
-    controller.reset();
-    controller.reverse();
+    cancel();
+    eventBus.fire(TrashDeleted(index: index));
   }
 
   ///取消
   void cancel() {
-    controller.reset();
-    controller.forward();
     setState(() {
       trashFile = null;
+      curentState = bottomState.recrod;
     });
+    controller.reset();
+    controller.forward();
   }
 
   void showSelect() {}
@@ -382,10 +390,9 @@ class _BottomshowBarState extends State<BottomshowBar>
 
   ///播放音乐
   void play() async {
-    setState(() {
-      this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
-    });
+    this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
     eventBus.fire(PlayingState(this.plaingFile.isPlaying));
+    print(plaingFile.filepath);
     if (plaingFile.isPlaying)
       await audioPlayer.play(plaingFile.filepath, isLocal: true);
     else
@@ -414,7 +421,7 @@ class _BottomshowBarState extends State<BottomshowBar>
 
   ///剪辑
   void editor() {
-    Navigator.pushNamed(context, '/editor',arguments: this.plaingFile);
+    Navigator.pushNamed(context, '/editor', arguments: this.plaingFile);
   }
 
   ///转文字

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/utiles.dart';
 import 'package:asdasd/widgets/listItem.dart';
@@ -30,6 +31,10 @@ class _TrashState extends State<Trash> {
       await _getTotalSizeOfFilesInDir(Directory(path));
       setState(() {});
     }
+    eventBus.on<TrashDeleted>().listen((e) {
+      datas.removeAt(e.index);
+      setState(() {});
+    });
   }
 
   @override
@@ -41,13 +46,13 @@ class _TrashState extends State<Trash> {
   _getTotalSizeOfFilesInDir(final FileSystemEntity file) async {
     try {
       if (file is File) {
-        String filename = file.path.replaceAll(path, '');
+        String filename = file.path.replaceAll(path + '/', '');
         if (filename.indexOf(RegExp('.wav')) > 0) {
           DateTime dateTime = await file.lastModified();
           var res = await channel.invokeMethod('getSize', {"path": file.path});
           double s = (res % (1000 * 60) / 1000);
           RecroderModule rm = RecroderModule(
-            title: filename,
+            title: filename.replaceAll('.wav', ''),
             filepath: file.path,
             recrodingtime: "$res",
             lastModified:
@@ -56,7 +61,6 @@ class _TrashState extends State<Trash> {
             fileSize: "${16000 * s / 1024}kb",
           );
           this.datas.add(rm);
-          print(datas);
         }
       }
       if (file is Directory) {
