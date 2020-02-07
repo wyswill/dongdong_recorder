@@ -3,6 +3,8 @@ package com.example.test_app;
 import android.os.Bundle;
 
 
+import com.example.test_app.bean.Audio;
+
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -36,15 +38,17 @@ public class MainActivetity extends FlutterActivity {
         break;
       case "getSize":
         String paths = methodCall.argument("path").toString();
-        long size = WavUtil.getWavLength(paths);
-        result.success(size);
+//        long size = WavUtil.getWavLength(paths);
+        Audio audio = new AudioCat().getAudioFromPath(paths);
+        result.success(audio.getTimeMillis());
         break;
       case "cat":
         String oringPath = methodCall.argument("originPath").toString();
         String savePath = methodCall.argument("savePath").toString();
-        String startTime = methodCall.argument("startTime").toString();
-        String endTime = methodCall.argument("endTime").toString();
+        int startTime = methodCall.argument("startTime");
+        int endTime = methodCall.argument("endTime");
         AudioCat audioCat = new AudioCat(oringPath, savePath, startTime, endTime);
+        audioCat.Cat();
         result.success("ok");
         break;
       default:

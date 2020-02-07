@@ -339,16 +339,10 @@ class _EditorState extends State<Editor> {
   void cut() async {
     int start = startTimestamp, end = endTimestamp;
     String filePath = rm.filepath, savePath;
-    Directory directory = (await getExternalCacheDirectories())[0];
-    savePath = directory.path +
-        '/file_cache/Audio/${rm.title}${rm.title.hashCode}.wav';
-    if (startTimestamp < endTimestamp) {
-      start = endTimestamp;
-      end = startTimestamp;
-    }
-    await channel.invokeListMethod("cat", {
+    savePath = await FileUtile().getRecrodPath();
+    await channel.invokeMethod("cat", {
       "originPath": filePath,
-      "savaPath": savePath,
+      "savePath": savePath,
       "startTime": start,
       "endTime": end
     });

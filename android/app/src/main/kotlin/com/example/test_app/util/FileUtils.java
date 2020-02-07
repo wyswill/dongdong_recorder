@@ -6,8 +6,9 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Environment;
 import android.text.TextUtils;
-import com.pinery.audioedit.App;
-import com.pinery.audioedit.common.Constant;
+
+import com.example.test_app.App;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

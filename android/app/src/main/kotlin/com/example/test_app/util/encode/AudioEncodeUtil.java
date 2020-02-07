@@ -1,6 +1,7 @@
 package com.example.test_app.util.encode;
 
-import com.pinery.audioedit.common.Constant;
+import com.example.test_app.util.Constant;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;

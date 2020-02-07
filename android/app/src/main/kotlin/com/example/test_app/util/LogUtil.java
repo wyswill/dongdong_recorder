@@ -1,7 +1,6 @@
 package com.example.test_app.util;
 
 import android.util.Log;
-import com.pinery.audioedit.common.Constant;
 
 /**
  * Log打印日志类

@@ -1,9 +1,11 @@
 package com.example.test_app.util;
 
-import com.pinery.audioedit.bean.Audio;
+import com.example.test_app.bean.Audio;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Date;
 
 /**
  * 音频合成
@@ -17,25 +19,28 @@ public class AudioEditUtil {
 
   /**
    * 裁剪音频
-   * @param audio 音频信息
+   *
+   * @param audio        音频信息
    * @param cutStartTime 裁剪开始时间
-   * @param cutEndTime 裁剪结束时间
+   * @param cutEndTime   裁剪结束时间
    */
-  public static void cutAudio(Audio audio, float cutStartTime, float cutEndTime){
-    if(cutStartTime == 0 && cutEndTime == audio.getTimeMillis() / 1000f){
+  public static void cutAudio(Audio audio, float cutStartTime, float cutEndTime) {
+    if (cutStartTime == 0 && cutEndTime == audio.getTimeMillis() / 1000f) {
       return;
     }
-    if(cutStartTime >= cutEndTime){
+    if (cutStartTime >= cutEndTime) {
       return;
     }
 
-    String srcWavePath = audio.getPath();
+    String srcWavePath = audio.getPath().replace(".wav", "");
     int sampleRate = audio.getSampleRate();
     int channels = audio.getChannel();
     int bitNum = audio.getBitNum();
     RandomAccessFile srcFis = null;
     RandomAccessFile newFos = null;
-    String tempOutPath = srcWavePath + ".temp";
+    Date date = new Date();
+    String suffix = date.getYear() + "." + date.getMonth() + 1 + "." + date.getDate() + "." + date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+    String tempOutPath = srcWavePath + suffix + ".wav";
     try {
 
       //创建输入流
@@ -62,16 +67,16 @@ public class AudioEditUtil {
 
       return;
 
-    }finally {
+    } finally {
       //关闭输入流
-      if(srcFis != null){
+      if (srcFis != null) {
         try {
           srcFis.close();
         } catch (IOException e) {
           e.printStackTrace();
         }
       }
-      if(newFos != null){
+      if (newFos != null) {
         try {
           newFos.close();
         } catch (IOException e) {
@@ -80,21 +85,21 @@ public class AudioEditUtil {
       }
     }
 
-    // 删除源文件,
-    new File(srcWavePath).delete();
-    //重命名为源文件
-    FileUtils.renameFile(new File(tempOutPath), audio.getPath());
+//    //重命名为源文件
+    System.out.println(tempOutPath);
+//    FileUtils.renameFile(new File(tempOutPath), audio.getPath());
 
   }
 
   /**
    * 插入音频,针对声道数,采样率,采样位数都一样的wav音频
-   * @param srcAudio 源音频路径
-   * @param coverAudio 覆盖音频路径
+   *
+   * @param srcAudio     源音频路径
+   * @param coverAudio   覆盖音频路径
    * @param outAudio
    * @param srcStartTime 源音频起始时间
    */
-  public static void insertAudioWithSame(Audio srcAudio, Audio coverAudio, Audio outAudio, float srcStartTime){
+  public static void insertAudioWithSame(Audio srcAudio, Audio coverAudio, Audio outAudio, float srcStartTime) {
 
     String srcWavePath = srcAudio.getPath();
     String coverWavePath = coverAudio.getPath();
@@ -133,7 +138,7 @@ public class AudioEditUtil {
       //复制srcStartTime时间后的源文件数据
       final long srcFileSize = new File(srcWavePath).length() - WAVE_HEAD_SIZE;
       int remainSize = (int) (srcFileSize - srcStartPos);
-      if(remainSize > 0){
+      if (remainSize > 0) {
 
         coverFis.seek(WAVE_HEAD_SIZE + coverStartPos);
         copyData(srcFis, newFos, remainSize);
@@ -145,23 +150,23 @@ public class AudioEditUtil {
 
       return;
 
-    }finally {
+    } finally {
       //关闭输入流
-      if(srcFis != null){
+      if (srcFis != null) {
         try {
           srcFis.close();
         } catch (IOException e) {
           e.printStackTrace();
         }
       }
-      if(coverFis != null){
+      if (coverFis != null) {
         try {
           coverFis.close();
         } catch (IOException e) {
           e.printStackTrace();
         }
       }
-      if(newFos != null){
+      if (newFos != null) {
         try {
           newFos.close();
         } catch (IOException e) {
@@ -181,11 +186,11 @@ public class AudioEditUtil {
   /**
    * 混合音频,针对声道数,采样率,采样位数都一样的wav音频
    *
-   * @param srcAudio 源音频路径
+   * @param srcAudio   源音频路径
    * @param coverAudio 覆盖音频路径
-   * @param startTime 源音频起始时间
-   * @param progress1 源音频音频强度
-   * @param progress2 附加音频音频强度
+   * @param startTime  源音频起始时间
+   * @param progress1  源音频音频强度
+   * @param progress2  附加音频音频强度
    */
   public static void mixAudioWithSame(Audio srcAudio, Audio coverAudio, Audio outAudio, float startTime, float progress1, float progress2) {
 
@@ -270,10 +275,11 @@ public class AudioEditUtil {
 
   /**
    * 获取wave文件某个时间对应的数据位置
-   * @param time 时间
+   *
+   * @param time       时间
    * @param sampleRate 采样率
-   * @param channels 声道数
-   * @param bitNum 采样位数
+   * @param channels   声道数
+   * @param bitNum     采样位数
    * @return
    */
   private static int getPositionFromWave(float time, int sampleRate, int channels, int bitNum) {
@@ -289,7 +295,7 @@ public class AudioEditUtil {
    * 复制wav header 数据
    *
    * @param headerData wav header 数据
-   * @param fos 目标输出流
+   * @param fos        目标输出流
    */
   private static void copyHeadData(byte[] headerData, RandomAccessFile fos) {
     try {
@@ -303,8 +309,8 @@ public class AudioEditUtil {
   /**
    * 复制数据
    *
-   * @param fis 源输入流
-   * @param fos 目标输出流
+   * @param fis      源输入流
+   * @param fos      目标输出流
    * @param cooySize 复制大小
    */
   private static void copyData(RandomAccessFile fis, RandomAccessFile fos, final int cooySize) {
@@ -337,12 +343,13 @@ public class AudioEditUtil {
 
   /**
    * 复制数据
-   * @param fis 源输入流
-   * @param fos 目标输出流
-   * @param cooySize 复制大小
+   *
+   * @param fis         源输入流
+   * @param fos         目标输出流
+   * @param cooySize    复制大小
    * @param volumeValue 音量调节大小
    */
-  private static void copyData(RandomAccessFile fis, RandomAccessFile fos, final int cooySize, final float volumeValue){
+  private static void copyData(RandomAccessFile fis, RandomAccessFile fos, final int cooySize, final float volumeValue) {
 
     byte[] buffer = new byte[2048];
     int length;
@@ -350,24 +357,24 @@ public class AudioEditUtil {
 
     try {
 
-      while((length = fis.read(buffer)) != -1){
+      while ((length = fis.read(buffer)) != -1) {
 
         fos.write(changeDataWithVolume(buffer, volumeValue), 0, length);
 
         totalReadLength += length;
 
         int remainSize = cooySize - totalReadLength;
-        if(remainSize <= 0){
+        if (remainSize <= 0) {
           //读取指定位置完成
           break;
-        }else if(remainSize < buffer.length){
+        } else if (remainSize < buffer.length) {
           //离指定位置的大小小于buffer的大小,换remainSize的buffer
           buffer = new byte[remainSize];
         }
 
       }
 
-    }catch (Exception ex){
+    } catch (Exception ex) {
       ex.printStackTrace();
     }
 
@@ -377,7 +384,7 @@ public class AudioEditUtil {
    * 合成音频
    */
   private static void mixData(RandomAccessFile srcFis, RandomAccessFile coverFis,
-      RandomAccessFile fos, final int copySize, float volumeAudio1, float volumeAudio2) {
+                              RandomAccessFile fos, final int copySize, float volumeAudio1, float volumeAudio2) {
 
     MultiAudioMixer mix = MultiAudioMixer.createDefaultAudioMixer();
 
@@ -394,7 +401,7 @@ public class AudioEditUtil {
         srcBuffer = changeDataWithVolume(srcBuffer, volumeAudio1);
         coverBuffer = changeDataWithVolume(coverBuffer, volumeAudio2);
 
-        byte[] mixData = mix.mixRawAudioBytes(new byte[][] { srcBuffer, coverBuffer });
+        byte[] mixData = mix.mixRawAudioBytes(new byte[][]{srcBuffer, coverBuffer});
         fos.write(mixData);
 
         totalReadLength += length;

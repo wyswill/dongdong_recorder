@@ -9,18 +9,17 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.text.TextUtils;
-import com.pinery.audioedit.App;
-import com.pinery.audioedit.callback.DecodeOperateInterface;
-import com.pinery.audioedit.common.Constant;
-import com.pinery.audioedit.ssrc.SSRC;
+import com.example.test_app.App;
+import com.example.test_app.ssrc.SSRC;
+//import com.pinery.audioedit.callback.DecodeOperateInterface;
+//import com.pinery.audioedit.common.Constant;
+//import com.pinery.audioedit.ssrc.SSRC;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-
-import static android.R.attr.format;
 
 /**
  * 音频文件解码

@@ -1,50 +1,50 @@
 package com.example.test_app;
 
-import com.example.test_app.util.DecodeOperateInterface;
-import com.example.test_app.util.FileUtils;
-import com.example.test_app.util.DecodeEngine;
+import com.example.test_app.bean.Audio;
+import com.example.test_app.util.AudioEditUtil;
 
 import java.io.File;
 
-public class AudioCat {
-  final String originPath;
-  final String savePath;
-  final String startTime;
-  final String endTime;
 
-  public AudioCat(String originPath, String savePath, String startTime, String endTime) {
+public class AudioCat {
+  String originPath;
+  String savePath;
+  int startTime;
+  int endTime;
+
+  public AudioCat(String originPath, String savePath, int startTime, int endTime) {
     this.originPath = originPath;
     this.savePath = savePath;
     this.startTime = startTime;
     this.endTime = endTime;
   }
 
-  private void decodeAudio(String path, String destPath) {
-    final File file = new File(path);
+  public AudioCat() {
+  }
 
-    if (FileUtils.checkFileExist(destPath)) {
-      FileUtils.deleteFile(new File(destPath));
+  public void Cat() {
+    Audio audio = this.getAudioFromPath(originPath);
+    System.out.println("srcWavePath      " + audio.getPath());
+    AudioEditUtil.cutAudio(audio, startTime, endTime);
+  }
+
+  /**
+   * 获取根据解码后的文件得到audio数据
+   *
+   * @param path
+   * @return
+   */
+  public Audio getAudioFromPath(String path) {
+    if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+      try {
+        Audio audio = Audio.createAudioFromFile(new File(path));
+        return audio;
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
 
-    FileUtils.confirmFolderExist(new File(destPath).getParent());
-
-    DecodeEngine.getInstance().convertMusicFileToWaveFile(path, destPath, new DecodeOperateInterface() {
-      @Override
-      public void updateDecodeProgress(int decodeProgress) {
-        String msg = String.format("解码文件：%s，进度：%d", file.getName(), decodeProgress) + "%";
-//        EventBus.getDefault().post(new AudioMsg(AudioTaskCreator.ACTION_AUDIO_MIX, msg));
-      }
-
-      @Override
-      public void decodeSuccess() {
-
-      }
-
-      @Override
-      public void decodeFail() {
-
-      }
-    });
+    return null;
   }
 
 }
