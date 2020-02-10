@@ -46,7 +46,6 @@ class _ListItemState extends State<ListItem> {
   @override
   void dispose() {
     eventBus.fire(NullEvent());
-    streamSubscription.cancel();
     super.dispose();
   }
 

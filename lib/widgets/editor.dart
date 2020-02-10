@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/cancasRectModu.dart';
 import 'package:asdasd/modus/record.dart';
@@ -7,7 +5,7 @@ import 'package:asdasd/widgets/showSoung.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:path_provider/path_provider.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 
 import '../utiles.dart';
 import 'musicProgress.dart';
@@ -59,7 +57,9 @@ class _EditorState extends State<Editor> {
 
   ///与canvas交互的参数
   CanvasRectModu canvasRectModu;
-  int startIndex, endIndex, startTimestamp, endTimestamp;
+  int startIndex, endIndex;
+  String startTimestamp, endTimestamp;
+  FlutterFFmpeg fFmpeg = FlutterFFmpeg();
 
   @override
   void initState() {
@@ -337,16 +337,26 @@ class _EditorState extends State<Editor> {
 
   ///音频剪切
   void cut() async {
-    int start = startTimestamp, end = endTimestamp;
     String filePath = rm.filepath, savePath;
+    DateTime dateTime = DateTime.now();
     savePath = await FileUtile().getRecrodPath();
-    await channel.invokeMethod("cat", {
-      "originPath": filePath,
-      "savePath": savePath,
-      "startTime": start,
-      "endTime": end
-    });
-    print('剪辑完成');
+    savePath =
+        "$savePath${rm.title}-${dateTime.year}.${dateTime.month}.${dateTime.day}.${dateTime.year}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}.wav";
+
+    var argument = [
+      "-i",
+      filePath,
+      '-ss',
+      startTimestamp,
+      '-t',
+      endTimestamp,
+      '-y',
+      savePath
+    ];
+    print(argument);
+    var res = await fFmpeg.executeWithArguments(argument);
+
+    print('剪辑完成   $res');
   }
 
   ///音频选项
@@ -364,7 +374,7 @@ class _EditorState extends State<Editor> {
       }
       setState(() {
         startIndex = index;
-        startTimestamp = canvasRectModu.ms;
+        startTimestamp = canvasRectModu.timestamp;
       });
     }
   }
@@ -381,7 +391,7 @@ class _EditorState extends State<Editor> {
       }
       setState(() {
         endIndex = index;
-        endTimestamp = canvasRectModu.ms;
+        endTimestamp = canvasRectModu.timestamp;
       });
     }
   }

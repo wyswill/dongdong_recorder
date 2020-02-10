@@ -44,7 +44,7 @@ alert(
 
 formatTime(int totalTime) {
   Duration d = Duration(milliseconds: totalTime);
-  return "${d.inHours}:${d.inMinutes}:${d.inSeconds}:${d.inMilliseconds - (d.inSeconds * 1000)}";
+  return "${d.inHours}:${d.inMinutes}:${d.inSeconds}";
 }
 
 class FileUtile {

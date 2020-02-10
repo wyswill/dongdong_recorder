@@ -5,6 +5,7 @@ import 'package:asdasd/modus/cancasRectModu.dart';
 import 'package:asdasd/utiles.dart';
 import 'package:asdasd/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:flutter_plugin_record/response.dart';
 import 'package:path_provider/path_provider.dart';
@@ -28,6 +29,10 @@ class _RecrodState extends State<Recrod> {
   double audioTimeLength = 0;
   int h = 0, m = 0, s = 0, temp = 0;
   Timer timer;
+
+  ///和native通讯
+  MethodChannel channel = const MethodChannel("com.lanwanhudong");
+
   @override
   void initState() {
     super.initState();
@@ -199,7 +204,7 @@ class _RecrodState extends State<Recrod> {
   }
 
   ///播放或暂停
-  startOrStop() {
+  startOrStop() async {
     if (statu) {
       flutterPluginRecord.stop();
       timer.cancel();
@@ -243,6 +248,7 @@ class _RecrodState extends State<Recrod> {
       alert(context, title: Text('警告!'), content: Text('文件标题不能为空'));
     else {
       File file = File(filepath);
+      print(filepath);
       file.copySync("$path$filename.wav");
       await file.delete();
       Navigator.popAndPushNamed(context, '/mainPage');
@@ -267,15 +273,17 @@ class _RecrodState extends State<Recrod> {
   setdata(double value) {
     List<CanvasRectModu> newLists = [];
     if (recrodingData.length < 195) {
-      this.recrodingData.add(CanvasRectModu(vlaue: value,type: CanvasRectTypes.data));
+      this
+          .recrodingData
+          .add(CanvasRectModu(vlaue: value, type: CanvasRectTypes.data));
       key.currentState.setRecrodingData(recrodingData);
     } else {
       newLists = recrodingData;
       newLists.removeAt(0);
-      newLists.add(CanvasRectModu(vlaue: value,type: CanvasRectTypes.data));
+      newLists.add(CanvasRectModu(vlaue: value, type: CanvasRectTypes.data));
       key.currentState.setRecrodingData(newLists);
     }
-    templist.add(CanvasRectModu(vlaue: value,type: CanvasRectTypes.data));
+    templist.add(CanvasRectModu(vlaue: value, type: CanvasRectTypes.data));
   }
 
   ///将数字音频信号转换成毫秒位单位的值
