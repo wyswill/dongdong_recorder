@@ -38,7 +38,8 @@ public class MainActivetity extends FlutterActivity {
                 break;
             case "getSize":
                 String paths = methodCall.argument("path").toString();
-                long size = WavUtil.getWavLength(paths);
+                Audio audios = new AudioCat().getAudioFromPath(paths);
+                long size = audios.getTimeMillis();
                 result.success(size);
                 break;
             case "cat":
@@ -47,7 +48,10 @@ public class MainActivetity extends FlutterActivity {
                 int startTime = methodCall.argument("startTime");
                 int endTime = methodCall.argument("endTime");
                 AudioCat audioCat = new AudioCat(oringPath, savePath, startTime, endTime);
-                audioCat.Cat();
+                Audio audio = audioCat.getAudioFromPath(oringPath);
+                System.out.println(audio.getSampleRate() + "采样率");
+                System.out.println(audio.getChannel() + "通道");
+                System.out.println(audio.getBitNum() + "bit数");
                 result.success("ok");
                 break;
             case "recrod":

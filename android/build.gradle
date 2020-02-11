@@ -29,5 +29,5 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 ext {
-    flutterFFmpegPackage = "audio-lts"
+    flutterFFmpegPackage = "full-lts"
 }

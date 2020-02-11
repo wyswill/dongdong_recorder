@@ -57,7 +57,7 @@ class _EditorState extends State<Editor> {
 
   ///与canvas交互的参数
   CanvasRectModu canvasRectModu;
-  int startIndex, endIndex;
+  int startIndex, endIndex, startTime, endTime;
   String startTimestamp, endTimestamp;
   FlutterFFmpeg fFmpeg = FlutterFFmpeg();
 
@@ -342,21 +342,12 @@ class _EditorState extends State<Editor> {
     savePath = await FileUtile().getRecrodPath();
     savePath =
         "$savePath${rm.title}-${dateTime.year}.${dateTime.month}.${dateTime.day}.${dateTime.year}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}.wav";
-
-    var argument = [
-      "-i",
-      filePath,
-      '-ss',
-      startTimestamp,
-      '-t',
-      endTimestamp,
-      '-y',
-      savePath
-    ];
+//    String argument ="-i $filePath -vn -ar 44100 -ac 2 -ab 192k -f wav  $savePath";
+    String argument =
+        "-i $filePath -ss $startTimestamp -t $endTimestamp -y -f wav $savePath";
     print(argument);
-    var res = await fFmpeg.executeWithArguments(argument);
-
-    print('剪辑完成   $res');
+    var ffmres = await fFmpeg.execute(argument);
+    print('剪辑完成   $ffmres');
   }
 
   ///音频选项
@@ -375,6 +366,7 @@ class _EditorState extends State<Editor> {
       setState(() {
         startIndex = index;
         startTimestamp = canvasRectModu.timestamp;
+        startTime = canvasRectModu.ms;
       });
     }
   }
@@ -392,6 +384,7 @@ class _EditorState extends State<Editor> {
       setState(() {
         endIndex = index;
         endTimestamp = canvasRectModu.timestamp;
+        endTime = canvasRectModu.ms;
       });
     }
   }

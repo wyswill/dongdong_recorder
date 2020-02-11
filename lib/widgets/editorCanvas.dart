@@ -20,8 +20,8 @@ class EditorCanvas extends CustomPainter {
     /// 幅度比例
     double step = size.height / 300;
 
-    ///计算时间轴跨度
-    double preMs = 25;
+    //计算时间轴跨度
+    // double preMs = 25;
 
     /// 挨个画频谱柱子
     for (int i = 0; i < canvasData.length; i++) {
@@ -70,6 +70,8 @@ class EditorCanvas extends CustomPainter {
           canvas.drawRect(endFlag, Paint()..color = Colors.red);
           break;
         default:
+          canvas.drawRect(column, Paint()..color = Colors.white);
+          break;
       }
       if (curent.type == CanvasRectTypes.data) {
         if (i == canvasData.length / 2) {

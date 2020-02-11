@@ -95,7 +95,7 @@ class _SearchPageState extends State<SearchPage> {
         decoration: InputDecoration(
             border: InputBorder.none,
             hintStyle: TextStyle(color: Theme.of(context).primaryColor)),
-        onEditingComplete: EditingComplete,
+        onEditingComplete: editingComplete,
       ),
     );
   }
@@ -151,7 +151,7 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  void EditingComplete() {
+  void editingComplete() {
     String inputStr = controller.text.trim();
     Map<String, List<RecroderModule>> searchMap = {};
     for (int i = 0; i < dataKeys.length; i++) {

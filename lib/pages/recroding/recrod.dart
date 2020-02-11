@@ -6,6 +6,7 @@ import 'package:asdasd/utiles.dart';
 import 'package:asdasd/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:flutter_plugin_record/response.dart';
 import 'package:path_provider/path_provider.dart';
@@ -241,6 +242,8 @@ class _RecrodState extends State<Recrod> {
     }
   }
 
+  FlutterFFmpeg fFmpeg = FlutterFFmpeg();
+
   ///保存录音
   saveData() async {
     String filename = this.controller.text.trim();
@@ -248,8 +251,8 @@ class _RecrodState extends State<Recrod> {
       alert(context, title: Text('警告!'), content: Text('文件标题不能为空'));
     else {
       File file = File(filepath);
-      print(filepath);
-      file.copySync("$path$filename.wav");
+     file.copySync("$path$filename.wav");
+      // await fFmpeg.execute("-i $filepath -c copy -y -f wav -ar 1600 $path$filename.wav");
       await file.delete();
       Navigator.popAndPushNamed(context, '/mainPage');
     }

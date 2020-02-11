@@ -27,6 +27,10 @@ public class AudioCat {
         this.endTime = endTime;
     }
 
+    public AudioCat(String originPath) {
+        this.originPath = originPath;
+    }
+
     public AudioCat() {
     }
 
