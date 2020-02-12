@@ -110,7 +110,7 @@ class _EditorState extends State<Editor> {
           IconButton(
             icon: Icon(Icons.cancel, color: Colors.white),
             onPressed: () {
-              Navigator.pop(context);
+              Navigator.popAndPushNamed(context, '/mainPage');
             },
           )
         ],
@@ -337,17 +337,24 @@ class _EditorState extends State<Editor> {
 
   ///音频剪切
   void cut() async {
-    String filePath = rm.filepath, savePath;
+    String originPath = rm.filepath, savePath;
     DateTime dateTime = DateTime.now();
     savePath = await FileUtile().getRecrodPath();
     savePath =
-        "$savePath${rm.title}-${dateTime.year}.${dateTime.month}.${dateTime.day}.${dateTime.year}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}.wav";
-//    String argument ="-i $filePath -vn -ar 44100 -ac 2 -ab 192k -f wav  $savePath";
-    String argument =
-        "-i $filePath -ss $startTimestamp -t $endTimestamp -y -f wav $savePath";
-    print(argument);
-    var ffmres = await fFmpeg.execute(argument);
-    print('剪辑完成   $ffmres');
+        "$savePath${rm.title}-${dateTime.year}.${dateTime.month}.${dateTime.day}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}";
+
+    await channel.invokeMethod("cat", {
+      "originPath": originPath,
+      "savePath": savePath,
+      "startTime": startTime,
+      "endTime": endTime
+    });
+    //    String argument ="-i $filePath -vn -ar 44100 -ac 2 -ab 192k -f wav  $savePath";
+//    String argument =
+//        "-i $originPath -ss $startTimestamp -t $endTimestamp -f wav   -acodec pcm_s16le -y  $savePath.wav";
+//    String argument = "-i $savePath.wav -f mp4 $savePath.mp4";
+//    var ffmres = await fFmpeg.execute(argument);
+//    print('剪辑完成   $ffmres');
   }
 
   ///音频选项

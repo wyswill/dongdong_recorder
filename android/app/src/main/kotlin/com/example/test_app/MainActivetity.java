@@ -4,6 +4,9 @@ import android.os.Bundle;
 
 
 import com.example.test_app.bean.Audio;
+import com.example.test_app.util.AudioEncodeUtil;
+
+import java.io.IOException;
 
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.MethodCall;
@@ -39,23 +42,32 @@ public class MainActivetity extends FlutterActivity {
             case "getSize":
                 String paths = methodCall.argument("path").toString();
                 Audio audios = new AudioCat().getAudioFromPath(paths);
+                System.out.println("采样率" + audios.getSampleRate());
+                System.out.println("声道数" + audios.getChannel());
+                System.out.println("采样位数" + audios.getBitNum());
                 long size = audios.getTimeMillis();
                 result.success(size);
                 break;
             case "cat":
                 String oringPath = methodCall.argument("originPath").toString();
                 String savePath = methodCall.argument("savePath").toString();
-                int startTime = methodCall.argument("startTime");
-                int endTime = methodCall.argument("endTime");
-                AudioCat audioCat = new AudioCat(oringPath, savePath, startTime, endTime);
-                Audio audio = audioCat.getAudioFromPath(oringPath);
-                System.out.println(audio.getSampleRate() + "采样率");
-                System.out.println(audio.getChannel() + "通道");
-                System.out.println(audio.getBitNum() + "bit数");
-                result.success("ok");
+                int startTime = (int) methodCall.argument("startTime");
+                int endTime = (int) methodCall.argument("endTime");
+//                AudioCat audioCat = new AudioCat(oringPath, savePath, startTime, endTime);
+//                audioCat.Cat();
+                System.out.println("剪辑开始");
+                boolean res = AudioCat.cut(oringPath, savePath + ".wav", startTime, endTime, 44);
+                System.out.println("剪辑完成！" + res);
                 break;
-            case "recrod":
-                new Recrode().getNoiseLevel();
+            case "playMusic":
+                String playPath = methodCall.argument("path").toString();
+                try {
+                    AudioPlayer audioPlayer = new AudioPlayer(playPath);
+                    audioPlayer.play();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                result.success("ok");
                 break;
             default:
                 result.notImplemented();

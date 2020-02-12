@@ -251,8 +251,9 @@ class _RecrodState extends State<Recrod> {
       alert(context, title: Text('警告!'), content: Text('文件标题不能为空'));
     else {
       File file = File(filepath);
-     file.copySync("$path$filename.wav");
-      // await fFmpeg.execute("-i $filepath -c copy -y -f wav -ar 1600 $path$filename.wav");
+      file.copySync("$path$filename.wav");
+//      await fFmpeg.execute(
+//          "-i $filepath  -y -f wav  -acodec pcm_s16le $path$filename.wav");
       await file.delete();
       Navigator.popAndPushNamed(context, '/mainPage');
     }

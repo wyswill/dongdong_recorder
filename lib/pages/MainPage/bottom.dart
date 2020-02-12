@@ -4,8 +4,11 @@ import 'dart:io';
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/pages/recroding/recrod.dart';
 import 'package:asdasd/widgets/musicProgress.dart';
-import 'package:audioplayers/audioplayers.dart';
+
+//import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:flutter_exoplayer/audioplayer.dart';
 import 'package:path_provider/path_provider.dart';
 
 import '../../event_bus.dart';
@@ -35,15 +38,21 @@ class _BottomshowBarState extends State<BottomshowBar>
   GlobalKey<MusicProgressState> key = GlobalKey();
   Animation<double> animation;
   AnimationController controller;
-  AudioPlayer audioPlayer = AudioPlayer();
+
+  AudioPlayer audioPlayer;
   double totalTime = 0;
   String currenttime = '0:0:0';
   int index;
   bottomState curentState = bottomState.recrod;
 
+  ///和native通讯
+  MethodChannel channel = const MethodChannel("com.lanwanhudong");
+
   @override
   void initState() {
     super.initState();
+
+    ///动画
     controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     animation = Tween<double>(begin: 200, end: 0).animate(controller);
@@ -51,23 +60,39 @@ class _BottomshowBarState extends State<BottomshowBar>
     controller.addListener(() {
       setState(() {});
     });
-    audioPlayer.onAudioPositionChanged.listen((Duration d) {
-      double curentProgress = (d.inMilliseconds / totalTime);
-      key.currentState.setCurentTime(curentProgress);
-      setState(() {
-        currenttime = formatTime(d.inMilliseconds);
-      });
-    });
-    audioPlayer.onPlayerStateChanged.listen((AudioPlayerState s) {
-      if (s == AudioPlayerState.COMPLETED) {
-        setState(() {
-          this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
-        });
-        eventBus.fire(PlayingState(this.plaingFile.isPlaying));
-      }
-      if (s == AudioPlayerState.STOPPED) key.currentState.setCurentTime(2);
-    });
+
+    ///音乐播放
+    initAudioPlayer();
   }
+
+  void initAudioPlayer() {
+    audioPlayer = AudioPlayer();
+  }
+
+//  void initAudioPlayer() {
+//    audioPlayer = AudioPlayer();
+//
+//    audioPlayer.onAudioPositionChanged.listen((Duration d) {
+//      double curentProgress = (d.inMilliseconds / totalTime);
+//      key.currentState.setCurentTime(curentProgress);
+//      setState(() {
+//        currenttime = formatTime(d.inMilliseconds);
+//      });
+//    });
+//    audioPlayer.onPlayerStateChanged.listen((AudioPlayerState s) {
+//      if (s == AudioPlayerState.COMPLETED) {
+//        setState(() {
+//          this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
+//          this.currenttime = formatTime(totalTime.toInt());
+//        });
+//        eventBus.fire(PlayingState(this.plaingFile.isPlaying));
+//        key.currentState.setCurentTime(2);
+//      }
+//    });
+//    audioPlayer.onPlayerError.listen((err) {
+//      print(err);
+//    });
+//  }
 
   @override
   void didChangeDependencies() {
@@ -80,10 +105,12 @@ class _BottomshowBarState extends State<BottomshowBar>
       currenttime = '0:0:0';
       plaingFile = event.file;
       totalTime = double.parse(plaingFile.recrodingtime);
-      await audioPlayer.setUrl(plaingFile.filepath, isLocal: true);
-      await audioPlayer.setReleaseMode(ReleaseMode.RELEASE);
-      this.curentState = bottomState.playRecroding;
-      setState(() {});
+      initAudioPlayer();
+//      await audioPlayer.setUrl(plaingFile.filepath, isLocal: true);
+//      await audioPlayer.setReleaseMode(ReleaseMode.RELEASE);
+      setState(() {
+        this.curentState = bottomState.playRecroding;
+      });
     });
     streamSubscription = eventBus.on<TrashOption>().listen((event) async {
       setState(() {
@@ -95,6 +122,16 @@ class _BottomshowBarState extends State<BottomshowBar>
       controller.forward();
     });
     streamSubscription = eventBus.on<NullEvent>().listen((event) async {
+      if (this.curentState != bottomState.recrod) {
+        setState(() {
+          plaingFile = null;
+          this.curentState = bottomState.recrod;
+        });
+        controller.reset();
+        controller.forward();
+      }
+    });
+    streamSubscription = eventBus.on<DeleteFileSync>().listen((event) async {
       if (this.curentState != bottomState.recrod) {
         setState(() {
           plaingFile = null;
@@ -392,11 +429,16 @@ class _BottomshowBarState extends State<BottomshowBar>
   void play() async {
     this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
     eventBus.fire(PlayingState(this.plaingFile.isPlaying));
-    print(plaingFile.filepath);
-    if (plaingFile.isPlaying)
-      await audioPlayer.play(plaingFile.filepath, isLocal: true);
-    else
+    if (plaingFile.isPlaying) {
+//      var res =
+//          await channel.invokeMethod("playMusic", {"path", plaingFile.filepath});
+      print(plaingFile.filepath);
+      await audioPlayer.play(plaingFile.filepath);
+//      await audioPlayer.play(plaingFile.filepath, isLocal: true);
+    } else {
       await audioPlayer.pause();
+//      await audioPlayer.pause();
+    }
   }
 
   ///右上角叉叉
@@ -421,7 +463,7 @@ class _BottomshowBarState extends State<BottomshowBar>
 
   ///剪辑
   void editor() {
-    Navigator.pushNamed(context, '/editor', arguments: this.plaingFile);
+    Navigator.popAndPushNamed(context, '/editor', arguments: this.plaingFile);
   }
 
   ///转文字

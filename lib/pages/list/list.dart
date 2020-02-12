@@ -102,8 +102,8 @@ class _RecrodingListState extends State<RecrodingList> {
     try {
       if (file is File) {
         print(file);
-        String filename = file.path.replaceAll(path, '');
-        if (filename.endsWith(".wav") || filename.endsWith('.mp3')) {
+        String filename = file.path.replaceAll(path, '').toLowerCase();
+        if (filename.endsWith(".wav") || filename.endsWith('.mp4')) {
           DateTime dateTime = await file.lastModified();
           String attr = '${dateTime.year}年${dateTime.month}月';
           var res = await channel.invokeMethod('getSize', {"path": file.path});
