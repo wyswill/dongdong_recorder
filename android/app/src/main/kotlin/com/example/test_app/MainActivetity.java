@@ -4,10 +4,15 @@ import android.os.Bundle;
 
 
 import com.example.test_app.bean.Audio;
+import com.example.test_app.util.AudioEditUtil;
 import com.example.test_app.util.AudioEncodeUtil;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.RandomAccessFile;
 
+import io.flutter.Log;
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -15,6 +20,7 @@ import io.flutter.plugins.GeneratedPluginRegistrant;
 
 public class MainActivetity extends FlutterActivity {
     MethodChannel channel;
+    AudioPlayer audioPlayer = new AudioPlayer();
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,32 +48,35 @@ public class MainActivetity extends FlutterActivity {
             case "getSize":
                 String paths = methodCall.argument("path").toString();
                 Audio audios = new AudioCat().getAudioFromPath(paths);
-                System.out.println("采样率" + audios.getSampleRate());
-                System.out.println("声道数" + audios.getChannel());
-                System.out.println("采样位数" + audios.getBitNum());
                 long size = audios.getTimeMillis();
                 result.success(size);
                 break;
             case "cat":
                 String oringPath = methodCall.argument("originPath").toString();
-                String savePath = methodCall.argument("savePath").toString();
+                String savePath = methodCall.argument("savePath").toString() + ".wav";
                 int startTime = (int) methodCall.argument("startTime");
                 int endTime = (int) methodCall.argument("endTime");
-//                AudioCat audioCat = new AudioCat(oringPath, savePath, startTime, endTime);
-//                audioCat.Cat();
                 System.out.println("剪辑开始");
-                boolean res = AudioCat.cut(oringPath, savePath + ".wav", startTime, endTime, 44);
+                boolean res = AudioCat.cut(oringPath, savePath, startTime, endTime, 44);
                 System.out.println("剪辑完成！" + res);
+                result.success(savePath);
                 break;
             case "playMusic":
                 String playPath = methodCall.argument("path").toString();
-                try {
-                    AudioPlayer audioPlayer = new AudioPlayer(playPath);
-                    audioPlayer.play();
-                } catch (IOException e) {
-                    e.printStackTrace();
+                String cmd = methodCall.argument("cmd").toString();
+                switch (cmd) {
+                    case "play":
+                        audioPlayer.play(playPath);
+                        result.success("ok");
+                        break;
+                    case "stop":
+                        audioPlayer.stop();
+                        result.success("ok");
+                        break;
+                    default:
+                        break;
                 }
-                result.success("ok");
+
                 break;
             default:
                 result.notImplemented();

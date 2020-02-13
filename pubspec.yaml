@@ -15,8 +15,6 @@ dependencies:
   flutter_plugin_record: ^0.1.2
   provider: ^3.2.0
   event_bus: ^1.1.0
-  audioplayers: ^0.13.6
-  flutter_exoplayer: ^0.5.4
 dev_dependencies:
   flutter_test:
     sdk: flutter

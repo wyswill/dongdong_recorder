@@ -22,13 +22,6 @@ packages:
       url: "https://pub.flutter-io.cn"
     source: hosted
     version: "2.3.0"
-  audioplayers:
-    dependency: "direct main"
-    description:
-      name: audioplayers
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.13.7"
   boolean_selector:
     dependency: transitive
     description:
@@ -83,13 +76,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_exoplayer:
-    dependency: "direct main"
-    description:
-      name: flutter_exoplayer
-      url: "https://pub.flutter-io.cn"
-    source: hosted
-    version: "0.5.4"
   flutter_ffmpeg:
     dependency: "direct main"
     description:

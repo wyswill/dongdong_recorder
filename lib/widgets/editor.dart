@@ -1,8 +1,9 @@
+import 'dart:async';
+
 import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/cancasRectModu.dart';
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/widgets/showSoung.dart';
-import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
@@ -50,9 +51,6 @@ class _EditorState extends State<Editor> {
 
   Color get mainColor => Theme.of(context).primaryColor;
 
-  ///音乐播放
-  AudioPlayer audioPlayer = AudioPlayer();
-
   RecroderModule get rm => widget.arguments;
 
   ///与canvas交互的参数
@@ -89,7 +87,6 @@ class _EditorState extends State<Editor> {
     controller.dispose();
     node.unfocus();
     node.dispose();
-    audioPlayer.dispose();
     super.dispose();
   }
 
@@ -349,12 +346,6 @@ class _EditorState extends State<Editor> {
       "startTime": startTime,
       "endTime": endTime
     });
-    //    String argument ="-i $filePath -vn -ar 44100 -ac 2 -ab 192k -f wav  $savePath";
-//    String argument =
-//        "-i $originPath -ss $startTimestamp -t $endTimestamp -f wav   -acodec pcm_s16le -y  $savePath.wav";
-//    String argument = "-i $savePath.wav -f mp4 $savePath.mp4";
-//    var ffmres = await fFmpeg.execute(argument);
-//    print('剪辑完成   $ffmres');
   }
 
   ///音频选项
@@ -422,7 +413,6 @@ class _EditorState extends State<Editor> {
   ///播放音乐
   void play() async {
     print(rm.filepath);
-    audioPlayer.play(rm.filepath);
   }
 
   ///定时选择

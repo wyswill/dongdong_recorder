@@ -51,9 +51,8 @@ class _RecrodingListState extends State<RecrodingList> {
     streamSubscription = eventBus.on<DeleteFileSync>().listen((event) {
       String attr = event.attr;
       int index = event.index;
-      setState(() {
-        datas[attr].removeAt(index);
-      });
+      datas[attr].removeAt(index);
+      setState(() {});
     });
   }
 
@@ -103,10 +102,11 @@ class _RecrodingListState extends State<RecrodingList> {
       if (file is File) {
         print(file);
         String filename = file.path.replaceAll(path, '').toLowerCase();
-        if (filename.endsWith(".wav") || filename.endsWith('.mp4')) {
+        if (filename.endsWith(".wav") || filename.endsWith('.mp3')) {
           DateTime dateTime = await file.lastModified();
           String attr = '${dateTime.year}年${dateTime.month}月';
           var res = await channel.invokeMethod('getSize', {"path": file.path});
+//          var res=1000;
           double s = (res % (1000 * 60) / 1000);
           RecroderModule rm = RecroderModule(
             title: filename.replaceAll('.wav', ''),
