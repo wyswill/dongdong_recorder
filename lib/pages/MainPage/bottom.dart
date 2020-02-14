@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/pages/recroding/recrod.dart';
+import 'package:asdasd/plugins/AudioPlayer.dart';
 import 'package:asdasd/widgets/musicProgress.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
@@ -39,10 +40,12 @@ class _BottomshowBarState extends State<BottomshowBar>
   String currenttime = '0:0:0';
   int index;
   bottomState curentState = bottomState.recrod;
+  AudioPlayer audioPlayer = AudioPlayer();
 
   @override
   void initState() {
     super.initState();
+
     ///动画
     controller =
         AnimationController(vsync: this, duration: Duration(milliseconds: 300));
@@ -52,7 +55,6 @@ class _BottomshowBarState extends State<BottomshowBar>
       setState(() {});
     });
   }
-
 
   @override
   void didChangeDependencies() {
@@ -384,9 +386,11 @@ class _BottomshowBarState extends State<BottomshowBar>
     this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
     eventBus.fire(PlayingState(this.plaingFile.isPlaying));
     // 播放或暂停
+    print("播放状态-== ${plaingFile.isPlaying}");
     if (plaingFile.isPlaying) {
-
+      await audioPlayer.playOrPause(this.plaingFile.filepath);
     } else {
+      await audioPlayer.pause();
     }
   }
 

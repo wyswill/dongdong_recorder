@@ -1,18 +1,13 @@
 package com.example.test_app;
 
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
 import android.os.Bundle;
 
 
 import com.example.test_app.bean.Audio;
-import com.example.test_app.util.AudioEditUtil;
-import com.example.test_app.util.AudioEncodeUtil;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.RandomAccessFile;
-
-import io.flutter.Log;
 import io.flutter.app.FlutterActivity;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
@@ -20,7 +15,9 @@ import io.flutter.plugins.GeneratedPluginRegistrant;
 
 public class MainActivetity extends FlutterActivity {
     MethodChannel channel;
-    AudioPlayer audioPlayer = new AudioPlayer();
+    int bufferSize = AudioTrack.getMinBufferSize(8000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
+    AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 8000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize, AudioTrack.MODE_STREAM);
+    AudioPlayer audioPlayer = new AudioPlayer(bufferSize, audioTrack);
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,6 +25,7 @@ public class MainActivetity extends FlutterActivity {
         channel = new MethodChannel(getFlutterView(), "com.lanwanhudong");
         channel.setMethodCallHandler(this::handleMethod);
     }
+
 
     /**
      * 处理方法回调监听
@@ -61,26 +59,23 @@ public class MainActivetity extends FlutterActivity {
                 System.out.println("剪辑完成！" + res);
                 result.success(savePath);
                 break;
-            case "playMusic":
+            case "play":
                 String playPath = methodCall.argument("path").toString();
-                String cmd = methodCall.argument("cmd").toString();
-                switch (cmd) {
-                    case "play":
-                        audioPlayer.play(playPath);
-                        result.success("ok");
-                        break;
-                    case "stop":
-                        audioPlayer.stop();
-                        result.success("ok");
-                        break;
-                    default:
-                        break;
-                }
-
+                audioPlayer.play(playPath);
+                result.success("ok");
+                break;
+            case "stop":
+                audioPlayer.stop();
+                break;
+            case "release":
+                audioPlayer.release();
+                break;
+            case "pause":
+                System.out.println("暂停");
+                audioPlayer.pause();
                 break;
             default:
-                result.notImplemented();
+                break;
         }
     }
-
 }
