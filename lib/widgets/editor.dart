@@ -30,13 +30,6 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     {'icon': 'asset/palying/icon_speed_normal.png', 'title': '倍速'},
     {'icon': 'asset/palying/icon_refresh2.png', 'title': '转文字'},
     {'icon': 'asset/palying/icon_more-menu_blue.png', 'title': '更多'},
-  ],
-      options = [
-    {'icon': 'asset/sheared/icon_Sheared.png', 'title': '剪切'},
-    {'icon': 'asset/sheared/icon_Pasting_blue.png', 'title': '复制'},
-    {'icon': 'asset/sheared/icon_copy_blue.png', 'title': '粘贴'},
-    {'icon': 'asset/sheared/icon_remove_blue.png', 'title': '删除'},
-    {'icon': 'asset/sheared/icon_saved_blue.png', 'title': '保留'},
   ];
   String currenttime = '0:0:0';
   GlobalKey<MusicProgressState> key = GlobalKey();
@@ -80,7 +73,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
       });
     });
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if(MediaQuery.of(context).viewInsets.bottom == 0){
+      if (MediaQuery.of(context).viewInsets.bottom == 0) {
         node.unfocus();
       }
     });
@@ -126,35 +119,22 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.only(top: 40),
-//                    height: 200,
+                    height: 180,
                     child: setCanvas(),
+                  ),
+                  Container(
+                    margin: EdgeInsets.only(top: 20),
+                    child: Text(canvasRectModu != null
+                        ? canvasRectModu.timestamp
+                        : "0:0:0"),
                   ),
                 ],
               ),
             ),
-            Container(
-              child: Text(
-                  canvasRectModu != null ? canvasRectModu.timestamp : "0:0:0"),
-            ),
-//            Row(
-//              children: <Widget>[
-//                FlatButton(
-//                  color: Colors.blue,
-//                  child: Text('开始'),
-//                  onPressed: setStart,
-//                ),
-//                FlatButton(
-//                  color: Colors.red,
-//                  child: Text('结束'),
-//                  onPressed: setEnd,
-//                ),
-//              ],
-//            ),
-            setOptions(),
           ],
         ),
       ),
-//      bottomNavigationBar: setButtom(),
+      bottomNavigationBar: setOptions(),
     );
   }
 
@@ -177,6 +157,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   Widget setOptions() {
     return Container(
       width: MediaQuery.of(context).size.width,
+      height: 60,
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       decoration: BoxDecoration(
@@ -196,7 +177,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                   width: 20,
                 ),
                 Text(
-                  '剪切',
+                  '剪切音频',
                   style: TextStyle(
                       color: Theme.of(context).primaryColor, fontSize: 12),
                 )
@@ -209,11 +190,11 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Image.asset(
-                  'asset/sheared/icon_Sheared.png',
+                  'asset/flag/icon_flag.png',
                   width: 20,
                 ),
                 Text(
-                  '开始',
+                  '开始时间戳',
                   style: TextStyle(
                       color: Theme.of(context).primaryColor, fontSize: 12),
                 )
@@ -226,11 +207,11 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Image.asset(
-                  'asset/sheared/icon_Sheared.png',
+                  'asset/flag/icon_flag_blue.png',
                   width: 20,
                 ),
                 Text(
-                  '结束',
+                  '结束时间戳',
                   style: TextStyle(
                       color: Theme.of(context).primaryColor, fontSize: 12),
                 )

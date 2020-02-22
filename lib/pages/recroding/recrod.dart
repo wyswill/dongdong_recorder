@@ -23,7 +23,7 @@ class _RecrodState extends State<Recrod> {
   TextEditingController controller = TextEditingController();
   FlutterPluginRecord flutterPluginRecord = FlutterPluginRecord();
   bool statu = false;
-  String filepath = '', cacheFile = '/file_cache/Audio/', path = '';
+  String filepath = '', path = '';
   List<CanvasRectModu> recrodingData = [], templist = [];
   GlobalKey<ShowSounState> key = GlobalKey();
   double left = 0, right = 60;
@@ -46,8 +46,7 @@ class _RecrodState extends State<Recrod> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    Directory directory = (await getExternalCacheDirectories())[0];
-    path = directory.path + cacheFile;
+    path = await FileUtile().getRecrodPath();
   }
 
   @override
@@ -69,10 +68,9 @@ class _RecrodState extends State<Recrod> {
         ),
         actions: <Widget>[
           IconButton(
-              icon: Icon(Icons.close),
-              onPressed: () {
-                Navigator.pop(context);
-              })
+            icon: Icon(Icons.close),
+            onPressed: exit,
+          )
         ],
       ),
       body: Stack(
@@ -179,6 +177,30 @@ class _RecrodState extends State<Recrod> {
     );
   }
 
+  void exit() {
+    alert(context, title: Text('确定退出么？'), actions: <Widget>[
+      FlatButton(
+        child: Text('确定'),
+        onPressed: () async {
+          if (filepath.isNotEmpty) await File(filepath).delete();
+          Navigator.pop(context);
+          Navigator.pop(context);
+        },
+      ),
+      FlatButton(
+        child: Text(
+          '取消',
+          style: TextStyle(
+            color: Colors.grey,
+          ),
+        ),
+        onPressed: () {
+          Navigator.pop(context);
+        },
+      ),
+    ]);
+  }
+
   ///重置
   reset() {
     setState(() {
@@ -249,11 +271,13 @@ class _RecrodState extends State<Recrod> {
     String filename = this.controller.text.trim();
     if (filename == '')
       alert(context, title: Text('警告!'), content: Text('文件标题不能为空'));
-    else {
+    else if (filepath.isNotEmpty) {
       File file = File(filepath);
       file.copySync("$path$filename.wav");
       await file.delete();
-      Navigator.popAndPushNamed(context, '/mainPage');
+      Navigator.pop(context);
+    } else {
+      alert(context, title: Text('没有录制音频'));
     }
   }
 
