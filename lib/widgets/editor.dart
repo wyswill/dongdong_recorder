@@ -122,12 +122,43 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                     height: 180,
                     child: setCanvas(),
                   ),
-                  Container(
-                    margin: EdgeInsets.only(top: 20),
-                    child: Text(canvasRectModu != null
-                        ? canvasRectModu.timestamp
-                        : "0:0:0"),
-                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      Column(
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.only(top: 20),
+                            child: Text(startTimestamp != null
+                                ? startTimestamp
+                                : "0:0:0"),
+                          ),
+                          Text('开始时间戳')
+                        ],
+                      ),
+                      Column(
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.only(top: 20),
+                            child: Text(canvasRectModu != null
+                                ? canvasRectModu.timestamp
+                                : "0:0:0"),
+                          ),
+                          Text('当前时间戳', style: TextStyle(color: Colors.red))
+                        ],
+                      ),
+                      Column(
+                        children: <Widget>[
+                          Container(
+                            margin: EdgeInsets.only(top: 20),
+                            child: Text(
+                                endTimestamp != null ? endTimestamp : "0:0:0"),
+                          ),
+                          Text('结束时间戳')
+                        ],
+                      ),
+                    ],
+                  )
                 ],
               ),
             ),
@@ -354,18 +385,34 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
 
   ///音频剪切
   void cut() async {
+    if (startTime == null) {
+      alert(context, title: Text('没有确定开始剪辑的时间'));
+      return;
+    } else if (endTime == null) {
+      alert(context, title: Text('没有确定结束剪辑的时间'));
+      return;
+    }
     String originPath = rm.filepath, savePath;
     DateTime dateTime = DateTime.now();
     savePath = await FileUtile().getRecrodPath();
     savePath =
         "$savePath${rm.title}-${dateTime.year}.${dateTime.month}.${dateTime.day}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}";
 
-    await channel.invokeMethod("cat", {
-      "originPath": originPath,
-      "savePath": savePath,
-      "startTime": startTime,
-      "endTime": endTime
-    });
+    try {
+      String res = await channel.invokeMethod("cat", {
+        "originPath": originPath,
+        "savePath": savePath,
+        "startTime": startTime,
+        "endTime": endTime
+      });
+      if (res.isNotEmpty) {
+        alert(context, title: Text('剪辑完成！'));
+      } else {
+        alert(context, title: Text('剪辑失败！'));
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   ///音频选项
