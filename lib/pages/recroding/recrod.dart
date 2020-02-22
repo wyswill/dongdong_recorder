@@ -252,7 +252,6 @@ class _RecrodState extends State<Recrod> {
     else {
       File file = File(filepath);
       file.copySync("$path$filename.wav");
-//      await fFmpeg.execute("-i $filepath  -y -f mp3   $path$filename.mp3");
       await file.delete();
       Navigator.popAndPushNamed(context, '/mainPage');
     }

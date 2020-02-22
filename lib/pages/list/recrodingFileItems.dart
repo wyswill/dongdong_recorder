@@ -189,7 +189,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
   ///滚动动画
   animateScroll(e) {
     double offset = controller.offset;
-    if (offset < winWidth / 4) {
+    if (offset < winWidth / 6) {
       controller.animateTo(0,
           duration: Duration(milliseconds: 100), curve: Curves.linear);
     } else {

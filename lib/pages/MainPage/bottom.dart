@@ -25,12 +25,12 @@ class _BottomshowBarState extends State<BottomshowBar>
   RecroderModule plaingFile, trashFile;
   StreamSubscription streamSubscription;
   List<Map> playerIocns = [
-    {'icon': 'asset/palying/icon_timing.png', 'title': '定时'},
-    {'icon': 'asset/palying/icon_Circulat_blue.png', 'title': '全部循环'},
-    {'icon': 'asset/palying/icon_speed_normal.png', 'title': '倍速'},
+//    {'icon': 'asset/palying/icon_timing.png', 'title': '定时'},
+//    {'icon': 'asset/palying/icon_Circulat_blue.png', 'title': '全部循环'},
+//    {'icon': 'asset/palying/icon_speed_normal.png', 'title': '倍速'},
     {'icon': 'asset/palying/icon_Sheared_blue.png', 'title': '剪辑'},
     {'icon': 'asset/palying/icon_refresh2.png', 'title': '转文字'},
-    {'icon': 'asset/palying/icon_more-menu_blue.png', 'title': '更多'},
+//    {'icon': 'asset/palying/icon_more-menu_blue.png', 'title': '更多'},
   ];
   GlobalKey<MusicProgressState> key = GlobalKey();
   Animation<double> animation;
@@ -41,6 +41,8 @@ class _BottomshowBarState extends State<BottomshowBar>
   int index;
   bottomState curentState = bottomState.recrod;
   AudioPlayer audioPlayer = AudioPlayer();
+  Timer timer;
+  int curentPlayingTime = 0;
 
   @override
   void initState() {
@@ -64,10 +66,14 @@ class _BottomshowBarState extends State<BottomshowBar>
         controller.reset();
         controller.forward();
       }
-      currenttime = '0:0:0';
-      plaingFile = event.file;
-      totalTime = double.parse(plaingFile.recrodingtime);
-      this.curentState = bottomState.playRecroding;
+      setState(() {
+        currenttime = '0:0:0';
+        plaingFile = event.file;
+        totalTime = double.parse(plaingFile.recrodingtime);
+        this.curentState = bottomState.playRecroding;
+        curentPlayingTime = 0;
+      });
+      key.currentState.setCurentTime(0);
     });
     streamSubscription = eventBus.on<TrashOption>().listen((event) async {
       setState(() {
@@ -122,20 +128,20 @@ class _BottomshowBarState extends State<BottomshowBar>
                       color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
                 ]),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                ClipOval(
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    color: Theme.of(context).primaryColor,
-                    child: IconButton(
-                      color: Colors.white,
-                      icon: Icon(Icons.timer),
-                      onPressed: showSelect,
-                    ),
-                  ),
-                ),
+//                ClipOval(
+//                  child: Container(
+//                    width: 40,
+//                    height: 40,
+//                    color: Theme.of(context).primaryColor,
+//                    child: IconButton(
+//                      color: Colors.white,
+//                      icon: Icon(Icons.timer),
+//                      onPressed: showSelect,
+//                    ),
+//                  ),
+//                ),
                 ClipOval(
                   child: Container(
                     width: 60,
@@ -148,18 +154,18 @@ class _BottomshowBarState extends State<BottomshowBar>
                     ),
                   ),
                 ),
-                ClipOval(
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    color: Theme.of(context).primaryColor,
-                    child: IconButton(
-                      color: Colors.white,
-                      icon: Icon(Icons.text_rotation_down),
-                      onPressed: () {},
-                    ),
-                  ),
-                ),
+//                ClipOval(
+//                  child: Container(
+//                    width: 40,
+//                    height: 40,
+//                    color: Theme.of(context).primaryColor,
+//                    child: IconButton(
+//                      color: Colors.white,
+//                      icon: Icon(Icons.text_rotation_down),
+//                      onPressed: () {},
+//                    ),
+//                  ),
+//                ),
               ],
             ),
           ),
@@ -383,15 +389,41 @@ class _BottomshowBarState extends State<BottomshowBar>
 
   ///播放音乐
   void play() async {
-    this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
+    setState(() {
+      this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
+    });
     eventBus.fire(PlayingState(this.plaingFile.isPlaying));
-    // 播放或暂停
-    print("播放状态-== ${plaingFile.isPlaying}");
     if (plaingFile.isPlaying) {
-      await audioPlayer.playOrPause(this.plaingFile.filepath);
+      await audioPlayer.play(this.plaingFile.filepath);
+      await setPlanProgress();
     } else {
       await audioPlayer.pause();
     }
+  }
+
+  ///设置进度条
+  void setPlanProgress() async {
+    print(totalTime);
+    int totalMS = (totalTime / 1000).floor();
+    timer = Timer.periodic(Duration(seconds: 1), (Timer newtimer) async {
+      if (curentPlayingTime < totalMS) {
+        setState(() {
+          this.curentPlayingTime++;
+          this.currenttime = formatTime(curentPlayingTime * 1000);
+        });
+        print(curentPlayingTime);
+        key.currentState.setCurentTime(curentPlayingTime / totalMS);
+      } else {
+        setState(() {
+          this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
+          timer.cancel();
+          timer = null;
+//          this.currenttime = formatTime(totalTime.toInt());
+        });
+        eventBus.fire(PlayingState(this.plaingFile.isPlaying));
+        await audioPlayer.pause();
+      }
+    });
   }
 
   ///右上角叉叉
@@ -416,7 +448,7 @@ class _BottomshowBarState extends State<BottomshowBar>
 
   ///剪辑
   void editor() {
-    Navigator.popAndPushNamed(context, '/editor', arguments: this.plaingFile);
+    Navigator.pushNamed(context, '/editor', arguments: this.plaingFile);
   }
 
   ///转文字

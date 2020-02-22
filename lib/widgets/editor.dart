@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/cancasRectModu.dart';
@@ -20,7 +21,7 @@ class Editor extends StatefulWidget {
   _EditorState createState() => _EditorState();
 }
 
-class _EditorState extends State<Editor> {
+class _EditorState extends State<Editor> with WidgetsBindingObserver {
   FocusNode node = FocusNode();
   TextEditingController controller = TextEditingController();
   List<Map> playerIocns = [
@@ -63,9 +64,7 @@ class _EditorState extends State<Editor> {
   void initState() {
     super.initState();
     controller.text = rm.title;
-    node.addListener(() {
-      print("焦点被几激活了");
-    });
+    WidgetsBinding.instance.addObserver(this);
   }
 
   @override
@@ -80,6 +79,11 @@ class _EditorState extends State<Editor> {
         canvasRectModu = val.canvasRectModu;
       });
     });
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if(MediaQuery.of(context).viewInsets.bottom == 0){
+        node.unfocus();
+      }
+    });
   }
 
   @override
@@ -87,6 +91,7 @@ class _EditorState extends State<Editor> {
     controller.dispose();
     node.unfocus();
     node.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -107,7 +112,7 @@ class _EditorState extends State<Editor> {
           IconButton(
             icon: Icon(Icons.cancel, color: Colors.white),
             onPressed: () {
-              Navigator.popAndPushNamed(context, '/mainPage');
+              Navigator.pop(context);
             },
           )
         ],
@@ -121,7 +126,7 @@ class _EditorState extends State<Editor> {
                 children: <Widget>[
                   Container(
                     margin: EdgeInsets.only(top: 40),
-                    height: 190,
+//                    height: 200,
                     child: setCanvas(),
                   ),
                 ],
@@ -131,25 +136,25 @@ class _EditorState extends State<Editor> {
               child: Text(
                   canvasRectModu != null ? canvasRectModu.timestamp : "0:0:0"),
             ),
-            Row(
-              children: <Widget>[
-                FlatButton(
-                  color: Colors.blue,
-                  child: Text('开始'),
-                  onPressed: setStart,
-                ),
-                FlatButton(
-                  color: Colors.red,
-                  child: Text('结束'),
-                  onPressed: setEnd,
-                ),
-              ],
-            ),
+//            Row(
+//              children: <Widget>[
+//                FlatButton(
+//                  color: Colors.blue,
+//                  child: Text('开始'),
+//                  onPressed: setStart,
+//                ),
+//                FlatButton(
+//                  color: Colors.red,
+//                  child: Text('结束'),
+//                  onPressed: setEnd,
+//                ),
+//              ],
+//            ),
             setOptions(),
           ],
         ),
       ),
-      bottomNavigationBar: setButtom(),
+//      bottomNavigationBar: setButtom(),
     );
   }
 
@@ -172,7 +177,7 @@ class _EditorState extends State<Editor> {
   Widget setOptions() {
     return Container(
       width: MediaQuery.of(context).size.width,
-      margin: EdgeInsets.only(left: 20, right: 20, bottom: 40),
+      margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
       decoration: BoxDecoration(
           boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey)],
@@ -197,7 +202,41 @@ class _EditorState extends State<Editor> {
                 )
               ],
             ),
-          )
+          ),
+          GestureDetector(
+            onTap: setStart,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Image.asset(
+                  'asset/sheared/icon_Sheared.png',
+                  width: 20,
+                ),
+                Text(
+                  '开始',
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor, fontSize: 12),
+                )
+              ],
+            ),
+          ),
+          GestureDetector(
+            onTap: setEnd,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Image.asset(
+                  'asset/sheared/icon_Sheared.png',
+                  width: 20,
+                ),
+                Text(
+                  '结束',
+                  style: TextStyle(
+                      color: Theme.of(context).primaryColor, fontSize: 12),
+                )
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -388,7 +427,23 @@ class _EditorState extends State<Editor> {
   }
 
   ///保存
-  void save() {}
+  void save() async {
+    String newTitle = controller.text.trim();
+
+    ///没有更改名称
+    if (newTitle.compareTo(this.rm.title) == 0) {
+      Navigator.pop(context);
+    }
+
+    ///修改了名称
+    else {
+      File file = File(this.rm.filepath);
+      String newPath = '${FileUtile().getRecrodPath()}$newTitle.wav';
+      await file.copy(newPath);
+      await file.delete();
+      Navigator.pop(context);
+    }
+  }
 
   ///数据左右滑动
   recrodingOffset(double offset) {
