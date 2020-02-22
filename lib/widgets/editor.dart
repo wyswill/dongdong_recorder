@@ -118,7 +118,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
               child: Column(
                 children: <Widget>[
                   Container(
-                    margin: EdgeInsets.only(top: 40),
+                    margin: EdgeInsets.only(top: 20),
                     height: 180,
                     child: setCanvas(),
                   ),
@@ -419,7 +419,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     ///修改了名称
     else {
       File file = File(this.rm.filepath);
-      String newPath = '${FileUtile().getRecrodPath()}$newTitle.wav';
+      String newPath = '${await FileUtile().getRecrodPath()}$newTitle.wav';
       await file.copy(newPath);
       await file.delete();
       Navigator.pop(context);

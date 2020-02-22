@@ -5,6 +5,8 @@ import 'package:flutter/material.dart';
 class EditorCanvas extends CustomPainter {
   EditorCanvas(this.canvasData, this.recriodingTime);
 
+  bool isChanged;
+
   final double recriodingTime;
   final List<CanvasRectModu> canvasData;
 
@@ -19,9 +21,6 @@ class EditorCanvas extends CustomPainter {
 
     /// 幅度比例
     double step = size.height / 300;
-
-    //计算时间轴跨度
-    // double preMs = 25;
 
     /// 挨个画频谱柱子
     for (int i = 0; i < canvasData.length; i++) {
@@ -44,7 +43,6 @@ class EditorCanvas extends CustomPainter {
       canvas.drawCircle(
           Offset(middleWidth, size.height), 8, Paint()..color = Colors.red);
       canvas.drawRect(pointLine, Paint()..color = Colors.red);
-      // canvas.drawRect(timeLine, Paint()..color = Colors.white);
 
       ///波形柱子
       switch (curent.type) {
@@ -74,7 +72,7 @@ class EditorCanvas extends CustomPainter {
           break;
       }
       if (curent.type == CanvasRectTypes.data) {
-        if (i == canvasData.length / 2) {
+        if (i == canvasData.length / 2 && isChanged) {
           curent.index = i;
           eventBus.fire(SetCurentTime(curent));
         }
@@ -84,6 +82,7 @@ class EditorCanvas extends CustomPainter {
 
   @override
   bool shouldRepaint(EditorCanvas oldDelegate) {
+    isChanged = oldDelegate.canvasData != canvasData;
     return oldDelegate.canvasData != canvasData;
   }
 }
