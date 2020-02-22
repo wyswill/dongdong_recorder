@@ -66,6 +66,10 @@ class _BottomshowBarState extends State<BottomshowBar>
         controller.reset();
         controller.forward();
       }
+      try {
+        if (curentState == bottomState.playRecroding)
+          key.currentState.setCurentTime(0);
+      } catch (e) {}
       setState(() {
         currenttime = '0:0:0';
         plaingFile = event.file;
@@ -73,7 +77,6 @@ class _BottomshowBarState extends State<BottomshowBar>
         this.curentState = bottomState.playRecroding;
         curentPlayingTime = 0;
       });
-      key.currentState.setCurentTime(0);
     });
     streamSubscription = eventBus.on<TrashOption>().listen((event) async {
       setState(() {
@@ -397,13 +400,19 @@ class _BottomshowBarState extends State<BottomshowBar>
       await audioPlayer.play(this.plaingFile.filepath);
       await setPlanProgress();
     } else {
+      timer.cancel();
+      timer = null;
+      setState(() {
+        this.curentPlayingTime = 0;
+        this.currenttime = formatTime(curentPlayingTime * 1000);
+      });
+      key.currentState.setCurentTime(0);
       await audioPlayer.pause();
     }
   }
 
   ///设置进度条
   void setPlanProgress() async {
-    print(totalTime);
     int totalMS = (totalTime / 1000).floor();
     timer = Timer.periodic(Duration(seconds: 1), (Timer newtimer) async {
       if (curentPlayingTime < totalMS) {
@@ -411,14 +420,12 @@ class _BottomshowBarState extends State<BottomshowBar>
           this.curentPlayingTime++;
           this.currenttime = formatTime(curentPlayingTime * 1000);
         });
-        print(curentPlayingTime);
         key.currentState.setCurentTime(curentPlayingTime / totalMS);
       } else {
         setState(() {
-          this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
+          this.plaingFile.isPlaying = false;
           timer.cancel();
           timer = null;
-//          this.currenttime = formatTime(totalTime.toInt());
         });
         eventBus.fire(PlayingState(this.plaingFile.isPlaying));
         await audioPlayer.pause();
