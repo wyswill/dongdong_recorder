@@ -4,7 +4,9 @@ import 'dart:io';
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/pages/recroding/recrod.dart';
 import 'package:asdasd/plugins/AudioPlayer.dart';
+import 'package:asdasd/plugins/Require.dart';
 import 'package:asdasd/widgets/musicProgress.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -459,7 +461,15 @@ class _BottomshowBarState extends State<BottomshowBar>
   }
 
   ///转文字
-  void transiton() {}
+  void transiton() async {
+    Response res = await Transiton(plaingFile.filepath);
+    print(res.data);
+    if (res.data['ret'] != 0) {
+      alert(context, title: Text('语音识别错误'), content: Text(res.data['msg']));
+    } else {
+      var task_id = res.data['data']['task_id'];
+    }
+  }
 
   ///更多
   void more() {}
