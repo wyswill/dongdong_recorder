@@ -54,11 +54,8 @@ class FileUtile {
 
   Future<String> getRecrodPath({bool isDelete}) async {
     Directory directory = (await getExternalCacheDirectories())[0];
-    if (isDelete == null)
-      path = directory.path + '/file_cache/Audio/';
-    else
-      path = directory.path + '/file_cache/delete';
-    return path;
+    return path =
+        '${directory.path}${isDelete ? "/file_cache/delete/" : "/file_cache/Audio"}';
   }
 
   /// 递归方式获取录音文件
@@ -102,7 +99,7 @@ class FileUtile {
   }
 
   ///获取搜索结果
-  Future< Map<String, List<RecroderModule>>> getSearchResult() async {
+  Future<Map<String, List<RecroderModule>>> getSearchResult() async {
     await getRecrodPath();
     await getTotalSizeOfFilesInDir(Directory(path));
     return this.datas;

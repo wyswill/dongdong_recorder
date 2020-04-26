@@ -22,9 +22,9 @@ class _RecrodingListState extends State<RecrodingList> {
   List dataKeys = [];
   List<bool> activeManages = [];
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
-  RecroderModule curentPlayRecroding;
+  RecroderModule currentPlayRecording;
   String key;
-  int curentindex;
+  int currentIndex;
   String cacheFile = '/file_cache/Audio/', path = '';
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
   StreamSubscription streamSubscription;
@@ -32,7 +32,7 @@ class _RecrodingListState extends State<RecrodingList> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    path = await FileUtile().getRecrodPath();
+    path = await FileUtile().getRecrodPath(isDelete: false);
     String trashPath = await FileUtile().getRecrodPath(isDelete: true);
     if (!await Directory(path).exists()) await Directory(path).create();
     if (!await Directory(trashPath).exists())
@@ -44,8 +44,8 @@ class _RecrodingListState extends State<RecrodingList> {
     ///event_bus订阅消息
     streamSubscription = eventBus.on<PlayingState>().listen((event) {
       setState(() {
-        curentPlayRecroding.isPlaying = event.state;
-        curentPlayRecroding.isActive = event.state;
+        currentPlayRecording.isPlaying = event.state;
+        currentPlayRecording.isActive = event.state;
       });
     });
     streamSubscription = eventBus.on<DeleteFileSync>().listen((event) {
@@ -85,7 +85,7 @@ class _RecrodingListState extends State<RecrodingList> {
               RecroderModule curentFile = curentRecrodingFiles[ind];
               return RecrodingFileItems(
                 curentFile: curentFile,
-                playRecroding: this.playRecroding,
+                playRecroding: this.playRecording,
                 index: ind,
                 curnetKey: curnetKey,
               );
@@ -100,13 +100,11 @@ class _RecrodingListState extends State<RecrodingList> {
   _getTotalSizeOfFilesInDir(final FileSystemEntity file) async {
     try {
       if (file is File) {
-        print(file);
         String filename = file.path.replaceAll(path, '').toLowerCase();
         if (filename.endsWith(".wav") || filename.endsWith('.mp3')) {
           DateTime dateTime = await file.lastModified();
           String attr = '${dateTime.year}年${dateTime.month}月';
           var res = await channel.invokeMethod('getSize', {"path": file.path});
-//          var res=1000;
           double s = (res % (1000 * 60) / 1000);
           RecroderModule rm = RecroderModule(
             title: filename.replaceAll('.wav', ''),
@@ -139,20 +137,20 @@ class _RecrodingListState extends State<RecrodingList> {
   }
 
   ///播放录音
-  playRecroding({RecroderModule curentFile, int index, String key}) {
+  playRecording({RecroderModule currentFile, int index, String key}) {
     List<RecroderModule> rms = datas[key];
     for (int i = 0; i < rms.length; i++) {
-      RecroderModule curentrm = rms[i];
+      RecroderModule currentRm = rms[i];
       if (index == i)
-        curentrm.isActive = !curentrm.isActive;
+        currentRm.isActive = !currentRm.isActive;
       else
-        curentrm.isActive = false;
+        currentRm.isActive = false;
     }
     setState(() {
       key = key;
-      curentPlayRecroding = curentFile;
-      curentindex = index;
+      currentPlayRecording = currentFile;
+      currentIndex = index;
     });
-    eventBus.fire(PlayingFile(curentFile));
+    eventBus.fire(PlayingFile(currentFile));
   }
 }

@@ -7,7 +7,9 @@ import 'bottom.dart';
 
 class MainPage extends StatefulWidget {
   MainPage({this.arguments});
+
   final arguments;
+
   @override
   _MainPageState createState() => _MainPageState();
 }
@@ -21,18 +23,6 @@ class _MainPageState extends State<MainPage>
       "isActive": false,
       "widget": RecrodingList()
     },
-    // {
-    //   "icon": 'asset/toolbar/icon_folder',
-    //   "router": 'list',
-    //   "isActive": false,
-    //   "widget": Folder()
-    // },
-    // {
-    //   "icon": "asset/toolbar/icon_calendar",
-    //   "router": 'list',
-    //   "isActive": false,
-    //   "widget": Text('asd')
-    // },
     {
       "icon": 'asset/toolbar/icon_trash',
       "router": 'list',
@@ -79,11 +69,6 @@ class _MainPageState extends State<MainPage>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-//        leading: IconButton(
-//            icon: Icon(Icons.account_circle),
-//            onPressed: () {
-//              Navigator.pushNamed(context, '/mine');
-//            }),
         title: Center(child: Text('录音机')),
       ),
       body: Column(
