@@ -12,6 +12,7 @@ class ListItem extends StatefulWidget {
   final List<RecroderModule> datas;
   final bool isRecrodingFile;
   final Function cb;
+
   @override
   _ListItemState createState() => _ListItemState();
 }
@@ -19,10 +20,12 @@ class ListItem extends StatefulWidget {
 class _ListItemState extends State<ListItem> {
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
   List<RecroderModule> datas;
+
   bool get isRecrodingFile => widget.isRecrodingFile;
   RecroderModule rm;
   int index;
   StreamSubscription streamSubscription;
+
   @override
   void initState() {
     super.initState();
@@ -45,8 +48,8 @@ class _ListItemState extends State<ListItem> {
 
   @override
   void dispose() {
-    eventBus.fire(NullEvent());
     super.dispose();
+    eventBus.fire(NullEvent());
   }
 
   ///下划线

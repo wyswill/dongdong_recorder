@@ -52,10 +52,10 @@ class FileUtile {
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
   String path = '';
 
-  Future<String> getRecrodPath({bool isDelete}) async {
+  Future<String> getRecrodPath({bool isDelete = false}) async {
     Directory directory = (await getExternalCacheDirectories())[0];
     return path =
-        '${directory.path}${isDelete ? "/file_cache/delete/" : "/file_cache/Audio"}';
+        '${directory.path}${isDelete ? "/file_cache/delete/" : "/file_cache/Audio/"}';
   }
 
   /// 递归方式获取录音文件

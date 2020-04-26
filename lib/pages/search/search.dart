@@ -31,6 +31,7 @@ class _SearchPageState extends State<SearchPage> {
     super.dispose();
     controller.text = '';
     controller.dispose();
+
   }
 
   @override
@@ -176,19 +177,6 @@ class _SearchPageState extends State<SearchPage> {
 
   ///播放录音
   playRecroding({RecroderModule curentFile, int index, String key}) {
-//    List<RecroderModule> rms = datas[key];
-//    for (int i = 0; i < rms.length; i++) {
-//      RecroderModule curentrm = rms[i];
-//      if (index == i)
-//        curentrm.isActive = !curentrm.isActive;
-//      else
-//        curentrm.isActive = false;
-//    }
-//    setState(() {
-//      key = key;
-//      curentPlayRecroding = curentFile;
-//      curentindex = index;
-//    });
     eventBus.fire(PlayingFile(curentFile));
   }
 }

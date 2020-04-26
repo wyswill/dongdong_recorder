@@ -27,12 +27,8 @@ class _BottomshowBarState extends State<BottomshowBar>
   RecroderModule plaingFile, trashFile;
   StreamSubscription streamSubscription;
   List<Map> playerIocns = [
-//    {'icon': 'asset/palying/icon_timing.png', 'title': '定时'},
-//    {'icon': 'asset/palying/icon_Circulat_blue.png', 'title': '全部循环'},
-//    {'icon': 'asset/palying/icon_speed_normal.png', 'title': '倍速'},
     {'icon': 'asset/palying/icon_Sheared_blue.png', 'title': '剪辑'},
     {'icon': 'asset/palying/icon_refresh2.png', 'title': '转文字'},
-//    {'icon': 'asset/palying/icon_more-menu_blue.png', 'title': '更多'},
   ];
   GlobalKey<MusicProgressState> key = GlobalKey();
   Animation<double> animation;
@@ -56,7 +52,7 @@ class _BottomshowBarState extends State<BottomshowBar>
     animation = Tween<double>(begin: 200, end: 0).animate(controller);
     controller.forward();
     controller.addListener(() {
-      setState(() {});
+      if (mounted) setState(() {});
     });
   }
 
@@ -72,39 +68,43 @@ class _BottomshowBarState extends State<BottomshowBar>
         if (curentState == bottomState.playRecroding)
           key.currentState.setCurentTime(0);
       } catch (e) {}
-      setState(() {
-        currenttime = '0:0:0';
-        plaingFile = event.file;
-        totalTime = double.parse(plaingFile.recrodingtime);
-        this.curentState = bottomState.playRecroding;
-        curentPlayingTime = 0;
-      });
+      if (mounted)
+        setState(() {
+          currenttime = '0:0:0';
+          plaingFile = event.file;
+          totalTime = double.parse(plaingFile.recrodingtime);
+          this.curentState = bottomState.playRecroding;
+          curentPlayingTime = 0;
+        });
     });
     streamSubscription = eventBus.on<TrashOption>().listen((event) async {
-      setState(() {
-        trashFile = event.rm;
-        index = event.index;
-        this.curentState = bottomState.deleteFiles;
-      });
+      if (mounted)
+        setState(() {
+          trashFile = event.rm;
+          index = event.index;
+          this.curentState = bottomState.deleteFiles;
+        });
       controller.reset();
       controller.forward();
     });
     streamSubscription = eventBus.on<NullEvent>().listen((event) async {
       if (this.curentState != bottomState.recrod) {
-        setState(() {
-          plaingFile = null;
-          this.curentState = bottomState.recrod;
-        });
+        if (mounted)
+          setState(() {
+            plaingFile = null;
+            this.curentState = bottomState.recrod;
+          });
         controller.reset();
         controller.forward();
       }
     });
     streamSubscription = eventBus.on<DeleteFileSync>().listen((event) async {
       if (this.curentState != bottomState.recrod) {
-        setState(() {
-          plaingFile = null;
-          this.curentState = bottomState.recrod;
-        });
+        if (mounted)
+          setState(() {
+            plaingFile = null;
+            this.curentState = bottomState.recrod;
+          });
         controller.reset();
         controller.forward();
       }
@@ -135,18 +135,6 @@ class _BottomshowBarState extends State<BottomshowBar>
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-//                ClipOval(
-//                  child: Container(
-//                    width: 40,
-//                    height: 40,
-//                    color: Theme.of(context).primaryColor,
-//                    child: IconButton(
-//                      color: Colors.white,
-//                      icon: Icon(Icons.timer),
-//                      onPressed: showSelect,
-//                    ),
-//                  ),
-//                ),
                 ClipOval(
                   child: Container(
                     width: 60,
@@ -159,18 +147,6 @@ class _BottomshowBarState extends State<BottomshowBar>
                     ),
                   ),
                 ),
-//                ClipOval(
-//                  child: Container(
-//                    width: 40,
-//                    height: 40,
-//                    color: Theme.of(context).primaryColor,
-//                    child: IconButton(
-//                      color: Colors.white,
-//                      icon: Icon(Icons.text_rotation_down),
-//                      onPressed: () {},
-//                    ),
-//                  ),
-//                ),
               ],
             ),
           ),
@@ -358,10 +334,11 @@ class _BottomshowBarState extends State<BottomshowBar>
   ///删除
   void delete() async {
     await File(trashFile.filepath).delete();
-    setState(() {
-      trashFile = null;
-      curentState = bottomState.recrod;
-    });
+    if (mounted)
+      setState(() {
+        trashFile = null;
+        curentState = bottomState.recrod;
+      });
     eventBus.fire(TrashDeleted(index: index));
   }
 
@@ -371,19 +348,21 @@ class _BottomshowBarState extends State<BottomshowBar>
     String cacheFile = '/file_cache/Audio/',
         newPath = ((await getExternalCacheDirectories())[0]).path;
     Directory directory = Directory(newPath + cacheFile);
-    if (!directory.existsSync()) directory.createSync();
-    await file.copy('$newPath$cacheFile${trashFile.title}.wav');
-    file.delete();
-    cancel();
-    eventBus.fire(TrashDeleted(index: index));
+    print('$newPath$cacheFile${trashFile.title}.wav');
+//    if (!directory.existsSync()) directory.createSync();
+//    await file.copy('$newPath$cacheFile${trashFile.title}.wav');
+//    file.delete();
+//    cancel();
+//    eventBus.fire(TrashDeleted(index: index));
   }
 
   ///取消
   void cancel() {
-    setState(() {
-      trashFile = null;
-      curentState = bottomState.recrod;
-    });
+    if (mounted)
+      setState(() {
+        trashFile = null;
+        curentState = bottomState.recrod;
+      });
     controller.reset();
     controller.forward();
   }
@@ -394,9 +373,10 @@ class _BottomshowBarState extends State<BottomshowBar>
 
   ///播放音乐
   void play() async {
-    setState(() {
-      this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
-    });
+    if (mounted)
+      setState(() {
+        this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
+      });
     eventBus.fire(PlayingState(this.plaingFile.isPlaying));
     if (plaingFile.isPlaying) {
       await audioPlayer.play(this.plaingFile.filepath);
@@ -404,10 +384,11 @@ class _BottomshowBarState extends State<BottomshowBar>
     } else {
       timer.cancel();
       timer = null;
-      setState(() {
-        this.curentPlayingTime = 0;
-        this.currenttime = formatTime(curentPlayingTime * 1000);
-      });
+      if (mounted)
+        setState(() {
+          this.curentPlayingTime = 0;
+          this.currenttime = formatTime(curentPlayingTime * 1000);
+        });
       key.currentState.setCurentTime(0);
       await audioPlayer.pause();
     }
@@ -418,17 +399,19 @@ class _BottomshowBarState extends State<BottomshowBar>
     int totalMS = (totalTime / 1000).floor();
     timer = Timer.periodic(Duration(seconds: 1), (Timer newtimer) async {
       if (curentPlayingTime < totalMS) {
-        setState(() {
-          this.curentPlayingTime++;
-          this.currenttime = formatTime(curentPlayingTime * 1000);
-        });
+        if (mounted)
+          setState(() {
+            this.curentPlayingTime++;
+            this.currenttime = formatTime(curentPlayingTime * 1000);
+          });
         key.currentState.setCurentTime(curentPlayingTime / totalMS);
       } else {
-        setState(() {
-          this.plaingFile.isPlaying = false;
-          timer.cancel();
-          timer = null;
-        });
+        if (mounted)
+          setState(() {
+            this.plaingFile.isPlaying = false;
+            timer.cancel();
+            timer = null;
+          });
         eventBus.fire(PlayingState(this.plaingFile.isPlaying));
         await audioPlayer.pause();
       }
@@ -440,10 +423,11 @@ class _BottomshowBarState extends State<BottomshowBar>
     controller.reset();
     controller.forward();
     eventBus.fire(PlayingState(false));
-    setState(() {
-      plaingFile = null;
-      this.curentState = bottomState.recrod;
-    });
+    if (mounted)
+      setState(() {
+        plaingFile = null;
+        this.curentState = bottomState.recrod;
+      });
   }
 
   ///定时选择

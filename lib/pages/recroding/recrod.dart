@@ -73,30 +73,33 @@ class _RecrodState extends State<Recrod> {
           )
         ],
       ),
-      body: Stack(
-        children: <Widget>[
-          Container(
-            child: Column(
-              children: <Widget>[
-                setInput(),
-                setCanvas(),
-                Text(
-                  '$h:$m:$s',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.w900,
-                    fontSize: 24,
+      body: WillPopScope(
+        onWillPop: exit,
+        child: Stack(
+          children: <Widget>[
+            Container(
+              child: Column(
+                children: <Widget>[
+                  setInput(),
+                  setCanvas(),
+                  Text(
+                    '$h:$m:$s',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.w900,
+                      fontSize: 24,
+                    ),
                   ),
-                ),
-                GestureDetector(
-                  child:
-                      Image.asset('asset/flag/icon_flag_white.png', width: 40),
-                  onTap: setTimeStap,
-                ),
-              ],
+                  GestureDetector(
+                    child: Image.asset('asset/flag/icon_flag_white.png',
+                        width: 40),
+                    onTap: setTimeStap,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
       bottomNavigationBar: setBottonButton(),
     );
@@ -177,8 +180,8 @@ class _RecrodState extends State<Recrod> {
     );
   }
 
-  void exit() {
-    alert(context, title: Text('确定退出么？'), actions: <Widget>[
+  Future<bool> exit() {
+    return alert(context, title: Text('确定退出么？'), actions: <Widget>[
       FlatButton(
         child: Text('确定'),
         onPressed: () async {

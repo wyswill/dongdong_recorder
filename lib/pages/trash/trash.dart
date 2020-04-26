@@ -20,20 +20,25 @@ class _TrashState extends State<Trash> {
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
 
   @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
     path = await FileUtile().getRecrodPath(isDelete: true);
-    if (await Directory(path).exists()) {
+    if (await Directory(path).exists() && mounted) {
       await _getTotalSizeOfFilesInDir(Directory(path));
       setState(() {});
     } else {
       Directory(path).createSync();
       await _getTotalSizeOfFilesInDir(Directory(path));
-      setState(() {});
+      if (mounted) setState(() {});
     }
     eventBus.on<TrashDeleted>().listen((e) {
       datas.removeAt(e.index);
-      setState(() {});
+      if (mounted) setState(() {});
     });
   }
 

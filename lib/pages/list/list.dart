@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:io';
+import 'dart:math';
 import 'package:asdasd/event_bus.dart';
 import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/pages/list/recrodingFileItems.dart';
@@ -30,29 +31,35 @@ class _RecrodingListState extends State<RecrodingList> {
   StreamSubscription streamSubscription;
 
   @override
+  void dispose() {
+    super.dispose();
+    streamSubscription.cancel();
+  }
+
+  @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    path = await FileUtile().getRecrodPath(isDelete: false);
-    String trashPath = await FileUtile().getRecrodPath(isDelete: true);
-    if (!await Directory(path).exists()) await Directory(path).create();
-    if (!await Directory(trashPath).exists())
-      await Directory(trashPath).create();
-    await _getTotalSizeOfFilesInDir(Directory(path));
+
+    ///初始化文件夹
+    await initFlouter();
     dataKeys = datas.keys.toList();
-    setState(() {});
+    if (mounted) setState(() {});
 
     ///event_bus订阅消息
     streamSubscription = eventBus.on<PlayingState>().listen((event) {
-      setState(() {
-        currentPlayRecording.isPlaying = event.state;
-        currentPlayRecording.isActive = event.state;
-      });
+      if (mounted)
+        setState(() {
+          currentPlayRecording.isPlaying = event.state;
+          currentPlayRecording.isActive = event.state;
+        });
     });
     streamSubscription = eventBus.on<DeleteFileSync>().listen((event) {
-      String attr = event.attr;
-      int index = event.index;
-      datas[attr].removeAt(index);
-      setState(() {});
+      if (mounted) {
+        String attr = event.attr;
+        int index = event.index;
+        datas[attr].removeAt(index);
+        setState(() {});
+      }
     });
   }
 
@@ -146,11 +153,22 @@ class _RecrodingListState extends State<RecrodingList> {
       else
         currentRm.isActive = false;
     }
-    setState(() {
-      key = key;
-      currentPlayRecording = currentFile;
-      currentIndex = index;
-    });
+    if (mounted)
+      setState(() {
+        key = key;
+        currentPlayRecording = currentFile;
+        currentIndex = index;
+      });
     eventBus.fire(PlayingFile(currentFile));
+  }
+
+  ///初始化文件夹
+  initFlouter() async {
+    path = await FileUtile().getRecrodPath(isDelete: false);
+    String trashPath = await FileUtile().getRecrodPath(isDelete: true);
+    if (!await Directory(path).exists()) await Directory(path).create();
+    if (!await Directory(trashPath).exists())
+      await Directory(trashPath).create();
+    await _getTotalSizeOfFilesInDir(Directory(path));
   }
 }
