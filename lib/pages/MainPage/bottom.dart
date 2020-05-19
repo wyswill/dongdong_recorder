@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:asdasd/modus/record.dart';
@@ -8,7 +9,6 @@ import 'package:asdasd/plugins/Require.dart';
 import 'package:asdasd/widgets/musicProgress.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:path_provider/path_provider.dart';
 
 import '../../event_bus.dart';
 import '../../utiles.dart';
@@ -345,15 +345,16 @@ class _BottomshowBarState extends State<BottomshowBar>
   ///还原
   void reset() async {
     File file = File(trashFile.filepath);
-    String cacheFile = '/file_cache/Audio/',
-        newPath = ((await getExternalCacheDirectories())[0]).path;
-    Directory directory = Directory(newPath + cacheFile);
-    print('$newPath$cacheFile${trashFile.title}.wav');
-//    if (!directory.existsSync()) directory.createSync();
-//    await file.copy('$newPath$cacheFile${trashFile.title}.wav');
-//    file.delete();
-//    cancel();
-//    eventBus.fire(TrashDeleted(index: index));
+    FileUtile fileUtile = new FileUtile();
+    String newpath = await fileUtile.getRecrodPath();
+    String deletePath = await fileUtile.getRecrodPath(isDelete: true);
+    Directory directory = Directory(newpath);
+    if (!directory.existsSync()) directory.createSync();
+    await file
+        .copy('$newpath${trashFile.title.replaceAll(deletePath, '')}.wav');
+    file.delete();
+    cancel();
+    eventBus.fire(TrashDeleted(index: index));
   }
 
   ///取消

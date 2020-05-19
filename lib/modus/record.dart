@@ -18,4 +18,9 @@ class RecroderModule {
     this.isDeleted,
     this.isActive,
   });
+
+  @override
+  String toString() {
+    return 'title  $title recrodingtime $recrodingtime';
+  }
 }

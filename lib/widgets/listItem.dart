@@ -33,11 +33,6 @@ class _ListItemState extends State<ListItem> {
   }
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return ListView.separated(
       itemCount: datas.length,
@@ -50,6 +45,7 @@ class _ListItemState extends State<ListItem> {
   void dispose() {
     super.dispose();
     eventBus.fire(NullEvent());
+    streamSubscription.cancel();
   }
 
   ///下划线
@@ -63,17 +59,17 @@ class _ListItemState extends State<ListItem> {
 
   ///文件菜单样式
   Widget folderItemStyle(BuildContext context, int index) {
-    RecroderModule curent = this.datas[index];
+    RecroderModule current = this.datas[index];
     return GestureDetector(
       onTap: () {
-        showOptions(curent, index);
+        showOptions(current, index);
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           border: Border(
             left: rm != null &&
-                    rm.recrodingtime == curent.recrodingtime &&
+                    rm.recrodingtime == current.recrodingtime &&
                     rm.isPlaying
                 ? BorderSide(width: 4, color: Theme.of(context).primaryColor)
                 : BorderSide(width: 0),
@@ -91,7 +87,7 @@ class _ListItemState extends State<ListItem> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
-                  Text(curent.title),
+                  Text(current.title),
                   SizedBox(
                     child: Row(
                       children: <Widget>[
@@ -104,14 +100,14 @@ class _ListItemState extends State<ListItem> {
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(10))),
                                 child: Text(
-                                  formatTime(int.parse(curent.recrodingtime)),
+                                  formatTime(int.parse(current.recrodingtime)),
                                   style: textStyle,
                                 ),
                               )
                             : Text("个文件", style: textStyle),
-                        Text(curent.fileSize, style: textStyle),
+                        Text(current.fileSize, style: textStyle),
                         Expanded(child: Container()),
-                        Text(curent.lastModified, style: textStyle),
+                        Text(current.lastModified, style: textStyle),
                       ],
                     ),
                   )

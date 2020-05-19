@@ -37,7 +37,11 @@ class _TrashState extends State<Trash> {
       if (mounted) setState(() {});
     }
     eventBus.on<TrashDeleted>().listen((e) {
-      datas.removeAt(e.index);
+      if (datas.elementAt(e.index) != null) {
+        try {
+          datas.removeAt(e.index);
+        } catch (e) {}
+      }
       if (mounted) setState(() {});
     });
   }
@@ -51,7 +55,7 @@ class _TrashState extends State<Trash> {
   _getTotalSizeOfFilesInDir(final FileSystemEntity file) async {
     try {
       if (file is File) {
-        String filename = file.path.replaceAll(path + '/', '');
+        String filename = file.path.replaceAll(path , '');
         if (filename.indexOf(RegExp('.wav')) > 0) {
           DateTime dateTime = await file.lastModified();
           var res = await channel.invokeMethod('getSize', {"path": file.path});
@@ -61,7 +65,7 @@ class _TrashState extends State<Trash> {
             filepath: file.path,
             recrodingtime: "$res",
             lastModified:
-                '${dateTime.day}日${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
+                '${dateTime.month}月${dateTime.day}日${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
             isPlaying: false,
             fileSize: "${16000 * s / 1024}kb",
           );
