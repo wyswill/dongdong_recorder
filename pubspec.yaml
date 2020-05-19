@@ -10,7 +10,6 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^0.1.2
-  flutter_ffmpeg: ^0.2.7
   path_provider: ^1.6.8
   flutter_plugin_record: ^0.1.2
   provider: ^3.2.0

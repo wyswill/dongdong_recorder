@@ -7,8 +7,6 @@ import 'package:asdasd/modus/record.dart';
 import 'package:asdasd/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
-
 import '../utiles.dart';
 import 'musicProgress.dart';
 
@@ -51,7 +49,6 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   CanvasRectModu canvasRectModu;
   int startIndex, endIndex, startTime, endTime;
   String startTimestamp, endTimestamp;
-  FlutterFFmpeg fFmpeg = FlutterFFmpeg();
 
   @override
   void initState() {

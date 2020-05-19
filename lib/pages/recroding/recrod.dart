@@ -6,10 +6,8 @@ import 'package:asdasd/utiles.dart';
 import 'package:asdasd/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_ffmpeg/flutter_ffmpeg.dart';
 import 'package:flutter_plugin_record/flutter_plugin_record.dart';
 import 'package:flutter_plugin_record/response.dart';
-import 'package:path_provider/path_provider.dart';
 
 class Recrod extends StatefulWidget {
   Recrod({Key key}) : super(key: key);
@@ -267,7 +265,6 @@ class _RecrodState extends State<Recrod> {
     }
   }
 
-  FlutterFFmpeg fFmpeg = FlutterFFmpeg();
 
   ///保存录音
   saveData() async {
