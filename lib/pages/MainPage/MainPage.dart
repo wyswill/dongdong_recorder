@@ -39,6 +39,8 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
 
   @override
   void dispose() {
+    pageController.dispose();
+    tabController.dispose();
     super.dispose();
   }
 
@@ -76,10 +78,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
       decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[BoxShadow(color: Color.fromRGBO(187, 187, 187, 0.4), offset: Offset(0, 0), blurRadius: 5)], borderRadius: BorderRadius.all(Radius.circular(2))),
       child: TabBar(
         controller: tabController,
-        labelColor: Colors.red,
-        unselectedLabelColor: Colors.green,
         indicatorColor: Color.fromRGBO(87, 92, 159, 1),
-//        indicatorWeight: 0.01,
         indicatorSize: TabBarIndicatorSize.tab,
         tabs: List.generate(this.menus.length, (int index) {
           Map e = this.menus[index];

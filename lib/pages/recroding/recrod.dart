@@ -20,7 +20,7 @@ class Recrod extends StatefulWidget {
   _RecrodState createState() => _RecrodState();
 }
 
-class _RecrodState extends State<Recrod> {
+class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
   FocusNode node = FocusNode();
   TextEditingController controller = TextEditingController();
   FlutterPluginRecord flutterPluginRecord = FlutterPluginRecord();
@@ -49,6 +49,14 @@ class _RecrodState extends State<Recrod> {
   void didChangeDependencies() async {
     super.didChangeDependencies();
     path = await FileUtile.getRecrodPath();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        if (MediaQuery.of(context).viewInsets.bottom == 0) {
+//          print('关闭键盘');
+          node.unfocus();
+        }
+      });
+    });
   }
 
   @override
@@ -56,6 +64,8 @@ class _RecrodState extends State<Recrod> {
     super.dispose();
     controller.dispose();
     flutterPluginRecord.dispose();
+    node.dispose();
+    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override
@@ -267,16 +277,25 @@ class _RecrodState extends State<Recrod> {
 
   ///保存录音
   saveData() async {
-    String filename = this.controller.text.trim();
-    if (filename == '')
-      alert(context, title: Text('警告!'), content: Text('文件标题不能为空'));
-    else if (filepath.isNotEmpty) {
-      RecroderModule res = await FileUtile.pathTOModule(path: filepath, newFileName: filename, channel: channel);
-      Provider.of<recrodListProvider>(context, listen: false).addRecrodItem(res);
-      Navigator.pop(context);
-    } else {
-      alert(context, title: Text('没有录制音频'));
+    check() async {
+      String filename = this.controller.text.trim();
+      if (filename == '')
+        alert(context, title: Text('警告!'), content: Text('文件标题不能为空'));
+      else if (filepath.isNotEmpty) {
+        RecroderModule res = await FileUtile.pathTOModule(path: filepath, newFileName: filename, channel: channel);
+        Provider.of<recrodListProvider>(context, listen: false).addRecrodItem(res);
+        Navigator.pop(context);
+      } else {
+        alert(context, title: Text('没有录制音频'));
+      }
     }
+
+    if (this.statu) {
+      flutterPluginRecord.stop();
+      timer.cancel();
+      await check();
+    } else
+      await check();
   }
 
   ///始录制停止录制监听
