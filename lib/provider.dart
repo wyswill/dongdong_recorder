@@ -8,6 +8,13 @@ class recrodListProvider with ChangeNotifier {
   List<RecroderModule> recroderFiles = [];
   int preIndex = null;
 
+  void reset() {
+    recroderFiles.forEach((element) {
+      element.isActive = false;
+    });
+    preIndex = null;
+  }
+
   void init(List<RecroderModule> data) {
     recroderFiles = data;
     notifyListeners();

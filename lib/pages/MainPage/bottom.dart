@@ -299,12 +299,11 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
   ///删除
   void delete() async {
     await File(trashFile.filepath).delete();
-    if (mounted)
-      setState(() {
-        trashFile = null;
-        curentState = bottomState.recode;
-      });
-    eventBus.fire(TrashDeleted(index: index));
+    Provider.of<transhProvider>(context, listen: false).remove(index);
+    setState(() {
+      trashFile = null;
+      curentState = bottomState.recode;
+    });
   }
 
   ///还原
@@ -315,7 +314,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     file.copySync('$newpath${trashFile.title}.wav');
     file.deleteSync();
     trashFile.filepath = '$newpath${trashFile.title}.wav';
-    Provider.of<transhProvider>(context,listen: false).remove(index);
+    Provider.of<transhProvider>(context, listen: false).remove(index);
     Provider.of<recrodListProvider>(context, listen: false).addRecrodItem(trashFile);
     cancel();
   }

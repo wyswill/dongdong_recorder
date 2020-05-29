@@ -16,8 +16,14 @@ class _RecrodingListState extends State<RecrodingList> {
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
 
   @override
+  void deactivate() {
+    super.deactivate();
+    Provider.of<recrodListProvider>(context, listen: false).reset();
+  }
+  @override
   void dispose() {
     super.dispose();
+
   }
 
   @override

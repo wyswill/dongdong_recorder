@@ -30,9 +30,15 @@ class _trashState extends State<trash> {
   }
 
   @override
+  void deactivate() {
+    super.deactivate();
+    eventBus.fire(NullEvent());
+    Provider.of<transhProvider>(context, listen: false).reset();
+  }
+
+  @override
   void dispose() {
     super.dispose();
-    eventBus.fire(NullEvent());
   }
 
   ///下划线
@@ -55,9 +61,7 @@ class _trashState extends State<trash> {
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         decoration: BoxDecoration(
           border: Border(
-            left: current.isActive
-                ? BorderSide(width: 4, color: Theme.of(context).primaryColor)
-                : BorderSide(width: 0),
+            left: current.isActive ? BorderSide(width: 4, color: Theme.of(context).primaryColor) : BorderSide(width: 0),
           ),
         ),
         child: Row(
@@ -77,10 +81,7 @@ class _trashState extends State<trash> {
                       children: <Widget>[
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 5),
-                          decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey, width: 1),
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(10))),
+                          decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.all(Radius.circular(10))),
                           child: Text(
                             formatTime(int.parse(current.recrodingtime)),
                             style: textStyle,
@@ -103,7 +104,7 @@ class _trashState extends State<trash> {
 
   ///显示选项
   void showOptions(RecroderModule rm, index) {
-    Provider.of<transhProvider>(context, listen: false).trashSwitchState( index);
+    Provider.of<transhProvider>(context, listen: false).trashSwitchState(index);
     eventBus.fire(TrashOption(rm, index));
   }
 }

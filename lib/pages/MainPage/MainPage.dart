@@ -20,29 +20,22 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     {"icon": 'asset/toolbar/icon_Search', "router": 'list', "isActive": false},
   ];
   List<Widget> pages = [RecrodingList(), trash(), SearchPage()];
+  PageController pageController;
   TabController tabController;
   Map plaingFile;
   int preIndex = 0;
 
-
   @override
   void initState() {
     super.initState();
-
-    ///设置tabbar
-    menus[preIndex]['isActive'] = true;
     tabController = TabController(vsync: this, length: 3);
-
-    ///设置tabView
     tabController.addListener(() {
       setState(() {
-        this.menus[preIndex]['isActive'] = false;
-        this.menus[tabController.index]['isActive'] = true;
-        preIndex = tabController.index;
+        pageController.animateToPage(tabController.index, duration: Duration(milliseconds: 200), curve: ElasticOutCurve(4));
       });
     });
+    pageController = new PageController(initialPage: preIndex);
   }
-
 
   @override
   void dispose() {
@@ -59,45 +52,19 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
         children: <Widget>[
           setTab(),
           Expanded(
-            child: TabBarView(
-              controller: tabController,
-              children: List.generate(
-                pages.length,
-                (index) => Offstage(
-                  child: pages[index],
-                  offstage: tabController.index != index,
-                ),
-              ),
-            ),
+            child: PageView.builder(
+                controller: pageController,
+                itemCount: pages.length,
+                onPageChanged: changeHandler,
+                itemBuilder: (context, index) {
+                  return Offstage(
+                    child: pages[index],
+                    offstage: index != preIndex,
+                  );
+                }),
           ),
           BottomshowBar()
         ],
-      ),
-    );
-  }
-
-  ///菜单item
-  Widget buildMeneuItem(String icon, String routers, bool isActive, int index) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-      decoration: BoxDecoration(
-        color: isActive ? Theme.of(context).primaryColor : Colors.white,
-        borderRadius: BorderRadius.all(Radius.circular(2)),
-      ),
-      child: GestureDetector(
-        child: Image.asset(
-          isActive ? '${icon}_white.png' : '${icon}_blue.png',
-          width: 23,
-        ),
-        onTap: () {
-          if (this.menus[index]['isActive']) return;
-          setState(() {
-            tabController.animateTo(index);
-            this.menus[index]['isActive'] = true;
-            this.menus[preIndex]['isActive'] = false;
-            preIndex = index;
-          });
-        },
       ),
     );
   }
@@ -109,13 +76,28 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
       decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[BoxShadow(color: Color.fromRGBO(187, 187, 187, 0.4), offset: Offset(0, 0), blurRadius: 5)], borderRadius: BorderRadius.all(Radius.circular(2))),
       child: TabBar(
         controller: tabController,
-        indicatorWeight: 0.01,
+        labelColor: Colors.red,
+        unselectedLabelColor: Colors.green,
+        indicatorColor: Color.fromRGBO(87, 92, 159, 1),
+//        indicatorWeight: 0.01,
         indicatorSize: TabBarIndicatorSize.tab,
         tabs: List.generate(this.menus.length, (int index) {
           Map e = this.menus[index];
-          return buildMeneuItem(e['icon'], e['router'], e['isActive'], index);
+          return Tab(
+            child: Image.asset(
+              e['isActive'] ? '${e['icon']}_white.png' : '${e['icon']}_blue.png',
+              width: 25,
+            ),
+          );
         }),
       ),
     );
+  }
+
+  void changeHandler(int index) {
+    tabController.animateTo(index, duration: Duration(milliseconds: 200), curve: ElasticOutCurve(4));
+    setState(() {
+      preIndex = index;
+    });
   }
 }
