@@ -11,7 +11,7 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  Map<String, List<RecroderModule>> datas = {}, searchResault;
+  List<RecroderModule> datas = [], searchResault = [];
 
   FocusNode node = FocusNode();
   TextEditingController controller = TextEditingController();
@@ -19,66 +19,32 @@ class _SearchPageState extends State<SearchPage> {
   List dataKeys = [], searchKeys = [];
 
   @override
-  void didChangeDependencies() async {
-    searchResault = {};
-    super.didChangeDependencies();
-    datas = await FileUtile().getSearchResult();
-    dataKeys = datas.keys.toList();
-  }
-
-  @override
   void dispose() {
     super.dispose();
     controller.text = '';
     controller.dispose();
-
   }
 
   @override
   Widget build(BuildContext context) {
+    print('transhProvider');
     return Container(
       child: Column(
         children: <Widget>[
           setInput(),
-          Expanded(
-            child: CustomScrollView(
-              slivers: List.generate(this.searchKeys.length, (int index) {
-                return buildRecrodingItem(index);
-              }),
-            ),
-          )
+//          Expanded(
+//            child: CustomScrollView(
+//              slivers: List.generate(this.searchKeys.length, (int index) {
+//                return buildRecrodingItem(index);
+//              }),
+//            ),
+//          )
         ],
       ),
     );
   }
 
   ///每组录音数据样式
-  Widget buildRecrodingItem(int index) {
-    String curnetKey = searchKeys[index];
-    List<RecroderModule> curentRecrodingFiles = this.searchResault[curnetKey];
-    return SliverToBoxAdapter(
-      child: Column(
-        children: <Widget>[
-          Container(
-            width: MediaQuery.of(context).size.width,
-            padding: EdgeInsets.only(left: 20),
-            color: Color.fromRGBO(242, 241, 244, 1),
-            child: Text(curnetKey),
-          ),
-          Column(
-            children: List.generate(curentRecrodingFiles.length, (int ind) {
-              RecroderModule curentFile = curentRecrodingFiles[ind];
-              return RecrodingFileItems(
-                curentFile: curentFile,
-                index: ind,
-                curnetKey: curnetKey,
-              );
-            }),
-          )
-        ],
-      ),
-    );
-  }
 
   ///输入框
   Widget setInput() {
@@ -92,10 +58,8 @@ class _SearchPageState extends State<SearchPage> {
       child: TextField(
         controller: controller,
         focusNode: node,
-        decoration: InputDecoration(
-            border: InputBorder.none,
-            hintStyle: TextStyle(color: Theme.of(context).primaryColor)),
-        onEditingComplete: editingComplete,
+        decoration: InputDecoration(border: InputBorder.none, hintStyle: TextStyle(color: Theme.of(context).primaryColor)),
+//        onEditingComplete: editingComplete,
       ),
     );
   }
@@ -106,9 +70,7 @@ class _SearchPageState extends State<SearchPage> {
       padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       decoration: BoxDecoration(
         border: Border(
-          left: rm.isPlaying
-              ? BorderSide(width: 4, color: Theme.of(context).primaryColor)
-              : BorderSide(width: 0),
+          left: rm.isPlaying ? BorderSide(width: 4, color: Theme.of(context).primaryColor) : BorderSide(width: 0),
         ),
       ),
       child: Row(
@@ -128,10 +90,7 @@ class _SearchPageState extends State<SearchPage> {
                     children: <Widget>[
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 5),
-                        decoration: BoxDecoration(
-                            border: Border.all(color: Colors.grey, width: 1),
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10))),
+                        decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.all(Radius.circular(10))),
                         child: Text(
                           formatTime(int.parse(rm.recrodingtime)),
                           style: textStyle,
@@ -151,28 +110,27 @@ class _SearchPageState extends State<SearchPage> {
     );
   }
 
-  void editingComplete() {
-    String inputStr = controller.text.trim();
-    Map<String, List<RecroderModule>> searchMap = {};
-    for (int i = 0; i < dataKeys.length; i++) {
-      String curnetKey = dataKeys[i];
-      List<RecroderModule> curentRecrodingFiles = this.datas[curnetKey],
-          searchList = [];
-      bool flg;
-      curentRecrodingFiles.forEach((RecroderModule ele) {
-        flg = ele.title.contains(inputStr);
-        if (flg) searchList.add(ele);
-      });
-      if (flg) {
-        searchMap[curnetKey] = searchList;
-      }
-    }
-    setState(() {
-      searchKeys = searchMap.keys.toList();
-      searchResault = searchMap;
-    });
-    node.unfocus();
-  }
+//  void editingComplete() {
+//    String inputStr = controller.text.trim();
+//    Map<String, List<RecroderModule>> searchMap = {};
+//    for (int i = 0; i < dataKeys.length; i++) {
+//      String curnetKey = dataKeys[i];
+//      List<RecroderModule> curentRecrodingFiles = this.datas[curnetKey], searchList = [];
+//      bool flg;
+//      curentRecrodingFiles.forEach((RecroderModule ele) {
+//        flg = ele.title.contains(inputStr);
+//        if (flg) searchList.add(ele);
+//      });
+//      if (flg) {
+//        searchMap[curnetKey] = searchList;
+//      }
+//    }
+//    setState(() {
+//      searchKeys = searchMap.keys.toList();
+//      searchResault = searchMap;
+//    });
+//    node.unfocus();
+//  }
 
   ///播放录音
   playRecroding({RecroderModule curentFile, int index, String key}) {

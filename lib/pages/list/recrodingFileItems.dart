@@ -12,11 +12,9 @@ class RecrodingFileItems extends StatefulWidget {
     Key key,
     this.curentFile,
     this.index,
-    this.curnetKey,
   }) : super(key: key);
   final RecroderModule curentFile;
   final int index;
-  final String curnetKey;
 
   @override
   _RecrodingFileItemsState createState() => _RecrodingFileItemsState();
@@ -53,10 +51,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                 padding: EdgeInsets.only(right: 20),
                 decoration: BoxDecoration(
                   border: Border(
-                    left: widget.curentFile.isActive
-                        ? BorderSide(
-                            width: 4, color: Theme.of(context).primaryColor)
-                        : BorderSide(width: 0),
+                    left: widget.curentFile.isActive ? BorderSide(width: 4, color: Theme.of(context).primaryColor) : BorderSide(width: 0),
                     bottom: BorderSide(
                       width: 1,
                       color: Color.fromRGBO(240, 240, 246, 1),
@@ -67,10 +62,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                   children: <Widget>[
                     Container(
                       child: IconButton(
-                        icon: widget.curentFile.isPlaying
-                            ? Icon(Icons.pause,
-                                color: Theme.of(context).primaryColor)
-                            : Icon(Icons.play_arrow, color: Colors.grey),
+                        icon: widget.curentFile.isPlaying ? Icon(Icons.pause, color: Theme.of(context).primaryColor) : Icon(Icons.play_arrow, color: Colors.grey),
                         onPressed: playMusic,
                       ),
                     ),
@@ -90,11 +82,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                             children: <Widget>[
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 5),
-                                decoration: BoxDecoration(
-                                    border: Border.all(
-                                        color: Colors.grey, width: 1),
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(10))),
+                                decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.all(Radius.circular(10))),
                                 child: Text(
                                   formatTime(time.toInt()),
                                   style: textStyle,
@@ -129,8 +117,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
               alignment: Alignment.center,
               decoration: BoxDecoration(color: Theme.of(context).primaryColor),
               child: GestureDetector(
-                child:
-                    Image.asset('asset/edit/icon_moving_white.png', width: 26),
+                child: Image.asset('asset/edit/icon_moving_white.png', width: 26),
                 onTap: () {},
               ),
             ),
@@ -140,8 +127,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
               alignment: Alignment.center,
               decoration: BoxDecoration(color: Theme.of(context).primaryColor),
               child: GestureDetector(
-                child:
-                    Image.asset('asset/edit/icon_delete_white.png', width: 26),
+                child: Image.asset('asset/edit/icon_delete_white.png', width: 26),
                 onTap: deleteFile,
               ),
             ),
@@ -153,22 +139,19 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
 
   ///删除文件
   deleteFile() async {
-    RecroderModule _rm = Provider.of<Modus>(context, listen: false)
-        .deleteFile(widget.curentFile.attr, widget.index);
+    RecroderModule _rm = await Provider.of<recrodListProvider>(context, listen: false).deleteFile(widget.index);
     Provider.of<transhProvider>(context, listen: false).trashs.add(_rm);
     cancle();
-    eventBus.fire(DeleteFileSync(attr: widget.curnetKey, index: widget.index));
+    eventBus.fire(DeleteFileSync(index: widget.index));
   }
 
   ///滚动动画
   animateScroll(e) {
     double offset = controller.offset;
     if (offset < winWidth / 6) {
-      controller.animateTo(0,
-          duration: Duration(milliseconds: 100), curve: Curves.linear);
+      controller.animateTo(0, duration: Duration(milliseconds: 100), curve: Curves.linear);
     } else {
-      controller.animateTo(winWidth + 200,
-          duration: Duration(milliseconds: 100), curve: Curves.linear);
+      controller.animateTo(winWidth + 200, duration: Duration(milliseconds: 100), curve: Curves.linear);
     }
   }
 
@@ -176,11 +159,9 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
   void cancle() {
     double offset = controller.offset;
     if (offset > 0) {
-      controller.animateTo(0,
-          duration: Duration(milliseconds: 100), curve: Curves.linear);
+      controller.animateTo(0, duration: Duration(milliseconds: 100), curve: Curves.linear);
     } else {
-      Provider.of<Modus>(context, listen: false)
-          .changeState(widget.curentFile.attr, widget.index);
+      Provider.of<recrodListProvider>(context, listen: false).changeState(widget.index);
       eventBus.fire(PlayingFile(widget.curentFile));
     }
   }

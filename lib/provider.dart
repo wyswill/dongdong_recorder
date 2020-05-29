@@ -1,34 +1,40 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutterapp/utiles.dart';
 import 'modus/record.dart';
 
-class Modus with ChangeNotifier {
-  Map curentPlayRecrofing;
-  Map<String, List<RecroderModule>> recroderFiles = {};
+class recrodListProvider with ChangeNotifier {
+  List<RecroderModule> recroderFiles = [];
 
-  void addRecrodItem(String attr, RecroderModule rm) {
-    if (recroderFiles[attr] == null) {
-      recroderFiles[attr] = [rm];
-      notifyListeners();
-    } else {
-      bool flag = recroderFiles[attr].any((ele) => ele.title == rm.title);
-      if (!flag) recroderFiles[attr].add(rm);
-    }
+  void init(List<RecroderModule> data) {
+    recroderFiles = data;
+    notifyListeners();
   }
 
-  void changeState(String attr, int index) {
-    if (!recroderFiles[attr][index].isActive) {
-      recroderFiles[attr].forEach((element) {
+  void addRecrodItem(RecroderModule rm) {
+    recroderFiles.add(rm);
+    notifyListeners();
+  }
+
+  void changeState(int index) {
+    if (!recroderFiles[index].isActive) {
+      recroderFiles.forEach((element) {
         element.isActive = false;
       });
-      recroderFiles[attr][index].isActive = true;
+      recroderFiles[index].isActive = true;
       notifyListeners();
     }
   }
 
-  RecroderModule deleteFile(String attr, int index) {
-    RecroderModule rm = recroderFiles[attr][index];
+  Future<RecroderModule> deleteFile(int index) async {
+    String deletePath = await FileUtile.getRecrodPath(isDelete: true);
+    RecroderModule rm = recroderFiles[index];
+    File file = File(rm.filepath);
+    file.copySync('$deletePath${rm.title}.wav');
+    file.deleteSync();
     rm.reset();
-    recroderFiles[attr].removeAt(index);
+    recroderFiles.removeAt(index);
     notifyListeners();
     return rm;
   }

@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import '../../event_bus.dart';
 import '../../utiles.dart';
 
-enum bottomState { recrod, playRecroding, deleteFiles }
+enum bottomState { recode, playRecoding, deleteFiles }
 
 class BottomshowBar extends StatefulWidget {
   BottomshowBar({Key key}) : super(key: key);
@@ -21,8 +21,7 @@ class BottomshowBar extends StatefulWidget {
   _BottomshowBarState createState() => _BottomshowBarState();
 }
 
-class _BottomshowBarState extends State<BottomshowBar>
-    with SingleTickerProviderStateMixin {
+class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProviderStateMixin {
   RecroderModule plaingFile, trashFile;
   StreamSubscription streamSubscription;
   List<Map> playerIocns = [
@@ -34,9 +33,9 @@ class _BottomshowBarState extends State<BottomshowBar>
   AnimationController controller;
 
   double totalTime = 0;
-  String currenttime = '0:0:0';
+  String currentTime = '0:0:0';
   int index;
-  bottomState curentState = bottomState.recrod;
+  bottomState curentState = bottomState.recode;
   AudioPlayer audioPlayer = AudioPlayer();
   Timer timer;
   int curentPlayingTime = 0;
@@ -46,8 +45,7 @@ class _BottomshowBarState extends State<BottomshowBar>
     super.initState();
 
     ///动画
-    controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     animation = Tween<double>(begin: 200, end: 0).animate(controller);
     controller.forward();
     controller.addListener(() {
@@ -64,15 +62,14 @@ class _BottomshowBarState extends State<BottomshowBar>
         controller.forward();
       }
       try {
-        if (curentState == bottomState.playRecroding)
-          key.currentState.setCurentTime(0);
+        if (curentState == bottomState.playRecoding) key.currentState.setCurentTime(0);
       } catch (e) {}
       if (mounted)
         setState(() {
-          currenttime = '0:0:0';
+          currentTime = '0:0:0';
           plaingFile = event.file;
           totalTime = double.parse(plaingFile.recrodingtime);
-          this.curentState = bottomState.playRecroding;
+          this.curentState = bottomState.playRecoding;
           curentPlayingTime = 0;
         });
     });
@@ -87,22 +84,22 @@ class _BottomshowBarState extends State<BottomshowBar>
       controller.forward();
     });
     streamSubscription = eventBus.on<NullEvent>().listen((event) async {
-      if (this.curentState != bottomState.recrod) {
+      if (this.curentState != bottomState.recode) {
         if (mounted)
           setState(() {
             plaingFile = null;
-            this.curentState = bottomState.recrod;
+            this.curentState = bottomState.recode;
           });
         controller.reset();
         controller.forward();
       }
     });
     streamSubscription = eventBus.on<DeleteFileSync>().listen((event) async {
-      if (this.curentState != bottomState.recrod) {
+      if (this.curentState != bottomState.recode) {
         if (mounted)
           setState(() {
             plaingFile = null;
-            this.curentState = bottomState.recrod;
+            this.curentState = bottomState.recode;
           });
         controller.reset();
         controller.forward();
@@ -121,17 +118,12 @@ class _BottomshowBarState extends State<BottomshowBar>
   // ignore: missing_return
   Widget build(BuildContext context) {
     switch (this.curentState) {
-      case bottomState.recrod:
+      case bottomState.recode:
         return Transform.translate(
           offset: Offset(0, animation.value),
           child: Container(
             padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                      color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
-                ]),
+            decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)]),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -152,7 +144,7 @@ class _BottomshowBarState extends State<BottomshowBar>
           ),
         );
         break;
-      case bottomState.playRecroding:
+      case bottomState.playRecoding:
         return Transform.translate(
           offset: Offset(0, animation.value),
           child: Stack(
@@ -162,14 +154,7 @@ class _BottomshowBarState extends State<BottomshowBar>
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.only(right: 13, top: 15, bottom: 30),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                            color: Colors.grey,
-                            offset: Offset(0, 7),
-                            blurRadius: 20)
-                      ]),
+                  decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)]),
                   child: Column(
                     children: <Widget>[
                       Container(
@@ -210,8 +195,7 @@ class _BottomshowBarState extends State<BottomshowBar>
                                         Text(
                                           e['title'],
                                           style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor,
+                                            color: Theme.of(context).primaryColor,
                                             fontSize: 14,
                                           ),
                                         )
@@ -225,18 +209,14 @@ class _BottomshowBarState extends State<BottomshowBar>
                         children: <Widget>[
                           IconButton(
                             icon: Icon(
-                              this.plaingFile.isPlaying
-                                  ? Icons.pause
-                                  : Icons.play_arrow,
+                              this.plaingFile.isPlaying ? Icons.pause : Icons.play_arrow,
                               color: Theme.of(context).primaryColor,
                             ),
                             onPressed: play,
                           ),
-                          Text(currenttime,
-                              style: TextStyle(color: Colors.grey)),
+                          Text(currentTime, style: TextStyle(color: Colors.grey)),
                           Expanded(child: MusicProgress(key: key)),
-                          Text(formatTime(totalTime.toInt()),
-                              style: TextStyle(color: Colors.grey))
+                          Text(formatTime(totalTime.toInt()), style: TextStyle(color: Colors.grey))
                         ],
                       )
                     ],
@@ -270,10 +250,7 @@ class _BottomshowBarState extends State<BottomshowBar>
             padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
             decoration: BoxDecoration(
               color: Colors.white,
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                    color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
-              ],
+              boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -284,12 +261,7 @@ class _BottomshowBarState extends State<BottomshowBar>
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                          color: Color.fromRGBO(187, 187, 187, 0.4),
-                          offset: Offset(0, 0),
-                          blurRadius: 5)
-                    ],
+                    boxShadow: <BoxShadow>[BoxShadow(color: Color.fromRGBO(187, 187, 187, 0.4), offset: Offset(0, 0), blurRadius: 5)],
                   ),
                   child: FlatButton(child: Text('删除'), onPressed: delete),
                 ),
@@ -299,12 +271,7 @@ class _BottomshowBarState extends State<BottomshowBar>
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                          color: Color.fromRGBO(187, 187, 187, 0.4),
-                          offset: Offset(0, 0),
-                          blurRadius: 5)
-                    ],
+                    boxShadow: <BoxShadow>[BoxShadow(color: Color.fromRGBO(187, 187, 187, 0.4), offset: Offset(0, 0), blurRadius: 5)],
                   ),
                   child: FlatButton(child: Text('还原'), onPressed: reset),
                 ),
@@ -314,12 +281,7 @@ class _BottomshowBarState extends State<BottomshowBar>
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                          color: Color.fromRGBO(187, 187, 187, 0.4),
-                          offset: Offset(0, 0),
-                          blurRadius: 5)
-                    ],
+                    boxShadow: <BoxShadow>[BoxShadow(color: Color.fromRGBO(187, 187, 187, 0.4), offset: Offset(0, 0), blurRadius: 5)],
                   ),
                   child: FlatButton(child: Text('取消'), onPressed: cancel),
                 ),
@@ -337,7 +299,7 @@ class _BottomshowBarState extends State<BottomshowBar>
     if (mounted)
       setState(() {
         trashFile = null;
-        curentState = bottomState.recrod;
+        curentState = bottomState.recode;
       });
     eventBus.fire(TrashDeleted(index: index));
   }
@@ -349,8 +311,7 @@ class _BottomshowBarState extends State<BottomshowBar>
     String deletePath = await FileUtile.getRecrodPath(isDelete: true);
     Directory directory = Directory(newpath);
     if (!directory.existsSync()) directory.createSync();
-    await file
-        .copy('$newpath${trashFile.title.replaceAll(deletePath, '')}.wav');
+    await file.copy('$newpath${trashFile.title.replaceAll(deletePath, '')}.wav');
     file.delete();
     cancel();
     eventBus.fire(TrashDeleted(index: index));
@@ -361,7 +322,7 @@ class _BottomshowBarState extends State<BottomshowBar>
     if (mounted)
       setState(() {
         trashFile = null;
-        curentState = bottomState.recrod;
+        curentState = bottomState.recode;
       });
     controller.reset();
     controller.forward();
@@ -387,7 +348,7 @@ class _BottomshowBarState extends State<BottomshowBar>
       if (mounted)
         setState(() {
           this.curentPlayingTime = 0;
-          this.currenttime = formatTime(curentPlayingTime * 1000);
+          this.currentTime = formatTime(curentPlayingTime * 1000);
         });
       key.currentState.setCurentTime(0);
       audioPlayer.pause();
@@ -402,7 +363,7 @@ class _BottomshowBarState extends State<BottomshowBar>
         if (mounted)
           setState(() {
             this.curentPlayingTime++;
-            this.currenttime = formatTime(curentPlayingTime * 1000);
+            this.currentTime = formatTime(curentPlayingTime * 1000);
           });
         key.currentState.setCurentTime(curentPlayingTime / totalMS);
       } else {
@@ -426,7 +387,7 @@ class _BottomshowBarState extends State<BottomshowBar>
     if (mounted)
       setState(() {
         plaingFile = null;
-        this.curentState = bottomState.recrod;
+        this.curentState = bottomState.recode;
       });
   }
 
@@ -465,8 +426,7 @@ class _BottomshowBarState extends State<BottomshowBar>
     Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder: (BuildContext context, Animation animation,
-            Animation secondaryAnimation) {
+        pageBuilder: (BuildContext context, Animation animation, Animation secondaryAnimation) {
           return ScaleTransition(
             scale: animation,
             alignment: Alignment.bottomCenter,

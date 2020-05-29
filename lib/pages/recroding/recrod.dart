@@ -1,8 +1,8 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:math';
 
 import 'package:flutterapp/modus/cancasRectModu.dart';
+import 'package:flutterapp/modus/record.dart';
 import 'package:flutterapp/utiles.dart';
 import 'package:flutterapp/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
@@ -93,8 +93,7 @@ class _RecrodState extends State<Recrod> {
                     ),
                   ),
                   GestureDetector(
-                    child: Image.asset('asset/flag/icon_flag_white.png',
-                        width: 40),
+                    child: Image.asset('asset/flag/icon_flag_white.png', width: 40),
                     onTap: setTimeStap,
                   ),
                 ],
@@ -163,10 +162,7 @@ class _RecrodState extends State<Recrod> {
       child: TextField(
         controller: controller,
         focusNode: node,
-        decoration: InputDecoration(
-            border: InputBorder.none,
-            hintText: '输入录音标题',
-            hintStyle: TextStyle(color: Theme.of(context).primaryColor)),
+        decoration: InputDecoration(border: InputBorder.none, hintText: '输入录音标题', hintStyle: TextStyle(color: Theme.of(context).primaryColor)),
       ),
     );
   }
@@ -275,10 +271,8 @@ class _RecrodState extends State<Recrod> {
     if (filename == '')
       alert(context, title: Text('警告!'), content: Text('文件标题不能为空'));
     else if (filepath.isNotEmpty) {
-      Map res = await FileUtile.pathTOModule(
-          path: filepath, newFileName: filename, channel: channel);
-      Provider.of<Modus>(context, listen: false)
-          .addRecrodItem(res['attr'], res['rm']);
+      RecroderModule res = await FileUtile.pathTOModule(path: filepath, newFileName: filename, channel: channel);
+      Provider.of<recrodListProvider>(context, listen: false).addRecrodItem(res);
       Navigator.pop(context);
     } else {
       alert(context, title: Text('没有录制音频'));
@@ -303,9 +297,7 @@ class _RecrodState extends State<Recrod> {
   setdata(double value) {
     List<CanvasRectModu> newLists = [];
     if (recrodingData.length < 195) {
-      this
-          .recrodingData
-          .add(CanvasRectModu(vlaue: value, type: CanvasRectTypes.data));
+      this.recrodingData.add(CanvasRectModu(vlaue: value, type: CanvasRectTypes.data));
       key.currentState.setRecrodingData(recrodingData);
     } else {
       newLists = recrodingData;
@@ -343,7 +335,7 @@ class _RecrodState extends State<Recrod> {
     double ofs = offset.floorToDouble();
     List<CanvasRectModu> newList;
     left += ofs;
-    right = (-left) + 195;
+    right = 195 - left;
     if (-left.floor() < 0) {
       left -= ofs;
       return;

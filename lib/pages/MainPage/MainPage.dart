@@ -1,8 +1,7 @@
-import 'package:flutterapp/pages/list/list.dart';
-import 'package:flutterapp/pages/search/search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterapp/pages/list/RecrodingList.dart';
+import 'package:flutterapp/pages/search/search.dart';
 import 'package:flutterapp/pages/trash/trash.dart';
-
 import 'bottom.dart';
 
 class MainPage extends StatefulWidget {
@@ -14,48 +13,36 @@ class MainPage extends StatefulWidget {
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage>
-    with SingleTickerProviderStateMixin {
+class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin {
   List<Map> menus = [
-    {
-      "icon": "asset/toolbar/icon_List",
-      "router": 'list',
-      "isActive": false,
-    },
-    {
-      "icon": 'asset/toolbar/icon_trash',
-      "router": 'list',
-      "isActive": false,
-    },
-    {
-      "icon": 'asset/toolbar/icon_Search',
-      "router": 'list',
-      "isActive": false,
-    },
+    {"icon": "asset/toolbar/icon_List", "router": 'list', "isActive": false},
+    {"icon": 'asset/toolbar/icon_trash', "router": 'list', "isActive": false},
+    {"icon": 'asset/toolbar/icon_Search', "router": 'list', "isActive": false},
   ];
-
+  List<Widget> pages = [RecrodingList(), trash(), SearchPage()];
   TabController tabController;
   Map plaingFile;
+  int preIndex = 0;
+
 
   @override
   void initState() {
     super.initState();
 
     ///设置tabbar
-    menus[0]['isActive'] = true;
+    menus[preIndex]['isActive'] = true;
     tabController = TabController(vsync: this, length: 3);
 
     ///设置tabView
     tabController.addListener(() {
       setState(() {
+        this.menus[preIndex]['isActive'] = false;
         this.menus[tabController.index]['isActive'] = true;
-        for (int i = 0; i < this.menus.length; i++) {
-          if (i == tabController.index) continue;
-          this.menus[i]['isActive'] = false;
-        }
+        preIndex = tabController.index;
       });
     });
   }
+
 
   @override
   void dispose() {
@@ -74,18 +61,13 @@ class _MainPageState extends State<MainPage>
           Expanded(
             child: TabBarView(
               controller: tabController,
-              children: List.generate(this.menus.length, (int index) {
-                switch (index) {
-                  case 0:
-                    return RecrodingList();
-                  case 1:
-                    return trash();
-                  case 2:
-                    return SearchPage();
-                  default:
-                    return RecrodingList();
-                }
-              }),
+              children: List.generate(
+                pages.length,
+                (index) => Offstage(
+                  child: pages[index],
+                  offstage: tabController.index != index,
+                ),
+              ),
             ),
           ),
           BottomshowBar()
@@ -112,10 +94,8 @@ class _MainPageState extends State<MainPage>
           setState(() {
             tabController.animateTo(index);
             this.menus[index]['isActive'] = true;
-            for (int i = 0; i < this.menus.length; i++) {
-              if (i == index) continue;
-              this.menus[i]['isActive'] = false;
-            }
+            this.menus[preIndex]['isActive'] = false;
+            preIndex = index;
           });
         },
       ),
@@ -126,15 +106,7 @@ class _MainPageState extends State<MainPage>
   Widget setTab() {
     return Container(
       margin: EdgeInsets.all(15),
-      decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: <BoxShadow>[
-            BoxShadow(
-                color: Color.fromRGBO(187, 187, 187, 0.4),
-                offset: Offset(0, 0),
-                blurRadius: 5)
-          ],
-          borderRadius: BorderRadius.all(Radius.circular(2))),
+      decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[BoxShadow(color: Color.fromRGBO(187, 187, 187, 0.4), offset: Offset(0, 0), blurRadius: 5)], borderRadius: BorderRadius.all(Radius.circular(2))),
       child: TabBar(
         controller: tabController,
         indicatorWeight: 0.01,
