@@ -3,8 +3,8 @@ class RecroderModule {
   final String recrodingtime;
   final String fileSize;
   final String lastModified;
-  final String filepath;
   final String attr;
+  String filepath;
   bool isPlaying;
   bool isActive;
 

@@ -103,7 +103,7 @@ class _trashState extends State<trash> {
 
   ///显示选项
   void showOptions(RecroderModule rm, index) {
-    Provider.of<transhProvider>(context, listen: false).trashSwitchState(rm, index);
+    Provider.of<transhProvider>(context, listen: false).trashSwitchState( index);
     eventBus.fire(TrashOption(rm, index));
   }
 }

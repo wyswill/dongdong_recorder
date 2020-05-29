@@ -6,6 +6,7 @@ import 'modus/record.dart';
 
 class recrodListProvider with ChangeNotifier {
   List<RecroderModule> recroderFiles = [];
+  int preIndex = null;
 
   void init(List<RecroderModule> data) {
     recroderFiles = data;
@@ -18,13 +19,10 @@ class recrodListProvider with ChangeNotifier {
   }
 
   void changeState(int index) {
-    if (!recroderFiles[index].isActive) {
-      recroderFiles.forEach((element) {
-        element.isActive = false;
-      });
-      recroderFiles[index].isActive = true;
-      notifyListeners();
-    }
+    if (preIndex != null) recroderFiles[preIndex].isActive = !recroderFiles[preIndex].isActive;
+    recroderFiles[index].isActive = !recroderFiles[index].isActive;
+    preIndex = index;
+    notifyListeners();
   }
 
   Future<RecroderModule> deleteFile(int index) async {
@@ -35,6 +33,7 @@ class recrodListProvider with ChangeNotifier {
     file.deleteSync();
     rm.reset();
     recroderFiles.removeAt(index);
+    rm.filepath = '$deletePath${rm.title}.wav';
     notifyListeners();
     return rm;
   }

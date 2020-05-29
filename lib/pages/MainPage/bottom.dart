@@ -5,11 +5,14 @@ import 'package:flutterapp/modus/record.dart';
 import 'package:flutterapp/pages/recroding/recrod.dart';
 import 'package:flutterapp/plugins/AudioPlayer.dart';
 import 'package:flutterapp/plugins/Require.dart';
+import 'package:flutterapp/trashProvider.dart';
 import 'package:flutterapp/widgets/musicProgress.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../event_bus.dart';
+import '../../provider.dart';
 import '../../utiles.dart';
 
 enum bottomState { recode, playRecoding, deleteFiles }
@@ -306,15 +309,15 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
 
   ///还原
   void reset() async {
+    print(trashFile.filepath);
     File file = File(trashFile.filepath);
     String newpath = await FileUtile.getRecrodPath();
-    String deletePath = await FileUtile.getRecrodPath(isDelete: true);
-    Directory directory = Directory(newpath);
-    if (!directory.existsSync()) directory.createSync();
-    await file.copy('$newpath${trashFile.title.replaceAll(deletePath, '')}.wav');
-    file.delete();
+    file.copySync('$newpath${trashFile.title}.wav');
+    file.deleteSync();
+    trashFile.filepath = '$newpath${trashFile.title}.wav';
+    Provider.of<transhProvider>(context,listen: false).remove(index);
+    Provider.of<recrodListProvider>(context, listen: false).addRecrodItem(trashFile);
     cancel();
-    eventBus.fire(TrashDeleted(index: index));
   }
 
   ///取消

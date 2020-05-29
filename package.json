@@ -1,0 +1,11 @@
+{
+  "name": "flutter_app",
+  "version": "1.0.0",
+  "repository": "http://t1.game2d.com:3000/wyswill/recording_flutter.git",
+  "author": "wyswill <1151373571@qq.com>",
+  "license": "MIT",
+  "scripts": {
+    "buildapk": "flutter build apk   --target-platform android-arm,android-arm64",
+    "installapk": "flutter install"
+  }
+}
