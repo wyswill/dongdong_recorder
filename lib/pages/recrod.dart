@@ -251,8 +251,7 @@ class _RecrodState extends State<Recrod> {
     }
     setState(() {
       statu = !statu;
-    });
-  }
+    });  }
 
   ///时间转换
   timeFormat() {

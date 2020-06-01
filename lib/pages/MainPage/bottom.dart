@@ -88,11 +88,10 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     });
     streamSubscription = eventBus.on<NullEvent>().listen((event) async {
       if (this.curentState != bottomState.recode) {
-        if (mounted)
-          setState(() {
-            plaingFile = null;
-            this.curentState = bottomState.recode;
-          });
+        setState(() {
+          plaingFile = null;
+          this.curentState = bottomState.recode;
+        });
         controller.reset();
         controller.forward();
       }

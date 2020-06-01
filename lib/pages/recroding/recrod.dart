@@ -52,7 +52,6 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         if (MediaQuery.of(context).viewInsets.bottom == 0) {
-//          print('关闭键盘');
           node.unfocus();
         }
       });
@@ -214,11 +213,40 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
 
   ///重置
   reset() {
+    if (statu) {
+      this.startOrStop();
+      if (filepath.isNotEmpty)
+        clean(filepath);
+      else
+        Future.delayed(Duration(milliseconds: 300), () => {if (filepath.isNotEmpty) clean(filepath)});
+    } else {
+      setState(() {
+        ///消除时间
+        h = 0;
+        m = 0;
+        s = 0;
+
+        /// 消除filepath
+        filepath = '';
+
+        ///清除画布
+        key.currentState.setRecrodingData([]);
+        controller.text = '';
+      });
+    }
+  }
+
+  clean(String path) {
+    File file = File(path);
+    file.deleteSync();
     setState(() {
       ///消除时间
       h = 0;
       m = 0;
       s = 0;
+
+      /// 消除filepath
+      filepath = '';
 
       ///清除画布
       key.currentState.setRecrodingData([]);

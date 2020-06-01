@@ -96,6 +96,7 @@ class FileUtile {
     return resList;
   }
 
+  // ignore: missing_return
   static Future<RecroderModule> pathTOModule({String path, String newFileName, MethodChannel channel}) async {
     File file = File(path);
     String prePath = await getRecrodPath(), newPath = "$prePath$newFileName.wav";

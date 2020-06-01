@@ -1,6 +1,8 @@
 import 'package:flutterapp/modus/record.dart';
+import 'package:flutterapp/provider.dart';
 import 'package:flutterapp/utiles.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import '../../event_bus.dart';
 import '../list/recrodingFileItems.dart';
@@ -11,18 +13,17 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  List<RecroderModule> datas = [], searchResault = [];
-
   FocusNode node = FocusNode();
   TextEditingController controller = TextEditingController();
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
-  List dataKeys = [], searchKeys = [];
+  List<RecroderModule> datas = [];
 
   @override
   void dispose() {
     super.dispose();
     controller.text = '';
     controller.dispose();
+    node.dispose();
   }
 
   @override
@@ -32,24 +33,27 @@ class _SearchPageState extends State<SearchPage> {
       child: Column(
         children: <Widget>[
           setInput(),
-//          Expanded(
-//            child: CustomScrollView(
-//              slivers: List.generate(this.searchKeys.length, (int index) {
-//                return buildRecrodingItem(index);
-//              }),
-//            ),
-//          )
+          Expanded(
+            child: ListView.builder(
+              itemCount: datas.length,
+              itemExtent: 50.0,
+              itemBuilder: (context, index) {
+                return RecrodingFileItems(
+                  curentFile: datas[index],
+                  index: index,
+                );
+              },
+            ),
+          )
         ],
       ),
     );
   }
 
-  ///每组录音数据样式
-
   ///输入框
   Widget setInput() {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 20),
+      margin: EdgeInsets.only(left: 20,right: 20,bottom: 20),
       padding: EdgeInsets.only(left: 12),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -58,79 +62,34 @@ class _SearchPageState extends State<SearchPage> {
       child: TextField(
         controller: controller,
         focusNode: node,
-        decoration: InputDecoration(border: InputBorder.none, hintStyle: TextStyle(color: Theme.of(context).primaryColor)),
-//        onEditingComplete: editingComplete,
-      ),
-    );
-  }
-
-  ///展示搜索结果
-  Widget showItems(RecroderModule rm) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      decoration: BoxDecoration(
-        border: Border(
-          left: rm.isPlaying ? BorderSide(width: 4, color: Theme.of(context).primaryColor) : BorderSide(width: 0),
-        ),
-      ),
-      child: Row(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.only(right: 5),
-            child: Icon(Icons.play_arrow, color: Colors.grey),
+        decoration: InputDecoration(
+          border: InputBorder.none,
+          hintStyle: TextStyle(
+            color: Theme.of(context).primaryColor,
           ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(rm.title),
-                SizedBox(
-                  child: Row(
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 5),
-                        decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.all(Radius.circular(10))),
-                        child: Text(
-                          formatTime(int.parse(rm.recrodingtime)),
-                          style: textStyle,
-                        ),
-                      ),
-                      Text(rm.fileSize, style: textStyle),
-                      Expanded(child: Container()),
-                      Text(rm.lastModified, style: textStyle),
-                    ],
-                  ),
-                )
-              ],
-            ),
-          )
-        ],
+          icon: Icon(Icons.search),
+        ),
+        onEditingComplete: editingComplete,
       ),
     );
   }
 
-//  void editingComplete() {
-//    String inputStr = controller.text.trim();
-//    Map<String, List<RecroderModule>> searchMap = {};
-//    for (int i = 0; i < dataKeys.length; i++) {
-//      String curnetKey = dataKeys[i];
-//      List<RecroderModule> curentRecrodingFiles = this.datas[curnetKey], searchList = [];
-//      bool flg;
-//      curentRecrodingFiles.forEach((RecroderModule ele) {
-//        flg = ele.title.contains(inputStr);
-//        if (flg) searchList.add(ele);
-//      });
-//      if (flg) {
-//        searchMap[curnetKey] = searchList;
-//      }
-//    }
-//    setState(() {
-//      searchKeys = searchMap.keys.toList();
-//      searchResault = searchMap;
-//    });
-//    node.unfocus();
-//  }
+  ///输入完成
+  editingComplete() {
+    String inputTitle = controller.text;
+    List<RecroderModule> searchResault = [];
+    List<RecroderModule> list = Provider.of<recrodListProvider>(context, listen: false).recroderFiles;
+    list.forEach((element) {
+      if (element.title.contains(inputTitle)) {
+        element.reset();
+        searchResault.add(element);
+      }
+    });
+    setState(() {
+      datas = searchResault;
+      node.unfocus();
+    });
+  }
 
   ///播放录音
   playRecroding({RecroderModule curentFile, int index, String key}) {
