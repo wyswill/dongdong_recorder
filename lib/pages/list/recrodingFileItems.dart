@@ -48,7 +48,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
               onTap: cancle,
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(right: 20),
+                padding: EdgeInsets.only(left: 20,right: 20),
                 decoration: BoxDecoration(
                   border: Border(
                     left: widget.curentFile.isActive ? BorderSide(width: 4, color: Theme.of(context).primaryColor) : BorderSide(width: 0),
@@ -60,12 +60,6 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                 ),
                 child: Row(
                   children: <Widget>[
-                    Container(
-                      child: IconButton(
-                        icon: widget.curentFile.isPlaying ? Icon(Icons.pause, color: Theme.of(context).primaryColor) : Icon(Icons.play_arrow, color: Colors.grey),
-                        onPressed: playMusic,
-                      ),
-                    ),
                     Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,

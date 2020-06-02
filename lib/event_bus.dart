@@ -11,11 +11,6 @@ class PlayingFile {
   final RecroderModule file;
 }
 
-class PlayingState {
-  PlayingState(this.state);
-
-  final bool state;
-}
 
 class DeleteFileSync {
   DeleteFileSync({this.index, this.attr});

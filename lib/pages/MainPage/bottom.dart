@@ -69,6 +69,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
           audioPlayer.pause();
           timer.cancel();
           timer = null;
+          plaingFile.isPlaying = false;
         }
       }
       setState(() {
@@ -335,12 +336,11 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     setState(() {
       this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
     });
-    eventBus.fire(PlayingState(this.plaingFile.isPlaying));
     if (plaingFile.isPlaying) {
       audioPlayer.play(this.plaingFile.filepath);
       setPlanProgress();
     } else {
-      timer.cancel();
+      if (timer != null) timer.cancel();
       timer = null;
       setState(() {
         this.curentPlayingTime = 0;
@@ -367,7 +367,6 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
           timer.cancel();
           timer = null;
         });
-        eventBus.fire(PlayingState(this.plaingFile.isPlaying));
         audioPlayer.pause();
       }
     });
@@ -377,7 +376,6 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
   void closePlayer() {
     controller.reset();
     controller.forward();
-    eventBus.fire(PlayingState(false));
     setState(() {
       plaingFile = null;
       this.curentState = bottomState.recode;
