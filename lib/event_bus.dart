@@ -6,9 +6,10 @@ import 'modus/record.dart';
 EventBus eventBus = EventBus();
 
 class PlayingFile {
-  PlayingFile(this.file);
+  PlayingFile(this.file,this.index);
 
   final RecroderModule file;
+  final int index;
 }
 
 

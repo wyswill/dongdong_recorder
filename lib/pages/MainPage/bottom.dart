@@ -75,6 +75,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
       setState(() {
         currentTime = '0:0:0';
         plaingFile = event.file;
+        index =event.index;
         totalTime = double.parse(plaingFile.recrodingtime);
         this.curentState = bottomState.playRecoding;
         curentPlayingTime = 0;
@@ -394,7 +395,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
 
   ///剪辑
   void editor() {
-    Navigator.pushNamed(context, '/editor', arguments: this.plaingFile);
+    Navigator.pushNamed(context, '/editor', arguments: {'rm': plaingFile, 'index': index});
   }
 
   ///转文字

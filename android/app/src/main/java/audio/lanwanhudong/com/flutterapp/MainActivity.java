@@ -22,11 +22,6 @@ public class MainActivity extends FlutterActivity {
     AudioPlayer audioPlayer;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
-    }
-
-    @Override
     public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
         super.configureFlutterEngine(flutterEngine);
         String key = "com.lanwanhudong";

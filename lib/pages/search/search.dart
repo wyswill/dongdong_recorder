@@ -93,6 +93,6 @@ class _SearchPageState extends State<SearchPage> {
 
   ///播放录音
   playRecroding({RecroderModule curentFile, int index, String key}) {
-    eventBus.fire(PlayingFile(curentFile));
+    eventBus.fire(PlayingFile(curentFile,index));
   }
 }

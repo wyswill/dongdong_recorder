@@ -1,10 +1,10 @@
 class RecroderModule {
-  final String title;
   final String recrodingtime;
   final String fileSize;
   final String lastModified;
   final String attr;
   String filepath;
+  String title;
   bool isPlaying;
   bool isActive;
 

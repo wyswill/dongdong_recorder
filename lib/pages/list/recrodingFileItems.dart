@@ -156,7 +156,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
     } else {
       if (Provider.of<recrodListProvider>(context, listen: false).preIndex == widget.index) return;
       Provider.of<recrodListProvider>(context, listen: false).changeState(widget.index);
-      eventBus.fire(PlayingFile(widget.curentFile));
+      eventBus.fire(PlayingFile(widget.curentFile,widget.index));
     }
   }
 

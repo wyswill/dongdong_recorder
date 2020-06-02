@@ -7,6 +7,8 @@ import 'package:flutterapp/modus/record.dart';
 import 'package:flutterapp/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+import '../provider.dart';
 import '../utiles.dart';
 import 'musicProgress.dart';
 
@@ -43,7 +45,9 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
 
   Color get mainColor => Theme.of(context).primaryColor;
 
-  RecroderModule get rm => widget.arguments;
+  RecroderModule get rm => widget.arguments['rm'];
+
+  int get index => widget.arguments['index'];
 
   ///与canvas交互的参数
   CanvasRectModu canvasRectModu;
@@ -60,8 +64,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    var data =
-        await this.channel.invokeListMethod('fft', {"path": rm.filepath});
+    var data = await this.channel.invokeListMethod('fft', {"path": rm.filepath});
     recrodingData = await transfrom(data.toList());
     recrodingOffset(0);
     eventBus.on<SetCurentTime>().listen((val) {
@@ -77,9 +80,14 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   }
 
   @override
+  void deactivate() {
+    node.unfocus();
+    super.deactivate();
+  }
+
+  @override
   void dispose() async {
     controller.dispose();
-    node.unfocus();
     node.dispose();
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
@@ -126,9 +134,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                         children: <Widget>[
                           Container(
                             margin: EdgeInsets.only(top: 20),
-                            child: Text(startTimestamp != null
-                                ? startTimestamp
-                                : "0:0:0"),
+                            child: Text(startTimestamp != null ? startTimestamp : "0:0:0"),
                           ),
                           Text('开始时间戳')
                         ],
@@ -137,9 +143,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                         children: <Widget>[
                           Container(
                             margin: EdgeInsets.only(top: 20),
-                            child: Text(canvasRectModu != null
-                                ? canvasRectModu.timestamp
-                                : "0:0:0"),
+                            child: Text(canvasRectModu != null ? canvasRectModu.timestamp : "0:0:0"),
                           ),
                           Text('当前时间戳', style: TextStyle(color: Colors.red))
                         ],
@@ -148,8 +152,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                         children: <Widget>[
                           Container(
                             margin: EdgeInsets.only(top: 20),
-                            child: Text(
-                                endTimestamp != null ? endTimestamp : "0:0:0"),
+                            child: Text(endTimestamp != null ? endTimestamp : "0:0:0"),
                           ),
                           Text('结束时间戳')
                         ],
@@ -188,10 +191,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
       height: 60,
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-      decoration: BoxDecoration(
-          boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey)],
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(5))),
+      decoration: BoxDecoration(boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey)], color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(5))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -206,8 +206,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                 ),
                 Text(
                   '剪切音频',
-                  style: TextStyle(
-                      color: Theme.of(context).primaryColor, fontSize: 12),
+                  style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12),
                 )
               ],
             ),
@@ -223,8 +222,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                 ),
                 Text(
                   '开始时间戳',
-                  style: TextStyle(
-                      color: Theme.of(context).primaryColor, fontSize: 12),
+                  style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12),
                 )
               ],
             ),
@@ -240,8 +238,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                 ),
                 Text(
                   '结束时间戳',
-                  style: TextStyle(
-                      color: Theme.of(context).primaryColor, fontSize: 12),
+                  style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12),
                 )
               ],
             ),
@@ -265,10 +262,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
         child: TextField(
           controller: controller,
           focusNode: node,
-          decoration: InputDecoration(
-              border: InputBorder.none,
-              hintText: '输入录音标题',
-              hintStyle: TextStyle(color: Theme.of(context).primaryColor)),
+          decoration: InputDecoration(border: InputBorder.none, hintText: '输入录音标题', hintStyle: TextStyle(color: Theme.of(context).primaryColor)),
         ),
       ),
     );
@@ -279,9 +273,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     return Container(
       height: 200,
       padding: EdgeInsets.only(right: 13, top: 15, bottom: 30),
-      decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[
-        BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
-      ]),
+      decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)]),
       child: Column(
         children: <Widget>[
           Container(
@@ -332,12 +324,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
           Container(
             margin: EdgeInsets.symmetric(horizontal: 20),
             child: Row(
-              children: <Widget>[
-                Text(currenttime, style: TextStyle(color: Colors.grey)),
-                Expanded(child: MusicProgress(key: key)),
-                Text(formatTime(int.parse(rm.recrodingtime)),
-                    style: TextStyle(color: Colors.grey))
-              ],
+              children: <Widget>[Text(currenttime, style: TextStyle(color: Colors.grey)), Expanded(child: MusicProgress(key: key)), Text(formatTime(int.parse(rm.recrodingtime)), style: TextStyle(color: Colors.grey))],
             ),
           ),
           Row(
@@ -388,22 +375,19 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     } else if (endTime == null) {
       alert(context, title: Text('没有确定结束剪辑的时间'));
       return;
+    } else if (endTime < startTime) {
+      alert(context, title: Text('结束时间不能小于开始时间！'));
+      return;
     }
     String originPath = rm.filepath, savePath;
     DateTime dateTime = DateTime.now();
     savePath = await FileUtile.getRecrodPath();
-    savePath =
-        "$savePath${rm.title}-${dateTime.year}.${dateTime.month}.${dateTime.day}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}";
-
+    savePath = "$savePath${rm.title}-${dateTime.year}.${dateTime.month}.${dateTime.day}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}";
     try {
-      String res = await channel.invokeMethod("cat", {
-        "originPath": originPath,
-        "savePath": savePath,
-        "startTime": startTime,
-        "endTime": endTime
-      });
+      String res = await channel.invokeMethod("cat", {"originPath": originPath, "savePath": savePath, "startTime": startTime, "endTime": endTime});
       if (res.isNotEmpty) {
         alert(context, title: Text('剪辑完成！'));
+        Provider.of<recrodListProvider>(context, listen: false).init(await FileUtile.getlocalMusic(channel: channel));
       } else {
         alert(context, title: Text('剪辑失败！'));
       }
@@ -411,9 +395,6 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
       print(e);
     }
   }
-
-  ///音频选项
-  void optionsChoes() {}
 
   ///设置截取开始指针
   setStart() {
@@ -466,6 +447,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
       String newPath = '${await FileUtile.getRecrodPath()}$newTitle.wav';
       await file.copy(newPath);
       await file.delete();
+      Provider.of<recrodListProvider>(context, listen: false).changeRM(newTitle, newPath, index);
       Navigator.pop(context);
     }
   }
@@ -513,8 +495,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   List<CanvasRectModu> addHeadOrTail(List<CanvasRectModu> arr) {
     int columnsCount = 80;
     for (int i = 0; i < columnsCount; i++) {
-      arr.add(CanvasRectModu(
-          vlaue: 2, type: CanvasRectTypes.point, timestamp: "0:0:0"));
+      arr.add(CanvasRectModu(vlaue: 2, type: CanvasRectTypes.point, timestamp: "0:0:0"));
     }
     return arr;
   }

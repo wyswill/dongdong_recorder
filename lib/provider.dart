@@ -18,6 +18,7 @@ class recrodListProvider with ChangeNotifier {
 
   void init(List<RecroderModule> data) {
     recroderFiles = data;
+    preIndex = null;
     notifyListeners();
   }
 
@@ -44,5 +45,11 @@ class recrodListProvider with ChangeNotifier {
     rm.filepath = '$deletePath${rm.title}.wav';
     notifyListeners();
     return rm;
+  }
+
+  void changeRM(String title, String path, int index) {
+    recroderFiles[index].title = title;
+    recroderFiles[index].filepath = path;
+    notifyListeners();
   }
 }
