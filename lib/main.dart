@@ -23,7 +23,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  ///和native通讯
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
 
   @override

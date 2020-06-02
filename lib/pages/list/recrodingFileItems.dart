@@ -157,10 +157,10 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
 
   ///还原滑动
   void cancle() {
-    double offset = controller.offset;
-    if (offset > 0) {
+    if (controller.offset > 0) {
       controller.animateTo(0, duration: Duration(milliseconds: 100), curve: Curves.linear);
     } else {
+      if (Provider.of<recrodListProvider>(context, listen: false).preIndex == widget.index) return;
       Provider.of<recrodListProvider>(context, listen: false).changeState(widget.index);
       eventBus.fire(PlayingFile(widget.curentFile));
     }

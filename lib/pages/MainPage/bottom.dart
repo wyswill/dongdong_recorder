@@ -24,8 +24,7 @@ class BottomshowBar extends StatefulWidget {
   _BottomshowBarState createState() => _BottomshowBarState();
 }
 
-class _BottomshowBarState extends State<BottomshowBar>
-    with SingleTickerProviderStateMixin {
+class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProviderStateMixin {
   RecroderModule plaingFile, trashFile;
   StreamSubscription streamSubscription;
   List<Map> playerIocns = [
@@ -49,43 +48,43 @@ class _BottomshowBarState extends State<BottomshowBar>
     super.initState();
 
     ///动画
-    controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     animation = Tween<double>(begin: 200, end: 0).animate(controller);
     controller.forward();
     controller.addListener(() {
-      if (mounted) setState(() {});
+      setState(() {});
     });
-  }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
     streamSubscription = eventBus.on<PlayingFile>().listen((event) async {
       if (plaingFile == null) {
         controller.reset();
         controller.forward();
+      } else {
+        try {
+          if (curentState == bottomState.playRecoding) key.currentState.setCurentTime(0);
+        } catch (e) {}
+
+        ///如果当前正在播放，就停止播放，并释放player,否则设置当前播放文件
+        if (plaingFile.isPlaying) {
+          audioPlayer.pause();
+          timer.cancel();
+          timer = null;
+        }
       }
-      try {
-        if (curentState == bottomState.playRecoding)
-          key.currentState.setCurentTime(0);
-      } catch (e) {}
-      if (mounted)
-        setState(() {
-          currentTime = '0:0:0';
-          plaingFile = event.file;
-          totalTime = double.parse(plaingFile.recrodingtime);
-          this.curentState = bottomState.playRecoding;
-          curentPlayingTime = 0;
-        });
+      setState(() {
+        currentTime = '0:0:0';
+        plaingFile = event.file;
+        totalTime = double.parse(plaingFile.recrodingtime);
+        this.curentState = bottomState.playRecoding;
+        curentPlayingTime = 0;
+      });
     });
     streamSubscription = eventBus.on<TrashOption>().listen((event) async {
-      if (mounted)
-        setState(() {
-          trashFile = event.rm;
-          index = event.index;
-          this.curentState = bottomState.deleteFiles;
-        });
+      setState(() {
+        trashFile = event.rm;
+        index = event.index;
+        this.curentState = bottomState.deleteFiles;
+      });
       controller.reset();
       controller.forward();
     });
@@ -101,11 +100,10 @@ class _BottomshowBarState extends State<BottomshowBar>
     });
     streamSubscription = eventBus.on<DeleteFileSync>().listen((event) async {
       if (this.curentState != bottomState.recode) {
-        if (mounted)
-          setState(() {
-            plaingFile = null;
-            this.curentState = bottomState.recode;
-          });
+        setState(() {
+          plaingFile = null;
+          this.curentState = bottomState.recode;
+        });
         controller.reset();
         controller.forward();
       }
@@ -122,211 +120,174 @@ class _BottomshowBarState extends State<BottomshowBar>
   @override
   // ignore: missing_return
   Widget build(BuildContext context) {
+    return Transform.translate(
+      offset: Offset(0, animation.value),
+      child: GetPannel(curentState),
+    );
+  }
+
+  Widget GetPannel(bottomState state) {
     switch (this.curentState) {
       case bottomState.recode:
-        return Transform.translate(
-          offset: Offset(0, animation.value),
-          child: Container(
-            padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
-            decoration: BoxDecoration(
-                color: Colors.white,
-                boxShadow: <BoxShadow>[
-                  BoxShadow(
-                      color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
-                ]),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                ClipOval(
-                  child: Container(
-                    width: 60,
-                    height: 60,
-                    color: Theme.of(context).primaryColor,
-                    child: IconButton(
-                      color: Colors.white,
-                      icon: Icon(Icons.mic),
-                      onPressed: showRecroding,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-        break;
-      case bottomState.playRecoding:
-        return Transform.translate(
-          offset: Offset(0, animation.value),
-          child: Stack(
+        return Container(
+          padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
+          decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)]),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              ///播放面板
-              Positioned(
+              ClipOval(
                 child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.only(right: 13, top: 15, bottom: 30),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      boxShadow: <BoxShadow>[
-                        BoxShadow(
-                            color: Colors.grey,
-                            offset: Offset(0, 7),
-                            blurRadius: 20)
-                      ]),
-                  child: Column(
-                    children: <Widget>[
-                      Container(
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: this
-                              .playerIocns
-                              .map((e) => Container(
-                                      child: GestureDetector(
-                                    onTap: () {
-                                      switch (e['title']) {
-                                        case "定时":
-                                          this.setTimeout();
-                                          break;
-                                        case "全部循环":
-                                          this.circulation();
-                                          break;
-                                        case "倍速":
-                                          this.pias();
-                                          break;
-                                        case "剪辑":
-                                          this.editor();
-                                          break;
-                                        case "转文字":
-                                          this.transiton();
-                                          break;
-                                        case "更多":
-                                          this.more();
-                                          break;
-                                      }
-                                    },
-                                    child: Column(
-                                      children: <Widget>[
-                                        Image.asset(
-                                          e['icon'],
-                                          width: 20,
-                                        ),
-                                        Text(
-                                          e['title'],
-                                          style: TextStyle(
-                                            color:
-                                                Theme.of(context).primaryColor,
-                                            fontSize: 14,
-                                          ),
-                                        )
-                                      ],
-                                    ),
-                                  )))
-                              .toList(),
-                        ),
-                      ),
-                      Row(
-                        children: <Widget>[
-                          IconButton(
-                            icon: Icon(
-                              this.plaingFile.isPlaying
-                                  ? Icons.pause
-                                  : Icons.play_arrow,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            onPressed: play,
-                          ),
-                          Text(currentTime,
-                              style: TextStyle(color: Colors.grey)),
-                          Expanded(child: MusicProgress(key: key)),
-                          Text(formatTime(totalTime.toInt()),
-                              style: TextStyle(color: Colors.grey))
-                        ],
-                      )
-                    ],
+                  width: 60,
+                  height: 60,
+                  color: Theme.of(context).primaryColor,
+                  child: IconButton(
+                    color: Colors.white,
+                    icon: Icon(Icons.mic),
+                    onPressed: showRecroding,
                   ),
                 ),
               ),
-
-              ///右上角叉叉
-              Positioned(
-                right: 0,
-                child: ClipOval(
-                  child: Container(
-                    width: 20,
-                    height: 20,
-                    color: Theme.of(context).primaryColor,
-                    child: GestureDetector(
-                      child: Icon(Icons.close, size: 20, color: Colors.white),
-                      onTap: closePlayer,
-                    ),
-                  ),
-                ),
-              )
             ],
           ),
         );
         break;
+      case bottomState.playRecoding:
+        return Stack(
+          children: <Widget>[
+            ///播放面板
+            Positioned(
+              child: Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.only(right: 13, top: 15, bottom: 30),
+                decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)]),
+                child: Column(
+                  children: <Widget>[
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: this
+                            .playerIocns
+                            .map((e) => Container(
+                                    child: GestureDetector(
+                                  onTap: () {
+                                    switch (e['title']) {
+                                      case "定时":
+                                        this.setTimeout();
+                                        break;
+                                      case "全部循环":
+                                        this.circulation();
+                                        break;
+                                      case "倍速":
+                                        this.pias();
+                                        break;
+                                      case "剪辑":
+                                        this.editor();
+                                        break;
+                                      case "转文字":
+                                        this.transiton();
+                                        break;
+                                      case "更多":
+                                        this.more();
+                                        break;
+                                    }
+                                  },
+                                  child: Column(
+                                    children: <Widget>[
+                                      Image.asset(
+                                        e['icon'],
+                                        width: 20,
+                                      ),
+                                      Text(
+                                        e['title'],
+                                        style: TextStyle(
+                                          color: Theme.of(context).primaryColor,
+                                          fontSize: 14,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                )))
+                            .toList(),
+                      ),
+                    ),
+                    Row(
+                      children: <Widget>[
+                        IconButton(
+                          icon: Icon(
+                            this.plaingFile.isPlaying ? Icons.pause : Icons.play_arrow,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          onPressed: play,
+                        ),
+                        Text(currentTime, style: TextStyle(color: Colors.grey)),
+                        Expanded(child: MusicProgress(key: key)),
+                        Text(formatTime(totalTime.toInt()), style: TextStyle(color: Colors.grey))
+                      ],
+                    )
+                  ],
+                ),
+              ),
+            ),
+
+            ///右上角叉叉
+            Positioned(
+              right: 0,
+              child: ClipOval(
+                child: Container(
+                  width: 20,
+                  height: 20,
+                  color: Theme.of(context).primaryColor,
+                  child: GestureDetector(
+                    child: Icon(Icons.close, size: 20, color: Colors.white),
+                    onTap: closePlayer,
+                  ),
+                ),
+              ),
+            )
+          ],
+        );
+        break;
       case bottomState.deleteFiles:
-        return Transform.translate(
-          offset: Offset(0, animation.value),
-          child: Container(
-            padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              boxShadow: <BoxShadow>[
-                BoxShadow(
-                    color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Container(
-                  width: 100,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                          color: Color.fromRGBO(187, 187, 187, 0.4),
-                          offset: Offset(0, 0),
-                          blurRadius: 5)
-                    ],
-                  ),
-                  child: FlatButton(child: Text('删除'), onPressed: delete),
+        return Container(
+          padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)],
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Container(
+                width: 100,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  boxShadow: <BoxShadow>[BoxShadow(color: Color.fromRGBO(187, 187, 187, 0.4), offset: Offset(0, 0), blurRadius: 5)],
                 ),
-                Container(
-                  width: 100,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                          color: Color.fromRGBO(187, 187, 187, 0.4),
-                          offset: Offset(0, 0),
-                          blurRadius: 5)
-                    ],
-                  ),
-                  child: FlatButton(child: Text('还原'), onPressed: reset),
+                child: FlatButton(child: Text('删除'), onPressed: delete),
+              ),
+              Container(
+                width: 100,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  boxShadow: <BoxShadow>[BoxShadow(color: Color.fromRGBO(187, 187, 187, 0.4), offset: Offset(0, 0), blurRadius: 5)],
                 ),
-                Container(
-                  width: 100,
-                  height: 40,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.all(Radius.circular(5)),
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                          color: Color.fromRGBO(187, 187, 187, 0.4),
-                          offset: Offset(0, 0),
-                          blurRadius: 5)
-                    ],
-                  ),
-                  child: FlatButton(child: Text('取消'), onPressed: cancel),
+                child: FlatButton(child: Text('还原'), onPressed: reset),
+              ),
+              Container(
+                width: 100,
+                height: 40,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.all(Radius.circular(5)),
+                  boxShadow: <BoxShadow>[BoxShadow(color: Color.fromRGBO(187, 187, 187, 0.4), offset: Offset(0, 0), blurRadius: 5)],
                 ),
-              ],
-            ),
+                child: FlatButton(child: Text('取消'), onPressed: cancel),
+              ),
+            ],
           ),
         );
         break;
@@ -351,18 +312,16 @@ class _BottomshowBarState extends State<BottomshowBar>
     file.deleteSync();
     trashFile.filepath = '$newpath${trashFile.title}.wav';
     Provider.of<transhProvider>(context, listen: false).remove(index);
-    Provider.of<recrodListProvider>(context, listen: false)
-        .addRecrodItem(trashFile);
+    Provider.of<recrodListProvider>(context, listen: false).addRecrodItem(trashFile);
     cancel();
   }
 
   ///取消
   void cancel() {
-    if (mounted)
-      setState(() {
-        trashFile = null;
-        curentState = bottomState.recode;
-      });
+    setState(() {
+      trashFile = null;
+      curentState = bottomState.recode;
+    });
     controller.reset();
     controller.forward();
   }
@@ -372,11 +331,10 @@ class _BottomshowBarState extends State<BottomshowBar>
   /***********播放器设置***********/
 
   ///播放音乐
-  play() async {
-    if (mounted)
-      setState(() {
-        this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
-      });
+  void play() async {
+    setState(() {
+      this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
+    });
     eventBus.fire(PlayingState(this.plaingFile.isPlaying));
     if (plaingFile.isPlaying) {
       audioPlayer.play(this.plaingFile.filepath);
@@ -384,11 +342,10 @@ class _BottomshowBarState extends State<BottomshowBar>
     } else {
       timer.cancel();
       timer = null;
-      if (mounted)
-        setState(() {
-          this.curentPlayingTime = 0;
-          this.currentTime = formatTime(curentPlayingTime * 1000);
-        });
+      setState(() {
+        this.curentPlayingTime = 0;
+        this.currentTime = formatTime(curentPlayingTime * 1000);
+      });
       key.currentState.setCurentTime(0);
       audioPlayer.pause();
     }
@@ -399,19 +356,17 @@ class _BottomshowBarState extends State<BottomshowBar>
     int totalMS = (totalTime / 1000).floor();
     timer = Timer.periodic(Duration(seconds: 1), (Timer newtimer) async {
       if (curentPlayingTime < totalMS) {
-        if (mounted)
-          setState(() {
-            this.curentPlayingTime++;
-            this.currentTime = formatTime(curentPlayingTime * 1000);
-          });
+        setState(() {
+          this.curentPlayingTime++;
+          this.currentTime = formatTime(curentPlayingTime * 1000);
+        });
         key.currentState.setCurentTime(curentPlayingTime / totalMS);
       } else {
-        if (mounted)
-          setState(() {
-            this.plaingFile.isPlaying = false;
-            timer.cancel();
-            timer = null;
-          });
+        setState(() {
+          this.plaingFile.isPlaying = false;
+          timer.cancel();
+          timer = null;
+        });
         eventBus.fire(PlayingState(this.plaingFile.isPlaying));
         audioPlayer.pause();
       }
@@ -423,11 +378,10 @@ class _BottomshowBarState extends State<BottomshowBar>
     controller.reset();
     controller.forward();
     eventBus.fire(PlayingState(false));
-    if (mounted)
-      setState(() {
-        plaingFile = null;
-        this.curentState = bottomState.recode;
-      });
+    setState(() {
+      plaingFile = null;
+      this.curentState = bottomState.recode;
+    });
   }
 
   ///定时选择
@@ -465,8 +419,7 @@ class _BottomshowBarState extends State<BottomshowBar>
     Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder: (BuildContext context, Animation animation,
-            Animation secondaryAnimation) {
+        pageBuilder: (BuildContext context, Animation animation, Animation secondaryAnimation) {
           return ScaleTransition(
             scale: animation,
             alignment: Alignment.bottomCenter,

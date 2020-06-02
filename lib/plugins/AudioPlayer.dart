@@ -7,7 +7,12 @@ class AudioPlayer {
   ///播放状态
   bool statu = false;
 
+  void initPlayer() async {
+    channel.invokeMethod('initPlayer');
+  }
+
   void play(String playeFilePath) async {
+    await this.initPlayer();
     var res = await channel.invokeMethod("play", {"path": playeFilePath});
   }
 
