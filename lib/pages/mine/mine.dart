@@ -9,13 +9,13 @@ class Mine extends StatefulWidget {
 }
 
 class _MineState extends State<Mine> {
-  List<Map<String, dynamic>> data = [
-    {"icon": Icons.access_alarms, "title": "使用帮助", "router": '/help'},
-    {"icon": Icons.access_alarms, "title": "快捷指令", "router": '/'},
-    {"icon": Icons.access_alarms, "title": "录音设置", "router": '/'},
-    {"icon": Icons.access_alarms, "title": "分享给朋友", "router": '/'},
-    {"icon": Icons.access_alarms, "title": "关于", "router": '/'},
-    {"icon": Icons.access_alarms, "title": "意见设置", "router": '/'},
+  List<Map<String, String>> data = [
+    {"icon": 'asset/setting/icon_help_blue.png', "title": "使用帮助", "router": '/help'},
+//    {"icon": 'asset/setting/icon_Instructions_blue.png', "title": "快捷指令", "router": '/'},
+    {"icon": 'asset/setting/icon_seeting_blue.png', "title": "录音设置", "router": '/recrodeSetting'},
+//    {"icon": 'asset/setting/icon_help_blue.png', "title": "分享给朋友", "router": '/'},
+//    {"icon": 'asset/setting/info-sign.png', "title": "关于", "router": '/'},
+//    {"icon": 'asset/setting/icon_pencil_b.png', "title": "意见设置", "router": '/'},
   ];
 
   @override
@@ -34,15 +34,14 @@ class _MineState extends State<Mine> {
       ),
       body: ListView.builder(
         itemBuilder: (context, index) {
-          Map<String, dynamic> curent = data[index];
-          return buildItem(curent);
+          return buildItem(data[index]);
         },
         itemCount: data.length,
       ),
     );
   }
 
-  Widget buildItem(Map<String, dynamic> curent) {
+  Widget buildItem(Map<String, String> curent) {
     return GestureDetector(
       onTap: () {
         jump(curent['router']);
@@ -60,10 +59,7 @@ class _MineState extends State<Mine> {
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(left: 10),
-              child: Icon(
-                curent['icon'],
-                color: Theme.of(context).primaryColor,
-              ),
+              child: Image.asset(curent['icon'],width: 20,),
             ),
             Padding(
               padding: EdgeInsets.only(left: 10),

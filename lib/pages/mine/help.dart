@@ -9,10 +9,16 @@ class HelpPage extends StatelessWidget {
         {'icon': "asset/toolbar/icon_Search_blue.png", 'word': '关键词查找文件'},
         {'icon': "asset/icon_Renaming.png", 'word': '重命名文件'},
         {'icon': "asset/icon_share.png", 'word': '移动到文件夹'},
-        {'icon': "asset/palying/icon_more-menu_blue.png", 'word': '更多功能：复制、分享、保存到相册、编辑等'},
+        {
+          'icon': "asset/palying/icon_more-menu_blue.png",
+          'word': '更多功能：复制、分享、保存到相册、编辑等'
+        },
       ],
       audioRecord = [
-        {'icon': "asset/home_recording/icon_Recording_blue.png", 'word': '录音功能'},
+        {
+          'icon': "asset/home_recording/icon_Recording_blue.png",
+          'word': '录音功能'
+        },
         {'icon': "asset/flag/icon_flag.png", 'word': '标记，给音频添加标记，记录重点'},
       ],
       audioPlay = [
@@ -21,7 +27,10 @@ class HelpPage extends StatelessWidget {
         {'icon': "asset/fast_forward.png", 'word': '前进5秒'},
         {'icon': "asset/icon_back_forward.png", 'word': '后退5秒'},
         {'icon': "asset/palying/icon_timing.png", 'word': '定时暂停播放'},
-        {'icon': "asset/palying/icon_Circulat_blue.png", 'word': '顺序播放、随机播放、单曲循环'},
+        {
+          'icon': "asset/palying/icon_Circulat_blue.png",
+          'word': '顺序播放、随机播放、单曲循环'
+        },
         {'icon': "asset/palying/icon_Sheared_blue.png", 'word': '编辑当前音频'},
         {'icon': "asset/palying/icon_refresh2.png", 'word': '语音转文字'},
         {'icon': "asset/icon_share.png", 'word': '分享'},
@@ -38,13 +47,16 @@ class HelpPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(leading: Container(), title: Center(child: Text('使用帮助')), actions: [
-        IconButton(
-            icon: Icon(Icons.cancel),
-            onPressed: () {
-              Navigator.pop(context);
-            })
-      ]),
+      appBar: AppBar(
+          leading: Container(),
+          title: Center(child: Text('使用帮助')),
+          actions: [
+            IconButton(
+                icon: Icon(Icons.cancel),
+                onPressed: () {
+                  Navigator.pop(context);
+                })
+          ]),
       body: SingleChildScrollView(
           child: Container(
         margin: EdgeInsets.only(left: 30, top: 10),
@@ -53,19 +65,31 @@ class HelpPage extends StatelessWidget {
           children: [
             SetTitle('音频管理'),
             Column(
-              children: List.generate(audioMannerger.length, (index) => itemBuilder(audioMannerger[index]['icon'], audioMannerger[index]['word'], context)),
+              children: List.generate(
+                  audioMannerger.length,
+                  (index) => itemBuilder(audioMannerger[index]['icon'],
+                      audioMannerger[index]['word'], context)),
             ),
             SetTitle('音频录制'),
             Column(
-              children: List.generate(audioRecord.length, (index) => itemBuilder(audioRecord[index]['icon'], audioRecord[index]['word'], context)),
+              children: List.generate(
+                  audioRecord.length,
+                  (index) => itemBuilder(audioRecord[index]['icon'],
+                      audioRecord[index]['word'], context)),
             ),
             SetTitle('音频播放'),
             Column(
-              children: List.generate(audioPlay.length, (index) => itemBuilder(audioPlay[index]['icon'], audioPlay[index]['word'], context)),
+              children: List.generate(
+                  audioPlay.length,
+                  (index) => itemBuilder(audioPlay[index]['icon'],
+                      audioPlay[index]['word'], context)),
             ),
             SetTitle('音频剪辑'),
             Column(
-              children: List.generate(audioCute.length, (index) => itemBuilder(audioCute[index]['icon'], audioCute[index]['word'], context)),
+              children: List.generate(
+                  audioCute.length,
+                  (index) => itemBuilder(audioCute[index]['icon'],
+                      audioCute[index]['word'], context)),
             ),
           ],
         ),

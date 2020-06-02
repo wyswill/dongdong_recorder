@@ -1,6 +1,7 @@
 import 'package:flutterapp/pages/MainPage/MainPage.dart';
 import 'package:flutterapp/pages/mine/help.dart';
 import 'package:flutterapp/pages/mine/mine.dart';
+import 'package:flutterapp/pages/mine/recrodingSetting.dart';
 import 'package:flutterapp/widgets/editor.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +10,7 @@ Map routes = {
   "/mine": (context, {arguments}) => Mine(arguments: arguments),
   "/editor": (context, {arguments}) => Editor(arguments: arguments),
   "/help": (context, {arguments}) => HelpPage(),
+  '/recrodeSetting': (context, {arguments}) => RecroddSetting()
 };
 
 generateRoute(RouteSettings settings) {
@@ -25,7 +27,8 @@ generateRoute(RouteSettings settings) {
       );
       return route;
     } else {
-      final Route route = MaterialPageRoute(builder: (context) => pageContentBuilder(context));
+      final Route route =
+          MaterialPageRoute(builder: (context) => pageContentBuilder(context));
       return route;
     }
   }
