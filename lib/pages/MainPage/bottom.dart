@@ -380,6 +380,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
       plaingFile = null;
       this.curentState = bottomState.recode;
     });
+    Provider.of<recrodListProvider>(context, listen: false).reset(isNoti: true);
   }
 
   ///定时选择
