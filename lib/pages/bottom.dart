@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutterapp/modus/record.dart';
-import 'package:flutterapp/pages/recrod.dart';
+import 'package:flutterapp/pages/recroding/recrod.dart';
 
 import '../event_bus.dart';
 import '../utiles.dart';

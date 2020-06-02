@@ -10,7 +10,7 @@ class Mine extends StatefulWidget {
 
 class _MineState extends State<Mine> {
   List<Map<String, dynamic>> data = [
-    {"icon": Icons.access_alarms, "title": "使用帮助", "router": '/'},
+    {"icon": Icons.access_alarms, "title": "使用帮助", "router": '/help'},
     {"icon": Icons.access_alarms, "title": "快捷指令", "router": '/'},
     {"icon": Icons.access_alarms, "title": "录音设置", "router": '/'},
     {"icon": Icons.access_alarms, "title": "分享给朋友", "router": '/'},
@@ -43,33 +43,43 @@ class _MineState extends State<Mine> {
   }
 
   Widget buildItem(Map<String, dynamic> curent) {
-    return Container(
-      height: 48,
-      margin: EdgeInsets.symmetric(vertical: 14, horizontal: 14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: <BoxShadow>[
-          BoxShadow(
-              color: Color.fromRGBO(187, 187, 187, 0.4),
-              offset: Offset(0, 0),
-              blurRadius: 5)
-        ],
-        borderRadius: BorderRadius.all(Radius.circular(2)),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          // Icon(
-          //   curent['icon'],
-          //   color: Theme.of(context).primaryColor,
-          // ),
-          Padding(
-            padding: EdgeInsets.only(left: 20),
-            child: Text(curent['title']),
-          ),
-          Icon(Icons.arrow_right)
-        ],
+    return GestureDetector(
+      onTap: () {
+        jump(curent['router']);
+      },
+      child: Container(
+        height: 48,
+        margin: EdgeInsets.symmetric(vertical: 14, horizontal: 14),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: <BoxShadow>[BoxShadow(color: Color.fromRGBO(187, 187, 187, 0.4), offset: Offset(0, 0), blurRadius: 5)],
+          borderRadius: BorderRadius.all(Radius.circular(2)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.only(left: 10),
+              child: Icon(
+                curent['icon'],
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+            Padding(
+              padding: EdgeInsets.only(left: 10),
+              child: Text(curent['title']),
+            ),
+            Expanded(
+              child: Container(),
+            ),
+            Icon(Icons.arrow_right)
+          ],
+        ),
       ),
     );
+  }
+
+  jump(String path) {
+    Navigator.pushNamed(context, path);
   }
 }

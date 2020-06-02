@@ -1,14 +1,14 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:flutter_plugin_record/flutter_plugin_record.dart';
+import 'package:flutter_plugin_record/response.dart';
 import 'package:flutterapp/modus/cancasRectModu.dart';
 import 'package:flutterapp/modus/record.dart';
 import 'package:flutterapp/utiles.dart';
 import 'package:flutterapp/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_plugin_record/flutter_plugin_record.dart';
-import 'package:flutter_plugin_record/response.dart';
 import 'package:provider/provider.dart';
 
 import '../../provider.dart';
