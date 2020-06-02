@@ -24,7 +24,8 @@ class BottomshowBar extends StatefulWidget {
   _BottomshowBarState createState() => _BottomshowBarState();
 }
 
-class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProviderStateMixin {
+class _BottomshowBarState extends State<BottomshowBar>
+    with SingleTickerProviderStateMixin {
   RecroderModule plaingFile, trashFile;
   StreamSubscription streamSubscription;
   List<Map> playerIocns = [
@@ -48,7 +49,8 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     super.initState();
 
     ///动画
-    controller = AnimationController(vsync: this, duration: Duration(milliseconds: 300));
+    controller =
+        AnimationController(vsync: this, duration: Duration(milliseconds: 300));
     animation = Tween<double>(begin: 200, end: 0).animate(controller);
     controller.forward();
     controller.addListener(() {
@@ -65,7 +67,8 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
         controller.forward();
       }
       try {
-        if (curentState == bottomState.playRecoding) key.currentState.setCurentTime(0);
+        if (curentState == bottomState.playRecoding)
+          key.currentState.setCurentTime(0);
       } catch (e) {}
       if (mounted)
         setState(() {
@@ -125,7 +128,12 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
           offset: Offset(0, animation.value),
           child: Container(
             padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
-            decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)]),
+            decoration: BoxDecoration(
+                color: Colors.white,
+                boxShadow: <BoxShadow>[
+                  BoxShadow(
+                      color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
+                ]),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
@@ -156,7 +164,14 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
                 child: Container(
                   width: MediaQuery.of(context).size.width,
                   padding: EdgeInsets.only(right: 13, top: 15, bottom: 30),
-                  decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)]),
+                  decoration: BoxDecoration(
+                      color: Colors.white,
+                      boxShadow: <BoxShadow>[
+                        BoxShadow(
+                            color: Colors.grey,
+                            offset: Offset(0, 7),
+                            blurRadius: 20)
+                      ]),
                   child: Column(
                     children: <Widget>[
                       Container(
@@ -197,7 +212,8 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
                                         Text(
                                           e['title'],
                                           style: TextStyle(
-                                            color: Theme.of(context).primaryColor,
+                                            color:
+                                                Theme.of(context).primaryColor,
                                             fontSize: 14,
                                           ),
                                         )
@@ -211,14 +227,18 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
                         children: <Widget>[
                           IconButton(
                             icon: Icon(
-                              this.plaingFile.isPlaying ? Icons.pause : Icons.play_arrow,
+                              this.plaingFile.isPlaying
+                                  ? Icons.pause
+                                  : Icons.play_arrow,
                               color: Theme.of(context).primaryColor,
                             ),
                             onPressed: play,
                           ),
-                          Text(currentTime, style: TextStyle(color: Colors.grey)),
+                          Text(currentTime,
+                              style: TextStyle(color: Colors.grey)),
                           Expanded(child: MusicProgress(key: key)),
-                          Text(formatTime(totalTime.toInt()), style: TextStyle(color: Colors.grey))
+                          Text(formatTime(totalTime.toInt()),
+                              style: TextStyle(color: Colors.grey))
                         ],
                       )
                     ],
@@ -252,7 +272,10 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
             padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
             decoration: BoxDecoration(
               color: Colors.white,
-              boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)],
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                    color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)
+              ],
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -263,7 +286,12 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                    boxShadow: <BoxShadow>[BoxShadow(color: Color.fromRGBO(187, 187, 187, 0.4), offset: Offset(0, 0), blurRadius: 5)],
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                          color: Color.fromRGBO(187, 187, 187, 0.4),
+                          offset: Offset(0, 0),
+                          blurRadius: 5)
+                    ],
                   ),
                   child: FlatButton(child: Text('删除'), onPressed: delete),
                 ),
@@ -273,7 +301,12 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                    boxShadow: <BoxShadow>[BoxShadow(color: Color.fromRGBO(187, 187, 187, 0.4), offset: Offset(0, 0), blurRadius: 5)],
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                          color: Color.fromRGBO(187, 187, 187, 0.4),
+                          offset: Offset(0, 0),
+                          blurRadius: 5)
+                    ],
                   ),
                   child: FlatButton(child: Text('还原'), onPressed: reset),
                 ),
@@ -283,7 +316,12 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
                   decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.all(Radius.circular(5)),
-                    boxShadow: <BoxShadow>[BoxShadow(color: Color.fromRGBO(187, 187, 187, 0.4), offset: Offset(0, 0), blurRadius: 5)],
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                          color: Color.fromRGBO(187, 187, 187, 0.4),
+                          offset: Offset(0, 0),
+                          blurRadius: 5)
+                    ],
                   ),
                   child: FlatButton(child: Text('取消'), onPressed: cancel),
                 ),
@@ -307,14 +345,14 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
 
   ///还原
   void reset() async {
-    print(trashFile.filepath);
     File file = File(trashFile.filepath);
     String newpath = await FileUtile.getRecrodPath();
     file.copySync('$newpath${trashFile.title}.wav');
     file.deleteSync();
     trashFile.filepath = '$newpath${trashFile.title}.wav';
     Provider.of<transhProvider>(context, listen: false).remove(index);
-    Provider.of<recrodListProvider>(context, listen: false).addRecrodItem(trashFile);
+    Provider.of<recrodListProvider>(context, listen: false)
+        .addRecrodItem(trashFile);
     cancel();
   }
 
@@ -427,7 +465,8 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder: (BuildContext context, Animation animation, Animation secondaryAnimation) {
+        pageBuilder: (BuildContext context, Animation animation,
+            Animation secondaryAnimation) {
           return ScaleTransition(
             scale: animation,
             alignment: Alignment.bottomCenter,

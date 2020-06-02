@@ -17,8 +17,6 @@ import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
 
 public class MainActivity extends FlutterActivity {
-  private MethodChannel channel;
-  private String key = "com.lanwanhudong";
   int bufferSize = AudioTrack.getMinBufferSize(8000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
   AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC, 8000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT, bufferSize, AudioTrack.MODE_STREAM);
   AudioPlayer audioPlayer = new AudioPlayer(bufferSize, audioTrack);
@@ -30,7 +28,8 @@ public class MainActivity extends FlutterActivity {
   @Override
   public void configureFlutterEngine(@NonNull FlutterEngine flutterEngine) {
     super.configureFlutterEngine(flutterEngine);
-    channel = new MethodChannel(flutterEngine.getDartExecutor(), key);
+    String key = "com.lanwanhudong";
+    MethodChannel channel = new MethodChannel(flutterEngine.getDartExecutor(), key);
     channel.setMethodCallHandler(this::handleMethod);
   }
 
@@ -41,7 +40,8 @@ public class MainActivity extends FlutterActivity {
    * @param result     方法的返回值相关
    */
   private void handleMethod(MethodCall methodCall, MethodChannel.Result result) {
-    switch (methodCall.method) {//根据方法名进行处理
+    switch (methodCall.method) {
+      //根据方法名进行处理
       case "fft":
         String path = methodCall.argument("path").toString();
         WaveFileReader reader = new WaveFileReader(path);

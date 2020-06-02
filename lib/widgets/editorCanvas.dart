@@ -33,7 +33,7 @@ class EditorCanvas extends CustomPainter {
           (size.height - volume) / 2, columnWidth.ceil().toDouble(), volume);
 
       ///时间轴
-//      Rect timeLine = Rect.fromLTWH((columnWidth + spacing) * i, 0, 1, 10);
+      ///Rect timeLine = Rect.fromLTWH((columnWidth + spacing) * i, 0, 1, 10);
 
       ///指针
       Rect pointLine = Rect.fromLTWH(middleWidth, 0, 2, size.height);
@@ -59,12 +59,8 @@ class EditorCanvas extends CustomPainter {
           canvas.drawRect(startFlag, Paint()..color = Colors.yellow);
           break;
         case CanvasRectTypes.end:
-          Rect endFlag = Rect.fromLTWH(
-            (columnWidth + 2) * i,
-            0,
-            columnWidth.ceil().toDouble(),
-            size.height,
-          );
+          Rect endFlag = Rect.fromLTWH((columnWidth + 2) * i, 0,
+              columnWidth.ceil().toDouble(), size.height);
           canvas.drawRect(endFlag, Paint()..color = Colors.red);
           break;
         default:
