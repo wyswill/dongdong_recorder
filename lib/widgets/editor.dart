@@ -34,7 +34,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   String currenttime = '0:0:0';
   GlobalKey<MusicProgressState> key = GlobalKey();
   GlobalKey<ShowSounState> showSounkey = GlobalKey();
-  double left = 0, right = 60, audioTimeLength = 0;
+  double left = 0, right = 60, audioTimeLength = 0, lw = 2, rw = 2, height = 180;
   List<CanvasRectModu> recrodingData = [], templist = [];
 
   ///和native通讯
@@ -49,10 +49,14 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
 
   int get index => widget.arguments['index'];
 
+  double get windowWidth => MediaQuery.of(context).size.width;
+
   ///与canvas交互的参数
   CanvasRectModu canvasRectModu;
   int startIndex, endIndex, startTime, endTime;
   String startTimestamp, endTimestamp;
+
+  TextStyle get _textStyle => TextStyle(color: Theme.of(context).primaryColor, fontSize: 12);
 
   @override
   void initState() {
@@ -82,6 +86,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   @override
   void deactivate() {
     node.unfocus();
+    WidgetsBinding.instance.removeObserver(this);
     super.deactivate();
   }
 
@@ -89,7 +94,6 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   void dispose() async {
     controller.dispose();
     node.dispose();
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -98,36 +102,79 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     return Scaffold(
       appBar: AppBar(
         leading: Center(
-          child: GestureDetector(
-            onTap: save,
-            child: Text("保存"),
-          ),
+          child: GestureDetector(onTap: save, child: Text("保存")),
         ),
-        title: Center(
-          child: Text('剪辑'),
-        ),
+        title: Center(child: Text('剪辑')),
         actions: <Widget>[
           IconButton(
-            icon: Icon(Icons.cancel, color: Colors.white),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          )
+              icon: Icon(Icons.cancel, color: Colors.white),
+              onPressed: () {
+                Navigator.pop(context);
+              })
         ],
         bottom: this.setInput(),
       ),
-      body: Container(
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                children: <Widget>[
-                  Container(
+      body: Column(
+        children: <Widget>[
+          Expanded(
+            child: Stack(
+              children: <Widget>[
+                Positioned(
+                  child: Container(
                     margin: EdgeInsets.only(top: 20),
-                    height: 180,
+                    height: height,
                     child: setCanvas(),
                   ),
-                  Row(
+                ),
+                Positioned(
+                  top: 20,
+                  child: Draggable(
+                    onDraggableCanceled: (Velocity velocity, Offset offset) {
+                      double x = offset.dx;
+                      if (x < 0) x = 2;
+                      setState(() {
+                        lw = x;
+                      });
+                    },
+                    axis: Axis.horizontal,
+                    child: Container(
+                      width: lw,
+                      height: height,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(color: Color.fromRGBO(168, 168, 171, 0.4), border: Border(right: BorderSide(width: 1, color: Colors.red))),
+                    ),
+                    feedback: Container(
+                      width: 2,
+                      height: height,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(color: Color.fromRGBO(168, 168, 171, 0.4), border: Border(right: BorderSide(width: 1, color: Colors.white))),
+                    ),
+                    childWhenDragging: Container(),
+                  ),
+                ),
+                Positioned(
+                  top: 20,
+                  right: 0,
+                  child: Draggable(
+                    axis: Axis.horizontal,
+                    child: Container(
+                      width: rw,
+                      height: height,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(color: Colors.white),
+                    ),
+                    feedback: Container(
+                      width: rw,
+                      height: height,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(color: Colors.white),
+                    ),
+                    childWhenDragging: Container(),
+                  ),
+                ),
+                Positioned(
+                  bottom: 30,
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
                       Column(
@@ -158,40 +205,42 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                         ],
                       ),
                     ],
-                  )
-                ],
-              ),
+                  ),
+                )
+              ],
             ),
-          ],
-        ),
+          ),
+          setOptions(),
+        ],
       ),
-      bottomNavigationBar: setOptions(),
+      bottomNavigationBar: setButtom(),
     );
   }
 
   ///设置音频波形画布
   Widget setCanvas() {
-    return GestureDetector(
-      onHorizontalDragUpdate: (DragUpdateDetails e) {
-        double offset = e.delta.dx;
-        recrodingOffset(offset);
-      },
-      child: ShowSoun(
-        key: showSounkey,
-        recriodingTime: this.audioTimeLength,
-        isEditor: true,
-      ),
+    return ShowSoun(
+      key: showSounkey,
+      recriodingTime: this.audioTimeLength,
+      isEditor: true,
     );
+//    return GestureDetector(
+//      onHorizontalDragUpdate: (DragUpdateDetails e) {
+//        double offset = e.delta.dx;
+//        recrodingOffset(offset);
+//      },
+//      child:
+//    );
   }
 
   ///剪辑选项
   Widget setOptions() {
     return Container(
-      width: MediaQuery.of(context).size.width,
+      width: windowWidth,
       height: 60,
       margin: EdgeInsets.only(left: 20, right: 20, bottom: 20),
       padding: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
-      decoration: BoxDecoration(boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey)], color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(5))),
+      decoration: BoxDecoration(boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, blurRadius: 3)], color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(5))),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
@@ -199,48 +248,21 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
             onTap: cut,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Image.asset(
-                  'asset/sheared/icon_Sheared.png',
-                  width: 20,
-                ),
-                Text(
-                  '剪切音频',
-                  style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12),
-                )
-              ],
+              children: <Widget>[Image.asset('asset/sheared/icon_Sheared.png', width: 20), Text('剪切音频', style: _textStyle)],
             ),
           ),
           GestureDetector(
             onTap: setStart,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Image.asset(
-                  'asset/flag/icon_flag.png',
-                  width: 20,
-                ),
-                Text(
-                  '开始时间戳',
-                  style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12),
-                )
-              ],
+              children: <Widget>[Image.asset('asset/flag/icon_flag.png', width: 20), Text('开始时间戳', style: _textStyle)],
             ),
           ),
           GestureDetector(
             onTap: setEnd,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[
-                Image.asset(
-                  'asset/flag/icon_flag_blue.png',
-                  width: 20,
-                ),
-                Text(
-                  '结束时间戳',
-                  style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12),
-                )
-              ],
+              children: <Widget>[Image.asset('asset/flag/icon_flag_blue.png', width: 20), Text('结束时间戳', style: _textStyle)],
             ),
           ),
         ],
@@ -255,10 +277,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
       child: Container(
         margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
         padding: EdgeInsets.only(left: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-        ),
+        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(5))),
         child: TextField(
           controller: controller,
           focusNode: node,
@@ -302,21 +321,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                               break;
                           }
                         },
-                        child: Column(
-                          children: <Widget>[
-                            Image.asset(
-                              e['icon'],
-                              width: 20,
-                            ),
-                            Text(
-                              e['title'],
-                              style: TextStyle(
-                                color: Theme.of(context).primaryColor,
-                                fontSize: 14,
-                              ),
-                            )
-                          ],
-                        ),
+                        child: Column(children: <Widget>[Image.asset(e['icon'], width: 20), Text(e['title'], style: _textStyle)]),
                       )))
                   .toList(),
             ),
@@ -330,36 +335,11 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              IconButton(
-                  icon: Icon(
-                    Icons.skip_previous,
-                    color: gary,
-                  ),
-                  onPressed: () {}),
-              IconButton(
-                  icon: Icon(
-                    Icons.replay,
-                    color: gary,
-                  ),
-                  onPressed: () {}),
-              IconButton(
-                  icon: Icon(
-                    Icons.play_arrow,
-                    color: mainColor,
-                  ),
-                  onPressed: () {}),
-              IconButton(
-                  icon: Icon(
-                    Icons.refresh,
-                    color: gary,
-                  ),
-                  onPressed: () {}),
-              IconButton(
-                  icon: Icon(
-                    Icons.skip_next,
-                    color: gary,
-                  ),
-                  onPressed: () {}),
+              IconButton(icon: Icon(Icons.skip_previous, color: gary), onPressed: () {}),
+              IconButton(icon: Icon(Icons.replay, color: gary), onPressed: () {}),
+              IconButton(icon: Icon(Icons.play_arrow, color: mainColor), onPressed: () {}),
+              IconButton(icon: Icon(Icons.refresh, color: gary), onPressed: () {}),
+              IconButton(icon: Icon(Icons.skip_next, color: gary), onPressed: () {}),
             ],
           )
         ],
@@ -508,7 +488,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     ///以1毫秒为间隔提取一次数据
     int flag = (data.length / recrodingtime).floor() * 10, stp = 0;
     List<CanvasRectModu> res = [];
-    res = addHeadOrTail(res);
+//    res = addHeadOrTail(res);
     for (int i = 0; i < data.length; i++) {
       double curent = data[i];
       if (stp == flag) {
@@ -524,7 +504,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
       }
       stp++;
     }
-    res = addHeadOrTail(res);
+//    res = addHeadOrTail(res);
     return res;
   }
 }

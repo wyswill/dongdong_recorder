@@ -57,10 +57,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                 decoration: BoxDecoration(
                   border: Border(
                     left: widget.curentFile.isActive ? BorderSide(width: 4, color: Theme.of(context).primaryColor) : BorderSide(width: 0),
-                    bottom: BorderSide(
-                      width: 1,
-                      color: Color.fromRGBO(240, 240, 246, 1),
-                    ),
+                    bottom: BorderSide(width: 1, color: Color.fromRGBO(240, 240, 246, 1)),
                   ),
                 ),
                 child: Row(
@@ -69,12 +66,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          Row(children: <Widget>[
-                            Text(
-                              widget.curentFile.title,
-                              style: TextStyle(fontSize: 14),
-                            )
-                          ]),
+                          Row(children: <Widget>[Text(widget.curentFile.title, style: TextStyle(fontSize: 14))]),
                           Row(
                             crossAxisAlignment: CrossAxisAlignment.end,
                             mainAxisSize: MainAxisSize.max,
@@ -82,25 +74,11 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
                               Container(
                                 padding: EdgeInsets.symmetric(horizontal: 5),
                                 decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.all(Radius.circular(10))),
-                                child: Text(
-                                  formatTime(time.toInt()),
-                                  style: textStyle,
-                                ),
+                                child: Text(formatTime(time.toInt()), style: textStyle),
                               ),
-                              Container(
-                                margin: EdgeInsets.symmetric(horizontal: 5),
-                                child: Text(
-                                  widget.curentFile.fileSize,
-                                  style: textStyle,
-                                ),
-                              ),
+                              Container(margin: EdgeInsets.symmetric(horizontal: 5), child: Text(widget.curentFile.fileSize, style: textStyle)),
                               Expanded(child: Container()),
-                              Container(
-                                child: Text(
-                                  widget.curentFile.lastModified,
-                                  style: textStyle,
-                                ),
-                              )
+                              Container(child: Text(widget.curentFile.lastModified, style: textStyle))
                             ],
                           )
                         ],
@@ -115,20 +93,14 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
               height: 50,
               alignment: Alignment.center,
               decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-              child: GestureDetector(
-                child: Image.asset('asset/edit/icon_moving_white.png', width: 26),
-                onTap: changeName,
-              ),
+              child: GestureDetector(child: Image.asset('asset/edit/icon_moving_white.png', width: 26), onTap: changeName),
             ),
             Container(
               width: 50,
               height: 50,
               alignment: Alignment.center,
               decoration: BoxDecoration(color: Theme.of(context).primaryColor),
-              child: GestureDetector(
-                child: Image.asset('asset/edit/icon_delete_white.png', width: 26),
-                onTap: deleteFile,
-              ),
+              child: GestureDetector(child: Image.asset('asset/edit/icon_delete_white.png', width: 26), onTap: deleteFile),
             ),
           ],
         ),
@@ -147,11 +119,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
         keyboardType: TextInputType.text,
         autofocus: true,
         maxLength: 15,
-        decoration: InputDecoration(
-          hintStyle: TextStyle(
-            color: Theme.of(context).primaryColor,
-          ),
-        ),
+        decoration: InputDecoration(hintStyle: TextStyle(color: Theme.of(context).primaryColor)),
       ),
       actions: <Widget>[
         FlatButton(
@@ -203,7 +171,4 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
       eventBus.fire(PlayingFile(widget.curentFile, widget.index));
     }
   }
-
-  ///播放音乐
-  void playMusic() {}
 }

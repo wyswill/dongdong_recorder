@@ -30,7 +30,7 @@ class ShowSounState extends State<ShowSoun>
   Widget build(BuildContext context) {
     return Container(
       width: MediaQuery.of(context).size.width,
-      height: 200,
+      height: 400,
       child: CustomPaint(
         painter: widget.isEditor != null
             ? EditorCanvas(recrodingData, widget.recriodingTime)

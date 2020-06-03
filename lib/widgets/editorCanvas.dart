@@ -17,7 +17,7 @@ class EditorCanvas extends CustomPainter {
     final double middleWidth = size.width / 2;
 
     /// 每个柱子的宽度
-    double columnWidth = 2;
+    double columnWidth = 1;
 
     /// 幅度比例
     double step = size.height / 300;
@@ -34,15 +34,6 @@ class EditorCanvas extends CustomPainter {
 
       ///时间轴
       ///Rect timeLine = Rect.fromLTWH((columnWidth + spacing) * i, 0, 1, 10);
-
-      ///指针
-      Rect pointLine = Rect.fromLTWH(middleWidth, 0, 2, size.height);
-
-      ///画指针的圆点
-      canvas.drawCircle(Offset(middleWidth, 0), 8, Paint()..color = Colors.red);
-      canvas.drawCircle(
-          Offset(middleWidth, size.height), 8, Paint()..color = Colors.red);
-      canvas.drawRect(pointLine, Paint()..color = Colors.red);
 
       ///波形柱子
       switch (curent.type) {

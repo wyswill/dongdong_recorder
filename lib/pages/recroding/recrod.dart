@@ -63,12 +63,17 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
   }
 
   @override
+  void deactivate() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.deactivate();
+  }
+
+  @override
   void dispose() {
     super.dispose();
     controller.dispose();
     flutterPluginRecord.dispose();
     node.dispose();
-    WidgetsBinding.instance.removeObserver(this);
   }
 
   @override
@@ -78,15 +83,8 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
       appBar: AppBar(
         elevation: 0,
         leading: Container(),
-        title: Center(
-          child: Text('录音'),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(Icons.close),
-            onPressed: exit,
-          )
-        ],
+        title: Center(child: Text('录音')),
+        actions: <Widget>[IconButton(icon: Icon(Icons.close), onPressed: exit)],
       ),
       body: WillPopScope(
         onWillPop: exit,
