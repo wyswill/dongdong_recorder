@@ -5,7 +5,7 @@
   "author": "wyswill <1151373571@qq.com>",
   "license": "MIT",
   "scripts": {
-    "buildapk": "flutter build apk   --target-platform android-arm,android-arm64",
+    "buildapk": "flutter build apk --target-platform android-arm,android-arm64 --release",
     "installapk": "flutter install"
   }
 }

@@ -26,7 +26,7 @@ apply from: "$flutterRoot/packages/flutter_tools/gradle/flutter.gradle"
 
 android {
     compileSdkVersion 28
-    buildToolsVersion '26.0.3'
+    buildToolsVersion '29.0.2'
     lintOptions {
         disable 'InvalidPackage'
     }
@@ -40,10 +40,10 @@ android {
     }
     signingConfigs {
         release {
-            keyAlias keystoreProperties['keyAlias']
-            keyPassword keystoreProperties['keyPassword']
-            storeFile file(keystoreProperties['storeFile'])
-            storePassword keystoreProperties['storePassword']
+            keyAlias 'sign'
+            keyPassword 'lanwanhudong'
+            storeFile file('key/sign.jks')
+            storePassword 'lanwanhudong'
         }
     }
     buildTypes {
@@ -53,6 +53,9 @@ android {
             }
             signingConfig signingConfigs.release
         }
+    }
+    lintOptions {
+        checkReleaseBuilds false
     }
 }
 
