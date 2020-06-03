@@ -47,11 +47,13 @@ formatTime(int totalTime) {
 }
 
 class FileUtile {
+  ///获取录音路径或是回收站路径
   static Future<String> getRecrodPath({bool isDelete = false}) async {
     Directory directory = (await getExternalCacheDirectories())[0];
     return '${directory.path}${isDelete ? "/delete/" : "/Audio/"}';
   }
 
+  ///读取本地的录音文件，转化为操作List
   static Future<List<RecroderModule>> getlocalMusic({bool isRecroder = true, MethodChannel channel}) async {
     String FIlepath = await FileUtile.getRecrodPath(isDelete: !isRecroder);
     List<RecroderModule> resList = [];
@@ -96,7 +98,7 @@ class FileUtile {
     return resList;
   }
 
-  // ignore: missing_return
+  ///将文件路径转化为操作类
   static Future<RecroderModule> pathTOModule({String path, String newFileName, MethodChannel channel}) async {
     File file = File(path);
     String prePath = await getRecrodPath(), newPath = "$prePath$newFileName.wav";
@@ -111,13 +113,17 @@ class FileUtile {
         title: newFileName,
         filepath: newFile.path,
         recrodingtime: "$res",
-        lastModified: '${dateTime.year}年${dateTime.month}月${dateTime.day}日${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
+        lastModified: timeFromate(dateTime),
         isPlaying: false,
         fileSize: "${s}kb",
         isActive: false,
       );
       return rm;
     }
+  }
+
+  static String timeFromate(DateTime dateTime){
+    return '${dateTime.year}年${dateTime.month}月${dateTime.day}日${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
   }
 }
 

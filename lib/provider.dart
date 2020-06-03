@@ -52,4 +52,13 @@ class recrodListProvider with ChangeNotifier {
     recroderFiles[index].filepath = path;
     notifyListeners();
   }
+
+  void reName({int inidex, String newName}) async {
+    RecroderModule rm = recroderFiles[inidex];
+    String newTime = FileUtile.timeFromate(DateTime.now()), newPath = '${await FileUtile.getRecrodPath()}$newName.wav';
+    rm.title = newName;
+    rm.lastModified = newTime;
+    File file = File(rm.filepath), newFile = file.renameSync(newPath);
+    notifyListeners();
+  }
 }

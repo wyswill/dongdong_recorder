@@ -22,6 +22,8 @@ class RecrodingFileItems extends StatefulWidget {
 
 class _RecrodingFileItemsState extends State<RecrodingFileItems> {
   ScrollController controller = ScrollController();
+  TextEditingController _textEditingController = TextEditingController();
+  FocusNode _focusNode = FocusNode();
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
 
   double get winWidth => MediaQuery.of(context).size.width;
@@ -32,6 +34,8 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
   void dispose() {
     super.dispose();
     controller.dispose();
+    _textEditingController.dispose();
+    _focusNode.dispose();
   }
 
   @override
@@ -113,7 +117,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
               decoration: BoxDecoration(color: Theme.of(context).primaryColor),
               child: GestureDetector(
                 child: Image.asset('asset/edit/icon_moving_white.png', width: 26),
-                onTap: () {},
+                onTap: changeName,
               ),
             ),
             Container(
@@ -129,6 +133,45 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
           ],
         ),
       ),
+    );
+  }
+
+  ///改名
+  void changeName() {
+    alert(
+      context,
+      title: Text('要改名？！！！'),
+      content: TextField(
+        controller: _textEditingController,
+        focusNode: _focusNode,
+        keyboardType: TextInputType.text,
+        autofocus: true,
+        maxLength: 15,
+        decoration: InputDecoration(
+          hintStyle: TextStyle(
+            color: Theme.of(context).primaryColor,
+          ),
+        ),
+      ),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: () {
+            String newName = _textEditingController.text.trim();
+            Provider.of<recrodListProvider>(context, listen: false).reName(inidex: widget.index, newName: newName);
+            Navigator.pop(context);
+            cancle();
+          },
+          child: Text('确定修改'),
+        ),
+        FlatButton(
+          onPressed: () {
+            _textEditingController.text = '';
+            _focusNode.unfocus();
+            Navigator.pop(context);
+          },
+          child: Text('放弃修改'),
+        ),
+      ],
     );
   }
 

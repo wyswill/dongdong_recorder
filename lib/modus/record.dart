@@ -1,8 +1,7 @@
 class RecroderModule {
   final String recrodingtime;
   final String fileSize;
-  final String lastModified;
-  final String attr;
+  String lastModified;
   String filepath;
   String title;
   bool isPlaying;
@@ -16,7 +15,6 @@ class RecroderModule {
     this.filepath,
     this.isPlaying,
     this.isActive,
-    this.attr,
   });
 
   void reset() {

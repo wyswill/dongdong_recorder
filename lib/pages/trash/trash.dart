@@ -66,10 +66,6 @@ class _trashState extends State<trash> {
         ),
         child: Row(
           children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(right: 5),
-              child: Icon(Icons.play_arrow, color: Colors.grey),
-            ),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
