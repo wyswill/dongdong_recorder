@@ -53,8 +53,8 @@ class _trashState extends State<trash> {
   ///文件菜单样式
   Widget folderItemStyle(BuildContext context, int index) {
     RecroderModule current = this.datas[index];
-    return GestureDetector(
-      onTap: () {
+    return setInk(
+      ontap: () {
         showOptions(current, index);
       },
       child: Container(

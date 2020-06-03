@@ -48,14 +48,17 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: Icon(Icons.person),
-          onPressed: () {
-            Navigator.popAndPushNamed(context, '/mine');
-          },
+        title: Row(
+          children: [
+            IconButton(
+              icon: Icon(Icons.person),
+              onPressed: () {
+                Navigator.popAndPushNamed(context, '/mine');
+              },
+            ),
+            Padding(padding: EdgeInsets.only(left: 89), child: Text('咚咚录音机'))
+          ],
         ),
-        title: Center(child: Text('录音机')),
-        actions: [],
       ),
       body: Column(
         children: <Widget>[
