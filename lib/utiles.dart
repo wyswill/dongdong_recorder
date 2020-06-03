@@ -120,3 +120,14 @@ class FileUtile {
     }
   }
 }
+
+///水波纹控件
+Widget setInk({Function ontap, Color bgColor = Colors.white, Color highlightColor, BorderRadiusGeometry borderRadius, Widget child}) {
+  return Material(
+    borderRadius: borderRadius,
+    color: bgColor,
+    child: Ink(
+      child: InkWell(onTap: ontap, child: child, highlightColor: highlightColor, borderRadius: borderRadius),
+    ),
+  );
+}

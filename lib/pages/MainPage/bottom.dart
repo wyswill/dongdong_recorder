@@ -75,7 +75,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
       setState(() {
         currentTime = '0:0:0';
         plaingFile = event.file;
-        index =event.index;
+        index = event.index;
         totalTime = double.parse(plaingFile.recrodingtime);
         this.curentState = bottomState.playRecoding;
         curentPlayingTime = 0;
@@ -134,22 +134,21 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
         return Container(
           padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
           decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)]),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              ClipOval(
-                child: Container(
-                  width: 60,
-                  height: 60,
-                  color: Theme.of(context).primaryColor,
-                  child: IconButton(
-                    color: Colors.white,
-                    icon: Icon(Icons.mic),
-                    onPressed: showRecroding,
-                  ),
+          child: Center(
+            child: setInk(
+              borderRadius: BorderRadius.all(Radius.circular(50)),
+              bgColor: Theme.of(context).primaryColor,
+              highlightColor: Color.fromRGBO(113, 119, 219, 1),
+              ontap: showRecroding,
+              child: Container(
+                width: 60,
+                height: 60,
+                child: Icon(
+                  Icons.mic,
+                  color: Colors.white,
                 ),
               ),
-            ],
+            ),
           ),
         );
         break;
@@ -167,11 +166,12 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
                     Container(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: this
-                            .playerIocns
-                            .map((e) => Container(
-                                    child: GestureDetector(
-                                  onTap: () {
+                        children: playerIocns
+                            .map(
+                              (e) => Container(
+                                width: 70,
+                                child: setInk(
+                                  ontap: () {
                                     switch (e['title']) {
                                       case "定时":
                                         this.setTimeout();
@@ -208,7 +208,9 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
                                       )
                                     ],
                                   ),
-                                )))
+                                ),
+                              ),
+                            )
                             .toList(),
                       ),
                     ),

@@ -44,11 +44,12 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
         controller: controller,
         child: Row(
           children: <Widget>[
-            GestureDetector(
-              onTap: cancle,
+            setInk(
+              bgColor: Colors.white,
+              ontap: cancle,
               child: Container(
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(left: 20,right: 20),
+                padding: EdgeInsets.only(left: 20, right: 20),
                 decoration: BoxDecoration(
                   border: Border(
                     left: widget.curentFile.isActive ? BorderSide(width: 4, color: Theme.of(context).primaryColor) : BorderSide(width: 0),
@@ -156,7 +157,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
     } else {
       if (Provider.of<recrodListProvider>(context, listen: false).preIndex == widget.index) return;
       Provider.of<recrodListProvider>(context, listen: false).changeState(widget.index);
-      eventBus.fire(PlayingFile(widget.curentFile,widget.index));
+      eventBus.fire(PlayingFile(widget.curentFile, widget.index));
     }
   }
 

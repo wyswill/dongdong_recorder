@@ -125,34 +125,30 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          ClipOval(
-            child: GestureDetector(
-              child: Image.asset('asset/icon_repeat.png', width: 40),
-              onTap: reset,
-            ),
+          setInk(
+            bgColor: Theme.of(context).primaryColor,
+            child: Image.asset('asset/icon_repeat.png', width: 40),
+            ontap: reset,
           ),
-          ClipOval(
+          setInk(
+            borderRadius: BorderRadius.all(Radius.circular(50)),
+            bgColor: Colors.white,
+            highlightColor: Color.fromRGBO(113, 119, 219, 1),
+            ontap: startOrStop,
             child: Container(
               width: 60,
               height: 60,
-              color: Colors.white,
-              child: IconButton(
-                color: Theme.of(context).primaryColor,
-                icon: Icon(statu ? Icons.stop : Icons.mic),
-                onPressed: startOrStop,
-              ),
+              child: Icon(statu ? Icons.stop : Icons.mic, color: Theme.of(context).primaryColor),
             ),
           ),
-          ClipOval(
+          setInk(
+            bgColor: Theme.of(context).primaryColor,
             child: Container(
               width: 40,
               height: 40,
-              child: IconButton(
-                color: Colors.white,
-                icon: Icon(Icons.check),
-                onPressed: saveData,
-              ),
+              child: Icon(Icons.check,color: Colors.white,),
             ),
+            ontap: saveData,
           ),
         ],
       ),

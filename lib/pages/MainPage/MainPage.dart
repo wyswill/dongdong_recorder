@@ -50,15 +50,12 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
       appBar: AppBar(
         leading: IconButton(
           icon: Icon(Icons.person),
-          onPressed: () {   Navigator.popAndPushNamed(context, '/mine');},
+          onPressed: () {
+            Navigator.popAndPushNamed(context, '/mine');
+          },
         ),
         title: Center(child: Text('录音机')),
-        actions: [
-          IconButton(
-            icon: Icon(Icons.list),
-            onPressed: () {},
-          )
-        ],
+        actions: [],
       ),
       body: Column(
         children: <Widget>[
