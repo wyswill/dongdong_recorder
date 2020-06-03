@@ -22,7 +22,8 @@ class Recrod extends StatefulWidget {
 
 class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
   FocusNode node = FocusNode();
-  TextEditingController controller = TextEditingController();
+  TextEditingController controller;
+
   FlutterPluginRecord flutterPluginRecord = FlutterPluginRecord();
   bool statu = false;
   String filepath = '', path = '';
@@ -43,6 +44,9 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
     flutterPluginRecord.responseFromInit.listen(responseFromInitListen);
     flutterPluginRecord.response.listen(strartRecroding);
     flutterPluginRecord.responseFromAmplitude.listen(show);
+    DateTime dateTime = DateTime.now();
+    String defaultTitle = '${dateTime.year}.${dateTime.month}.${dateTime.day}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
+    controller = TextEditingController(text: defaultTitle);
   }
 
   @override
@@ -146,7 +150,10 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
             child: Container(
               width: 40,
               height: 40,
-              child: Icon(Icons.check,color: Colors.white,),
+              child: Icon(
+                Icons.check,
+                color: Colors.white,
+              ),
             ),
             ontap: saveData,
           ),
