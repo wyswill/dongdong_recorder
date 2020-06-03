@@ -157,14 +157,21 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                   right: 0,
                   child: Draggable(
                     axis: Axis.horizontal,
+                    onDraggableCanceled: (Velocity velocity, Offset offset) {
+                      double x = offset.dx;
+                      if (x < 0) x = 2;
+                      setState(() {
+                        rw = x;
+                      });
+                    },
                     child: Container(
                       width: rw,
                       height: height,
                       alignment: Alignment.center,
-                      decoration: BoxDecoration(color: Colors.white),
+                      decoration: BoxDecoration(color:Color.fromRGBO(168, 168, 171, 0.4)),
                     ),
                     feedback: Container(
-                      width: rw,
+                      width: 2,
                       height: height,
                       alignment: Alignment.center,
                       decoration: BoxDecoration(color: Colors.white),
