@@ -1,10 +1,9 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:flutterapp/event_bus.dart';
 import 'package:flutterapp/modus/cancasRectModu.dart';
 import 'package:flutterapp/modus/record.dart';
-import 'package:flutterapp/plugins/wavReader.dart';
+import 'package:flutterapp/plugins/WavReader.dart';
 import 'package:flutterapp/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -63,7 +62,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     controller.text = rm.title;
-    wavReader reader = wavReader(rm.filepath);
+    WavReader reader = WavReader(rm.filepath);
     reader.readAsBytes();
     reader.transfrom().then((value) => showSounkey.currentState.setRecrodingData(value));
     WidgetsBinding.instance.addObserver(this);
@@ -341,7 +340,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
       String res = await channel.invokeMethod("cat", {"originPath": originPath, "savePath": savePath, "startTime": startTime, "endTime": endTime});
       if (res.isNotEmpty) {
         alert(context, title: Text('剪辑完成！'));
-        Provider.of<recrodListProvider>(context, listen: false).init(await FileUtile.getlocalMusic(channel: channel));
+        Provider.of<RecordListProvider>(context, listen: false).init(await FileUtile.getlocalMusic(channel: channel));
       } else {
         alert(context, title: Text('剪辑失败！'));
       }
@@ -401,7 +400,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
       String newPath = '${await FileUtile.getRecrodPath()}$newTitle.wav';
       await file.copy(newPath);
       await file.delete();
-      Provider.of<recrodListProvider>(context, listen: false).changeRM(newTitle, newPath, index);
+      Provider.of<RecordListProvider>(context, listen: false).changeRM(newTitle, newPath, index);
       Navigator.pop(context);
     }
   }

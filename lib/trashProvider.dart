@@ -2,9 +2,9 @@ import 'package:flutter/cupertino.dart';
 
 import 'modus/record.dart';
 
-class transhProvider with ChangeNotifier {
+class TranshProvider with ChangeNotifier {
   List<RecroderModule> trashs = [];
-  int preIndex = null;
+  int preIndex;
 
   void reset() {
     trashs.forEach((element) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class HelpPage extends StatelessWidget {
   List<Map<String, dynamic>> audioMannerger = [
         {'icon': 'asset/palying/icon_more-menu_blue.png', 'word': '音频文件列表管理'},
@@ -98,6 +99,7 @@ class HelpPage extends StatelessWidget {
   }
 
   ///标题生成器
+  // ignore: non_constant_identifier_names
   Widget SetTitle(String title) {
     return Text(
       title,

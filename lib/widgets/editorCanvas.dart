@@ -1,4 +1,3 @@
-import 'package:flutterapp/event_bus.dart';
 import 'package:flutterapp/modus/cancasRectModu.dart';
 import 'package:flutter/material.dart';
 
@@ -35,12 +34,6 @@ class EditorCanvas extends CustomPainter {
 
       ///波形柱子
       canvas.drawRect(column, Paint()..color = Colors.white);
-      if (curent.type == CanvasRectTypes.data) {
-        if (i == canvasData.length / 2 && isChanged) {
-          curent.index = i;
-          eventBus.fire(SetCurentTime(curent));
-        }
-      }
     }
   }
 

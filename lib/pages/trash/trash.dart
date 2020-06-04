@@ -5,21 +5,21 @@ import 'package:flutterapp/trashProvider.dart';
 import 'package:provider/provider.dart';
 import '../../utiles.dart';
 
-class trash extends StatefulWidget {
-  trash({Key key}) : super(key: key);
+class Trash extends StatefulWidget {
+  Trash({Key key}) : super(key: key);
 
   @override
-  _trashState createState() => _trashState();
+  _TrashState createState() => _TrashState();
 }
 
-class _trashState extends State<trash> {
+class _TrashState extends State<Trash> {
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
 
   List<RecroderModule> datas = [];
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<transhProvider>(builder: (context, conter, child) {
+    return Consumer<TranshProvider>(builder: (context, conter, child) {
       this.datas = conter.trashs;
       return ListView.separated(
         itemCount: conter.trashs.length,
@@ -33,7 +33,7 @@ class _trashState extends State<trash> {
   void deactivate() {
     super.deactivate();
     eventBus.fire(NullEvent());
-    Provider.of<transhProvider>(context, listen: false).reset();
+    Provider.of<TranshProvider>(context, listen: false).reset();
   }
 
   @override
@@ -100,7 +100,7 @@ class _trashState extends State<trash> {
 
   ///显示选项
   void showOptions(RecroderModule rm, index) {
-    Provider.of<transhProvider>(context, listen: false).trashSwitchState(index);
+    Provider.of<TranshProvider>(context, listen: false).trashSwitchState(index);
     eventBus.fire(TrashOption(rm, index));
   }
 }

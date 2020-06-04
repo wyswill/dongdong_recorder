@@ -128,6 +128,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     );
   }
 
+  // ignore: missing_return, non_constant_identifier_names
   Widget GetPannel(bottomState state) {
     switch (this.curentState) {
       case bottomState.recode:
@@ -301,7 +302,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
   ///删除
   void delete() async {
     await File(trashFile.filepath).delete();
-    Provider.of<transhProvider>(context, listen: false).remove(index);
+    Provider.of<TranshProvider>(context, listen: false).remove(index);
     setState(() {
       trashFile = null;
       curentState = bottomState.recode;
@@ -315,8 +316,8 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     file.copySync('$newpath${trashFile.title}.wav');
     file.deleteSync();
     trashFile.filepath = '$newpath${trashFile.title}.wav';
-    Provider.of<transhProvider>(context, listen: false).remove(index);
-    Provider.of<recrodListProvider>(context, listen: false).addRecrodItem(trashFile);
+    Provider.of<TranshProvider>(context, listen: false).remove(index);
+    Provider.of<RecordListProvider>(context, listen: false).addRecrodItem(trashFile);
     cancel();
   }
 
@@ -383,7 +384,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
       plaingFile = null;
       this.curentState = bottomState.recode;
     });
-    Provider.of<recrodListProvider>(context, listen: false).reset(isNoti: true);
+    Provider.of<RecordListProvider>(context, listen: false).reset(isNoti: true);
   }
 
   ///定时选择
@@ -407,7 +408,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     if (res.data['ret'] != 0) {
       alert(context, title: Text('语音识别错误'), content: Text(res.data['msg']));
     } else {
-      var task_id = res.data['data']['task_id'];
+//      var task_id = res.data['data']['task_id'];
     }
   }
 

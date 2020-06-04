@@ -130,7 +130,7 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
         FlatButton(
           onPressed: () {
             String newName = _textEditingController.text.trim();
-            Provider.of<recrodListProvider>(context, listen: false).reName(inidex: widget.index, newName: newName);
+            Provider.of<RecordListProvider>(context, listen: false).reName(index: widget.index, newName: newName);
             Navigator.pop(context);
             cancle();
           },
@@ -150,8 +150,8 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
 
   ///删除文件
   deleteFile() async {
-    RecroderModule _rm = await Provider.of<recrodListProvider>(context, listen: false).deleteFile(widget.index);
-    Provider.of<transhProvider>(context, listen: false).trashs.add(_rm);
+    RecroderModule _rm = await Provider.of<RecordListProvider>(context, listen: false).deleteFile(widget.index);
+    Provider.of<TranshProvider>(context, listen: false).trashs.add(_rm);
     cancle();
     eventBus.fire(DeleteFileSync(index: widget.index));
   }
@@ -171,8 +171,8 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
     if (controller.offset > 0) {
       controller.animateTo(0, duration: Duration(milliseconds: 100), curve: Curves.linear);
     } else {
-      if (Provider.of<recrodListProvider>(context, listen: false).preIndex == widget.index) return;
-      Provider.of<recrodListProvider>(context, listen: false).changeState(widget.index);
+      if (Provider.of<RecordListProvider>(context, listen: false).preIndex == widget.index) return;
+      Provider.of<RecordListProvider>(context, listen: false).changeState(widget.index);
       eventBus.fire(PlayingFile(widget.curentFile, widget.index));
     }
   }

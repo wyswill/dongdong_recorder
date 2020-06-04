@@ -1,6 +1,5 @@
 import 'package:flutterapp/modus/record.dart';
 import 'package:flutterapp/provider.dart';
-import 'package:flutterapp/utiles.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,7 +27,7 @@ class _SearchPageState extends State<SearchPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('transhProvider');
+    print('TranshProvider');
     return Container(
       child: Column(
         children: <Widget>[
@@ -78,7 +77,7 @@ class _SearchPageState extends State<SearchPage> {
   editingComplete() {
     String inputTitle = controller.text;
     List<RecroderModule> searchResault = [];
-    List<RecroderModule> list = Provider.of<recrodListProvider>(context, listen: false).recroderFiles;
+    List<RecroderModule> list = Provider.of<RecordListProvider>(context, listen: false).recorderFiles;
     list.forEach((element) {
       if (element.title.contains(inputTitle)) {
         element.reset();

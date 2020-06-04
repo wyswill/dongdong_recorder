@@ -4,12 +4,12 @@ import 'package:flutterapp/modus/cancasRectModu.dart';
 
 import '../utiles.dart';
 
-class wavReader {
+class WavReader {
   final String filepath;
   List datas = [];
   double s = 0, size = 0;
 
-  wavReader(this.filepath);
+  WavReader(this.filepath);
 
   readAsBytes() {
     File file = File(this.filepath);

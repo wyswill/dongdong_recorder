@@ -12,7 +12,7 @@ void main() {
   Provider.debugCheckInvalidValueType = null;
   debugDefaultTargetPlatformOverride = TargetPlatform.android;
   return runApp(MultiProvider(
-    providers: [ChangeNotifierProvider<recrodListProvider>(create: (_) => recrodListProvider()), ChangeNotifierProvider<transhProvider>(create: (_) => transhProvider())],
+    providers: [ChangeNotifierProvider<RecordListProvider>(create: (_) => RecordListProvider()), ChangeNotifierProvider<TranshProvider>(create: (_) => TranshProvider())],
     child: MyApp(),
   ));
 }
@@ -28,8 +28,8 @@ class _MyAppState extends State<MyApp> {
   @override
   void didChangeDependencies() async {
     super.didChangeDependencies();
-    Provider.of<recrodListProvider>(context, listen: false).init(await FileUtile.getlocalMusic(channel: channel));
-    Provider.of<transhProvider>(context, listen: false).init(await FileUtile.getlocalMusic(isRecroder: false, channel: channel));
+    Provider.of<RecordListProvider>(context, listen: false).init(await FileUtile.getlocalMusic(channel: channel));
+    Provider.of<TranshProvider>(context, listen: false).init(await FileUtile.getlocalMusic(isRecroder: false, channel: channel));
   }
 
   @override

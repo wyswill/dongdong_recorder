@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// ignore: must_be_immutable
 class RecroddSetting extends StatelessWidget {
   List<Map<String, String>> data = [
     {"title": '文件格式', "value": 'wav'},

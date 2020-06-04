@@ -312,7 +312,7 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
         alert(context, title: Text('警告!'), content: Text('文件标题不能为空'));
       else if (filepath.isNotEmpty) {
         RecroderModule res = await FileUtile.pathTOModule(path: filepath, newFileName: filename, channel: channel);
-        Provider.of<recrodListProvider>(context, listen: false).addRecrodItem(res);
+        Provider.of<RecordListProvider>(context, listen: false).addRecrodItem(res);
         Navigator.pop(context);
       } else {
         alert(context, title: Text('没有录制音频'));

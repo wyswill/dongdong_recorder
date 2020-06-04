@@ -18,7 +18,7 @@ class _RecrodingListState extends State<RecrodingList> {
   @override
   void deactivate() {
     super.deactivate();
-    Provider.of<recrodListProvider>(context, listen: false).reset();
+    Provider.of<RecordListProvider>(context, listen: false).reset();
   }
   @override
   void dispose() {
@@ -28,14 +28,14 @@ class _RecrodingListState extends State<RecrodingList> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<recrodListProvider>(
+    return Consumer<RecordListProvider>(
       builder: (context, conter, child) {
         return ListView.builder(
-          itemCount: conter.recroderFiles.length,
+          itemCount: conter.recorderFiles.length,
           itemExtent: 50.0, //强制高度为50.0
           itemBuilder: (BuildContext context, int index) {
             return RecrodingFileItems(
-              curentFile: conter.recroderFiles[index],
+              curentFile: conter.recorderFiles[index],
               index: index,
             );
           },

@@ -1,10 +1,9 @@
 import 'dart:core';
-import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutterapp/plugins/wavReader.dart';
+import 'package:flutterapp/plugins/WavReader.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'modus/record.dart';
@@ -57,6 +56,7 @@ class FileUtile {
 
   ///读取本地的录音文件，转化为操作List
   static Future<List<RecroderModule>> getlocalMusic({bool isRecroder = true, MethodChannel channel}) async {
+    // ignore: non_constant_identifier_names
     String FIlepath = await FileUtile.getRecrodPath(isDelete: !isRecroder);
     List<RecroderModule> resList = [];
 
@@ -67,7 +67,7 @@ class FileUtile {
           String filename = file.path.replaceAll(FIlepath, '');
           if (filename.indexOf(RegExp('.wav')) > 0) {
             DateTime dateTime = await file.lastModified();
-            wavReader reader = wavReader(file.path);
+            WavReader reader = WavReader(file.path);
             reader.readAsBytes();
 //            var res = await channel.invokeMethod('getSize', {"path": file.path});
 //            double s = (16000 * (res % (1000 * 60) / 1000)) / 1024;
@@ -103,6 +103,7 @@ class FileUtile {
   }
 
   ///将文件路径转化为操作类
+  // ignore: missing_return
   static Future<RecroderModule> pathTOModule({String path, String newFileName, MethodChannel channel}) async {
     File file = File(path);
     String prePath = await getRecrodPath(), newPath = "$prePath$newFileName.wav";
@@ -111,7 +112,7 @@ class FileUtile {
     File newFile = File(newPath);
     if (newFile.existsSync()) {
       DateTime dateTime = await newFile.lastModified();
-      wavReader reader = wavReader(file.path);
+      WavReader reader = WavReader(file.path);
       reader.readAsBytes();
 //      var res = await channel.invokeMethod('getSize', {"path": newFile.path});
 //      double s = (16000 * (res % (1000 * 60) / 1000)) / 1024;

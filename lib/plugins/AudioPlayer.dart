@@ -12,15 +12,15 @@ class AudioPlayer {
   }
 
   void play(String playeFilePath) async {
-    await this.initPlayer();
-    var res = await channel.invokeMethod("play", {"path": playeFilePath});
+    this.initPlayer();
+    await channel.invokeMethod("play", {"path": playeFilePath});
   }
 
   void stop() async {
-    var res = await channel.invokeMethod("stop");
+    await channel.invokeMethod("stop");
   }
 
   void pause() async {
-    var res = await channel.invokeMethod("pause");
+    await channel.invokeMethod("pause");
   }
 }
