@@ -14,17 +14,8 @@ class ShowSoun extends StatefulWidget {
   ShowSounState createState() => ShowSounState();
 }
 
-class ShowSounState extends State<ShowSoun>
-    with SingleTickerProviderStateMixin {
+class ShowSounState extends State<ShowSoun> {
   List<CanvasRectModu> recrodingData = [];
-  AnimationController controller;
-
-  @override
-  void initState() {
-    super.initState();
-    controller =
-        AnimationController(vsync: this, duration: Duration(milliseconds: 200));
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +23,7 @@ class ShowSounState extends State<ShowSoun>
       width: MediaQuery.of(context).size.width,
       height: 400,
       child: CustomPaint(
-        painter: widget.isEditor != null
-            ? EditorCanvas(recrodingData, widget.recriodingTime)
-            : MyCanvas(recrodingData, widget.recriodingTime),
+        painter: widget.isEditor != null ? EditorCanvas(recrodingData, widget.recriodingTime) : MyCanvas(recrodingData, widget.recriodingTime),
       ),
     );
   }
@@ -43,7 +32,6 @@ class ShowSounState extends State<ShowSoun>
   setRecrodingData(List<CanvasRectModu> data) {
     setState(() {
       recrodingData = data;
-      controller.forward();
     });
   }
 

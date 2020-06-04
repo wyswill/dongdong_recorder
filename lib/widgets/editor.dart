@@ -34,7 +34,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   String currenttime = '0:0:0';
   GlobalKey<MusicProgressState> key = GlobalKey();
   GlobalKey<ShowSounState> showSounkey = GlobalKey();
-  double left = 0, right = 60, audioTimeLength = 0, lw = 2, rw = 2, height = 180;
+  double left = 0, right = 60, audioTimeLength = 0, lw = 2, lww = 0, rw = 2, height = 180;
   List<CanvasRectModu> recrodingData = [], templist = [];
 
   ///和native通讯
@@ -128,26 +128,28 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                 ),
                 Positioned(
                   top: 20,
+                  left: 0,
+                  width: lw,
+                  height: height,
                   child: Draggable(
+                    axis: Axis.horizontal,
                     onDraggableCanceled: (Velocity velocity, Offset offset) {
-                      double x = offset.dx;
-                      if (x < 0) x = 2;
+                      double x = offset.dx.floor().toDouble();
+                      if (x < 2) x = 2;
+                      if (offset.dx >= windowWidth - rw) x = windowWidth - rw - 2;
                       setState(() {
                         lw = x;
                       });
                     },
-                    axis: Axis.horizontal,
                     child: Container(
                       width: lw,
                       height: height,
-                      alignment: Alignment.center,
                       decoration: BoxDecoration(color: Color.fromRGBO(168, 168, 171, 0.4), border: Border(right: BorderSide(width: 1, color: Colors.red))),
                     ),
                     feedback: Container(
-                      width: 2,
+                      width: windowWidth,
                       height: height,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(color: Color.fromRGBO(168, 168, 171, 0.4), border: Border(right: BorderSide(width: 1, color: Colors.white))),
+                      decoration: BoxDecoration(border: Border(left: BorderSide(width: 1, color: Colors.red))),
                     ),
                     childWhenDragging: Container(),
                   ),
@@ -158,29 +160,29 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                   child: Draggable(
                     axis: Axis.horizontal,
                     onDraggableCanceled: (Velocity velocity, Offset offset) {
-                      double x = offset.dx;
+                      double x = windowWidth - offset.dx;
+                      if (offset.dx <= lw) x = windowWidth - lw - 2;
                       if (x < 0) x = 2;
                       setState(() {
-                        rw = x;
+                        rw = x.floor().toDouble();
                       });
                     },
                     child: Container(
                       width: rw,
                       height: height,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(color:Color.fromRGBO(168, 168, 171, 0.4)),
+                      decoration: BoxDecoration(color: Color.fromRGBO(168, 168, 171, 0.4), border: Border(left: BorderSide(width: 1, color: Colors.red))),
                     ),
                     feedback: Container(
-                      width: 2,
+                      width: 1,
                       height: height,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(color: Colors.white),
+                      decoration: BoxDecoration(border: Border(left: BorderSide(width: 1, color: Colors.red))),
                     ),
                     childWhenDragging: Container(),
                   ),
                 ),
                 Positioned(
                   bottom: 30,
+                  left: 90,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
@@ -226,18 +228,16 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
 
   ///设置音频波形画布
   Widget setCanvas() {
-    return ShowSoun(
-      key: showSounkey,
-      recriodingTime: this.audioTimeLength,
-      isEditor: true,
-    );
-//    return GestureDetector(
-//      onHorizontalDragUpdate: (DragUpdateDetails e) {
-//        double offset = e.delta.dx;
-//        recrodingOffset(offset);
-//      },
-//      child:
-//    );
+    return GestureDetector(
+        onHorizontalDragUpdate: (DragUpdateDetails e) {
+          double offset = e.delta.dx;
+          recrodingOffset(offset);
+        },
+        child: ShowSoun(
+          key: showSounkey,
+          recriodingTime: this.audioTimeLength,
+          isEditor: true,
+        ));
   }
 
   ///剪辑选项
@@ -480,7 +480,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   void more() {}
 
   List<CanvasRectModu> addHeadOrTail(List<CanvasRectModu> arr) {
-    int columnsCount = 80;
+    int columnsCount = 10;
     for (int i = 0; i < columnsCount; i++) {
       arr.add(CanvasRectModu(vlaue: 2, type: CanvasRectTypes.point, timestamp: "0:0:0"));
     }
@@ -495,7 +495,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     ///以1毫秒为间隔提取一次数据
     int flag = (data.length / recrodingtime).floor() * 10, stp = 0;
     List<CanvasRectModu> res = [];
-//    res = addHeadOrTail(res);
+    res = addHeadOrTail(res);
     for (int i = 0; i < data.length; i++) {
       double curent = data[i];
       if (stp == flag) {
@@ -511,7 +511,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
       }
       stp++;
     }
-//    res = addHeadOrTail(res);
+    res = addHeadOrTail(res);
     return res;
   }
 }

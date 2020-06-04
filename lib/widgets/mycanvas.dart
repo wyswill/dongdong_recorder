@@ -6,6 +6,7 @@ class MyCanvas extends CustomPainter {
 
   final double recriodingTime;
   final List<CanvasRectModu> canvasData;
+
   @override
   void paint(Canvas canvas, Size size) {
     init(canvas, size);
@@ -23,8 +24,7 @@ class MyCanvas extends CustomPainter {
       double volume = 2.0;
       CanvasRectModu curent = canvasData[i];
       volume = curent.vlaue * step;
-      Rect column = Rect.fromLTWH(columnWidth * i, (size.height - volume) / 2,
-          columnWidth.ceil().toDouble(), volume);
+      Rect column = Rect.fromLTWH(columnWidth * i, (size.height - volume) / 2, columnWidth.ceil().toDouble(), volume);
       canvas.drawRect(column, Paint()..color = Colors.white);
     }
   }
