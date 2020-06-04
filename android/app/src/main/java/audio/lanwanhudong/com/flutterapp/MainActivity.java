@@ -43,6 +43,7 @@ public class MainActivity extends FlutterActivity {
                 WaveFileReader reader = new WaveFileReader(path);
                 if (reader.isSuccess()) {
                     double[] _temp = reader.getData();
+                    System.out.print(_temp);
                     result.success(_temp);
                 }
                 break;

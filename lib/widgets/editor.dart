@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutterapp/event_bus.dart';
 import 'package:flutterapp/modus/cancasRectModu.dart';
 import 'package:flutterapp/modus/record.dart';
+import 'package:flutterapp/plugins/wavReader.dart';
 import 'package:flutterapp/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -62,15 +63,12 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   void initState() {
     super.initState();
     controller.text = rm.title;
+    wavReader reader = wavReader(rm.filepath);
+    reader.readAsBytes();
+    reader.transfrom().then((value) => showSounkey.currentState.setRecrodingData(value));
     WidgetsBinding.instance.addObserver(this);
-  }
 
-  @override
-  void didChangeDependencies() async {
-    super.didChangeDependencies();
-    var data = await this.channel.invokeListMethod('fft', {"path": rm.filepath});
-    recrodingData = await transfrom(data.toList());
-    recrodingOffset(0);
+    ///event_bus
     eventBus.on<SetCurentTime>().listen((val) {
       setState(() {
         canvasRectModu = val.canvasRectModu;
@@ -180,46 +178,10 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                     childWhenDragging: Container(),
                   ),
                 ),
-                Positioned(
-                  bottom: 30,
-                  left: 90,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                      Column(
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(top: 20),
-                            child: Text(startTimestamp != null ? startTimestamp : "0:0:0"),
-                          ),
-                          Text('开始时间戳')
-                        ],
-                      ),
-                      Column(
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(top: 20),
-                            child: Text(canvasRectModu != null ? canvasRectModu.timestamp : "0:0:0"),
-                          ),
-                          Text('当前时间戳', style: TextStyle(color: Colors.red))
-                        ],
-                      ),
-                      Column(
-                        children: <Widget>[
-                          Container(
-                            margin: EdgeInsets.only(top: 20),
-                            child: Text(endTimestamp != null ? endTimestamp : "0:0:0"),
-                          ),
-                          Text('结束时间戳')
-                        ],
-                      ),
-                    ],
-                  ),
-                )
               ],
             ),
           ),
-          setOptions(),
+//          setOptions(),
         ],
       ),
       bottomNavigationBar: setButtom(),
@@ -228,16 +190,17 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
 
   ///设置音频波形画布
   Widget setCanvas() {
-    return GestureDetector(
-        onHorizontalDragUpdate: (DragUpdateDetails e) {
-          double offset = e.delta.dx;
-          recrodingOffset(offset);
-        },
-        child: ShowSoun(
-          key: showSounkey,
-          recriodingTime: this.audioTimeLength,
-          isEditor: true,
-        ));
+    return ShowSoun(
+      key: showSounkey,
+      recriodingTime: this.audioTimeLength,
+      isEditor: true,
+    );
+//    return GestureDetector(
+//        onHorizontalDragUpdate: (DragUpdateDetails e) {
+//          double offset = e.delta.dx;
+//          recrodingOffset(offset);
+//        },
+//        child:);
   }
 
   ///剪辑选项
@@ -336,7 +299,11 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
           Container(
             margin: EdgeInsets.symmetric(horizontal: 20),
             child: Row(
-              children: <Widget>[Text(currenttime, style: TextStyle(color: Colors.grey)), Expanded(child: MusicProgress(key: key)), Text(formatTime(int.parse(rm.recrodingtime)), style: TextStyle(color: Colors.grey))],
+              children: <Widget>[
+                Text(currenttime, style: TextStyle(color: Colors.grey)),
+                Expanded(child: MusicProgress(key: key)),
+                Text('${formatTime(rm.recrodingtime.toInt())}', style: TextStyle(color: Colors.grey)),
+              ],
             ),
           ),
           Row(
@@ -455,6 +422,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
       return;
     }
     var newList2 = recrodingData.getRange(-left.floor(), right.floor());
+    print(newList);
     newList = newList2.toList();
     showSounkey.currentState.setRecrodingData(newList);
   }
@@ -478,40 +446,4 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
 
   ///更多
   void more() {}
-
-  List<CanvasRectModu> addHeadOrTail(List<CanvasRectModu> arr) {
-    int columnsCount = 10;
-    for (int i = 0; i < columnsCount; i++) {
-      arr.add(CanvasRectModu(vlaue: 2, type: CanvasRectTypes.point, timestamp: "0:0:0"));
-    }
-    return arr;
-  }
-
-  ///将波形按照毫秒的时域进行转换
-  Future<List> transfrom(List data) async {
-    ///获取录音时间
-    double recrodingtime = (data.length / 8000) * 100;
-
-    ///以1毫秒为间隔提取一次数据
-    int flag = (data.length / recrodingtime).floor() * 10, stp = 0;
-    List<CanvasRectModu> res = [];
-    res = addHeadOrTail(res);
-    for (int i = 0; i < data.length; i++) {
-      double curent = data[i];
-      if (stp == flag) {
-        int t = (i / flag).floor().toInt();
-        res.add(CanvasRectModu(
-          vlaue: curent,
-          type: CanvasRectTypes.data,
-          index: i,
-          timestamp: formatTime(t * 100),
-          ms: t * 100,
-        ));
-        stp = 0;
-      }
-      stp++;
-    }
-    res = addHeadOrTail(res);
-    return res;
-  }
 }

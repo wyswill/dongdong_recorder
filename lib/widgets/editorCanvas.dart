@@ -12,9 +12,9 @@ class EditorCanvas extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    print('画了');
     var rect = Offset.zero & size;
     canvas.drawRect(rect, Paint()..color = Color.fromRGBO(87, 92, 159, 1));
-    final double middleWidth = size.width / 2;
 
     /// 每个柱子的宽度
     double columnWidth = 1;
@@ -27,7 +27,6 @@ class EditorCanvas extends CustomPainter {
       double volume = 2.0;
       CanvasRectModu curent = canvasData[i];
       volume = curent.vlaue * step;
-
       ///柱子
       Rect column = Rect.fromLTWH((columnWidth + 2) * i, (size.height - volume) / 2, columnWidth.ceil().toDouble(), volume);
 
@@ -35,22 +34,7 @@ class EditorCanvas extends CustomPainter {
       ///Rect timeLine = Rect.fromLTWH((columnWidth + spacing) * i, 0, 1, 10);
 
       ///波形柱子
-      switch (curent.type) {
-        case CanvasRectTypes.data:
-          canvas.drawRect(column, Paint()..color = Colors.white);
-          break;
-        case CanvasRectTypes.start:
-          Rect startFlag = Rect.fromLTWH((columnWidth + 2) * i, 0, columnWidth.ceil().toDouble(), size.height);
-          canvas.drawRect(startFlag, Paint()..color = Colors.yellow);
-          break;
-        case CanvasRectTypes.end:
-          Rect endFlag = Rect.fromLTWH((columnWidth + 2) * i, 0, columnWidth.ceil().toDouble(), size.height);
-          canvas.drawRect(endFlag, Paint()..color = Colors.red);
-          break;
-        default:
-          canvas.drawRect(column, Paint()..color = Colors.white);
-          break;
-      }
+      canvas.drawRect(column, Paint()..color = Colors.white);
       if (curent.type == CanvasRectTypes.data) {
         if (i == canvasData.length / 2 && isChanged) {
           curent.index = i;

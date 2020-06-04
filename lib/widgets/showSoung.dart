@@ -30,6 +30,7 @@ class ShowSounState extends State<ShowSoun> {
 
   ///滑动窗口
   setRecrodingData(List<CanvasRectModu> data) {
+    print(data);
     setState(() {
       recrodingData = data;
     });

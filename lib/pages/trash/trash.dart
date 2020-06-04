@@ -79,7 +79,7 @@ class _trashState extends State<trash> {
                           padding: EdgeInsets.symmetric(horizontal: 5),
                           decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.all(Radius.circular(10))),
                           child: Text(
-                            formatTime(int.parse(current.recrodingtime)),
+                            formatTime(current.recrodingtime),
                             style: textStyle,
                           ),
                         ),

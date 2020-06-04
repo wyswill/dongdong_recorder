@@ -1,5 +1,5 @@
 class RecroderModule {
-  final String recrodingtime;
+  final num recrodingtime;
   final String fileSize;
   String lastModified;
   String filepath;

@@ -1,8 +1,10 @@
 import 'dart:core';
+import 'dart:ffi';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutterapp/plugins/wavReader.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'modus/record.dart';
@@ -41,8 +43,8 @@ alert(
   );
 }
 
-formatTime(int totalTime) {
-  Duration d = Duration(milliseconds: totalTime);
+String formatTime(int totalTime) {
+  Duration d = Duration(seconds: totalTime);
   return "${d.inHours}:${d.inMinutes}:${d.inSeconds}";
 }
 
@@ -65,16 +67,18 @@ class FileUtile {
           String filename = file.path.replaceAll(FIlepath, '');
           if (filename.indexOf(RegExp('.wav')) > 0) {
             DateTime dateTime = await file.lastModified();
-            var res = await channel.invokeMethod('getSize', {"path": file.path});
-            double s = (16000 * (res % (1000 * 60) / 1000)) / 1024;
+            wavReader reader = wavReader(file.path);
+            reader.readAsBytes();
+//            var res = await channel.invokeMethod('getSize', {"path": file.path});
+//            double s = (16000 * (res % (1000 * 60) / 1000)) / 1024;
             RecroderModule rm = RecroderModule(
               title: filename.replaceAll('.wav', ''),
               filepath: file.path,
-              recrodingtime: "$res",
+              recrodingtime: reader.s,
               lastModified: '${dateTime.year}年${dateTime.day}日${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
               isPlaying: false,
               isActive: false,
-              fileSize: "${s}kb",
+              fileSize: "${reader.size}kb",
             );
             resList.add(rm);
           }
@@ -107,22 +111,24 @@ class FileUtile {
     File newFile = File(newPath);
     if (newFile.existsSync()) {
       DateTime dateTime = await newFile.lastModified();
-      var res = await channel.invokeMethod('getSize', {"path": newFile.path});
-      double s = (16000 * (res % (1000 * 60) / 1000)) / 1024;
+      wavReader reader = wavReader(file.path);
+      reader.readAsBytes();
+//      var res = await channel.invokeMethod('getSize', {"path": newFile.path});
+//      double s = (16000 * (res % (1000 * 60) / 1000)) / 1024;
       RecroderModule rm = RecroderModule(
         title: newFileName,
         filepath: newFile.path,
-        recrodingtime: "$res",
+        recrodingtime: reader.s,
         lastModified: timeFromate(dateTime),
         isPlaying: false,
-        fileSize: "${s}kb",
+        fileSize: "${reader.size}kb",
         isActive: false,
       );
       return rm;
     }
   }
 
-  static String timeFromate(DateTime dateTime){
+  static String timeFromate(DateTime dateTime) {
     return '${dateTime.year}年${dateTime.month}月${dateTime.day}日${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
   }
 }

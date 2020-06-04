@@ -76,7 +76,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
         currentTime = '0:0:0';
         plaingFile = event.file;
         index = event.index;
-        totalTime = double.parse(plaingFile.recrodingtime);
+        totalTime = (plaingFile.recrodingtime);
         this.curentState = bottomState.playRecoding;
         curentPlayingTime = 0;
       });
