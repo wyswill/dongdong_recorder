@@ -20,13 +20,13 @@ class EditorCanvas extends CustomPainter {
     double columnWidth = 1;
 
     /// 幅度比例
-    double step = size.height / 300;
+    double proportion = size.height / 300;
 
     /// 挨个画频谱柱子
     for (int i = 0; i < canvasData.length; i++) {
       double volume = 2.0;
       CanvasRectModu curent = canvasData[i];
-      volume = curent.vlaue * step;
+      volume = curent.vlaue * proportion;
       ///柱子
       Rect column = Rect.fromLTWH((columnWidth + 2) * i, (size.height - volume) / 2, columnWidth.ceil().toDouble(), volume);
 

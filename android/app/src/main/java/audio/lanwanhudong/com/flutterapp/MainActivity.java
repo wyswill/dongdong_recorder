@@ -37,22 +37,6 @@ public class MainActivity extends FlutterActivity {
      */
     private void handleMethod(MethodCall methodCall, MethodChannel.Result result) {
         switch (methodCall.method) {
-            //根据方法名进行处理
-            case "fft":
-                String path = methodCall.argument("path").toString();
-                WaveFileReader reader = new WaveFileReader(path);
-                if (reader.isSuccess()) {
-                    double[] _temp = reader.getData();
-                    System.out.print(_temp);
-                    result.success(_temp);
-                }
-                break;
-            case "getSize":
-                String paths = methodCall.argument("path").toString();
-                Audio audios = new AudioCat().getAudioFromPath(paths);
-                long size = audios.getTimeMillis();
-                result.success(size);
-                break;
             case "cat":
                 String oringPath = methodCall.argument("originPath").toString();
                 String savePath = methodCall.argument("savePath").toString() + ".wav";

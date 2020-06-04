@@ -25,8 +25,8 @@ class wavReader {
   ///将波形按照毫秒的时域进行转换
   ///
   /// 不同机型屏幕适配 转换比例 =  屏幕宽度 / 音频时长(毫秒)
-  ///
-  ///
+  ///TODO:1.波形一屏展示2.时间轴绘制3.缩放公式完成4.wav剪切功能由java实现转为dart实现
+
   Future<List<CanvasRectModu>> transfrom() async {
     List data = this.datas;
 
@@ -38,7 +38,7 @@ class wavReader {
       int curent = data[i];
       if (curent == 0) continue;
       if (stp == flag) {
-        int t = (i / flag).floor().toInt();
+        int t = (i / flag).floor();
         res.add(CanvasRectModu(
           vlaue: curent.toDouble(),
           index: i,
