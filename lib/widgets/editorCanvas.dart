@@ -7,7 +7,7 @@ class EditorCanvas extends CustomPainter {
   bool isChanged;
 
   final double recriodingTime;
-  final List<CanvasRectModu> canvasData;
+  final List<int> canvasData;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -22,10 +22,13 @@ class EditorCanvas extends CustomPainter {
     double proportion = size.height / 300;
 
     /// 挨个画频谱柱子
+    ///
+    ///
     for (int i = 0; i < canvasData.length; i++) {
       double volume = 2.0;
-      CanvasRectModu curent = canvasData[i];
-      volume = curent.vlaue * proportion;
+      int curent = canvasData[i];
+//      volume = curent.vlaue * proportion;
+      volume = curent * proportion;
       ///柱子
       Rect column = Rect.fromLTWH((columnWidth + 2) * i, (size.height - volume) / 2, columnWidth.ceil().toDouble(), volume);
 

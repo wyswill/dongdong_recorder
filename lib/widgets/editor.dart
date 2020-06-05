@@ -1,15 +1,17 @@
 import 'dart:io';
 
+import 'package:flutterapp/canvasData.dart';
 import 'package:flutterapp/event_bus.dart';
 import 'package:flutterapp/modus/cancasRectModu.dart';
 import 'package:flutterapp/modus/record.dart';
 import 'package:flutterapp/plugins/WavReader.dart';
-import 'package:flutterapp/widgets/showSoung.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutterapp/widgets/showSoung.dart';
 import 'package:provider/provider.dart';
 import '../provider.dart';
 import '../utiles.dart';
+import 'chartPage.dart';
 import 'musicProgress.dart';
 
 class Editor extends StatefulWidget {
@@ -33,8 +35,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   ];
   String currenttime = '0:0:0';
   GlobalKey<MusicProgressState> key = GlobalKey();
-  GlobalKey<ShowSounState> showSounkey = GlobalKey();
-  double left = 0, right = 60, audioTimeLength = 0, lw = 2, lww = 0, rw = 2, height = 180;
+  double left = 0, right = 60, audioTimeLength = 0, lw = 20, lww = 0, rw = 20, height = 180;
   List<CanvasRectModu> recrodingData = [], templist = [];
 
   ///和native通讯
@@ -64,7 +65,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     controller.text = rm.title;
     WavReader reader = WavReader(rm.filepath);
     reader.readAsBytes();
-    reader.transfrom().then((value) => showSounkey.currentState.setRecrodingData(value));
+    Provider.of<canvasData>(context, listen: false).setData(reader.datas);
     WidgetsBinding.instance.addObserver(this);
 
     ///event_bus
@@ -190,16 +191,10 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   ///设置音频波形画布
   Widget setCanvas() {
     return ShowSoun(
-      key: showSounkey,
       recriodingTime: this.audioTimeLength,
       isEditor: true,
     );
-//    return GestureDetector(
-//        onHorizontalDragUpdate: (DragUpdateDetails e) {
-//          double offset = e.delta.dx;
-//          recrodingOffset(offset);
-//        },
-//        child:);
+//    return ChartPage();
   }
 
   ///剪辑选项
@@ -423,7 +418,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     var newList2 = recrodingData.getRange(-left.floor(), right.floor());
     print(newList);
     newList = newList2.toList();
-    showSounkey.currentState.setRecrodingData(newList);
+//    showSounkey.currentState.setRecrodingData(newList);
   }
 
   ///播放音乐

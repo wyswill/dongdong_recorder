@@ -23,7 +23,6 @@ class _RecrodingListState extends State<RecrodingList> {
   @override
   void dispose() {
     super.dispose();
-
   }
 
   @override

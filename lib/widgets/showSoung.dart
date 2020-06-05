@@ -1,6 +1,8 @@
+import 'package:flutterapp/canvasData.dart';
 import 'package:flutterapp/modus/cancasRectModu.dart';
 import 'package:flutterapp/widgets/editorCanvas.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'mycanvas.dart';
 
@@ -20,17 +22,18 @@ class ShowSounState extends State<ShowSoun> {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20),
       width: MediaQuery.of(context).size.width,
       height: 400,
+      color: Theme.of(context).primaryColor,
       child: CustomPaint(
-        painter: widget.isEditor != null ? EditorCanvas(recrodingData, widget.recriodingTime) : MyCanvas(recrodingData, widget.recriodingTime),
+        painter: widget.isEditor != null ? EditorCanvas(Provider.of<canvasData>(context).data, widget.recriodingTime) : MyCanvas(recrodingData, widget.recriodingTime),
       ),
     );
   }
 
   ///滑动窗口
   setRecrodingData(List<CanvasRectModu> data) {
-    print(data);
     setState(() {
       recrodingData = data;
     });

@@ -102,7 +102,6 @@ public class AudioCat {
         return false;
       }
       FileInputStream fis = new FileInputStream(wav);
-      //long wavSize = wav.length()-44;  //音频数据大小（44为128kbps比特率wav文件头长度）
       long wavSize = wav.length() - headSize;  //音频数据大小（wav文件头长度不一定是44）
       long splitSize = (wavSize / t1) * (end - start);  //截取的音频数据大小
       long skipSize = (wavSize / t1) * start;  //截取时跳过的音频数据大小
@@ -122,7 +121,6 @@ public class AudioCat {
       fis.read(head, 0, head.length);  //读取源wav文件头部信息
       for (int i = 0; i < 4; i++) {  //4代表一个int占用字节数
         head[i + 4] = flen[i];  //替换原头部信息里的文件长度
-        //head[i+40] = dlen[i];  //替换原头部信息里的数据长度
         head[i + headSize - 4] = dlen[i];  //替换原头部信息里的数据长度
       }
       byte[] fbyte = new byte[splitSizeInt + head.length];  //存放截取的音频数据

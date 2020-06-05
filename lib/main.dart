@@ -1,4 +1,5 @@
 import 'package:flutter/services.dart';
+import 'package:flutterapp/canvasData.dart';
 import 'package:flutterapp/pages/MainPage/MainPage.dart';
 import 'package:flutterapp/provider.dart';
 import 'package:flutterapp/router.dart';
@@ -12,7 +13,11 @@ void main() {
   Provider.debugCheckInvalidValueType = null;
   debugDefaultTargetPlatformOverride = TargetPlatform.android;
   return runApp(MultiProvider(
-    providers: [ChangeNotifierProvider<RecordListProvider>(create: (_) => RecordListProvider()), ChangeNotifierProvider<TranshProvider>(create: (_) => TranshProvider())],
+    providers: [
+      ChangeNotifierProvider<RecordListProvider>(create: (_) => RecordListProvider()),
+      ChangeNotifierProvider<TranshProvider>(create: (_) => TranshProvider()),
+      ChangeNotifierProvider<canvasData>(create: (_) => canvasData()),
+    ],
     child: MyApp(),
   ));
 }
