@@ -78,10 +78,7 @@ class _TrashState extends State<Trash> {
                         Container(
                           padding: EdgeInsets.symmetric(horizontal: 5),
                           decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.all(Radius.circular(10))),
-                          child: Text(
-                            formatTime(current.recrodingtime),
-                            style: textStyle,
-                          ),
+                          child: Text(formatTime(current.recrodingtime.toInt()), style: textStyle),
                         ),
                         Text(current.fileSize, style: textStyle),
                         Expanded(child: Container()),

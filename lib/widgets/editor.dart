@@ -65,7 +65,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     controller.text = rm.title;
     WavReader reader = WavReader(rm.filepath);
     reader.readAsBytes();
-    Provider.of<canvasData>(context, listen: false).setData(reader.datas);
+    Future.delayed(Duration(microseconds: 400)).then((value) => Provider.of<canvasData>(context, listen: false).setData(reader.datas));
     WidgetsBinding.instance.addObserver(this);
 
     ///event_bus
@@ -100,7 +100,8 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     return Scaffold(
       appBar: AppBar(
         leading: Center(
-          child: GestureDetector(onTap: save, child: Text("保存")),
+          child: Container(),
+//          child: GestureDetector(onTap: save, child: Text("保存")),
         ),
         title: Center(child: Text('剪辑')),
         actions: <Widget>[
@@ -110,7 +111,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                 Navigator.pop(context);
               })
         ],
-        bottom: this.setInput(),
+//        bottom: this.setInput(),
       ),
       body: Column(
         children: <Widget>[
@@ -118,14 +119,14 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
             child: Stack(
               children: <Widget>[
                 Positioned(
+                  top: 10,
                   child: Container(
-                    margin: EdgeInsets.only(top: 20),
                     height: height,
                     child: setCanvas(),
                   ),
                 ),
                 Positioned(
-                  top: 20,
+                  top: 10,
                   left: 0,
                   width: lw,
                   height: height,
@@ -153,7 +154,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                   ),
                 ),
                 Positioned(
-                  top: 20,
+                  top: 10,
                   right: 0,
                   child: Draggable(
                     axis: Axis.horizontal,

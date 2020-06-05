@@ -21,14 +21,16 @@ class ShowSounState extends State<ShowSoun> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 20),
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: 400,
-      color: Theme.of(context).primaryColor,
-      child: CustomPaint(
-        painter: widget.isEditor != null ? EditorCanvas(Provider.of<canvasData>(context).data, widget.recriodingTime) : MyCanvas(recrodingData, widget.recriodingTime),
-      ),
+      child: widget.isEditor != null
+          ? Consumer<canvasData>(
+              builder: (context, conter, child) => CustomPaint(painter: EditorCanvas(conter.data, widget.recriodingTime)),
+            )
+          : CustomPaint(
+              painter: MyCanvas(recrodingData, widget.recriodingTime),
+            ),
     );
   }
 

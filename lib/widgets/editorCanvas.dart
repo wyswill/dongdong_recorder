@@ -12,6 +12,7 @@ class EditorCanvas extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     print('画了');
+    print(recriodingTime);
     var rect = Offset.zero & size;
     canvas.drawRect(rect, Paint()..color = Color.fromRGBO(87, 92, 159, 1));
 
@@ -23,17 +24,20 @@ class EditorCanvas extends CustomPainter {
 
     /// 挨个画频谱柱子
     ///
-    ///
+    ///总宽度 = 总毫秒数
+    ///2000秒为一个大单位
+    ///500毫秒为一个小单位
     for (int i = 0; i < canvasData.length; i++) {
       double volume = 2.0;
-      int curent = canvasData[i];
-//      volume = curent.vlaue * proportion;
-      volume = curent * proportion;
+      int current = canvasData[i];
+      volume = current * proportion;
+
       ///柱子
       Rect column = Rect.fromLTWH((columnWidth + 2) * i, (size.height - volume) / 2, columnWidth.ceil().toDouble(), volume);
 
       ///时间轴
-      ///Rect timeLine = Rect.fromLTWH((columnWidth + spacing) * i, 0, 1, 10);
+      Rect timeLine = Rect.fromLTWH((columnWidth + 2) * i, 0, 1, 10);
+       canvas.drawRect(timeLine, Paint()..color = Colors.red);
 
       ///波形柱子
       canvas.drawRect(column, Paint()..color = Colors.white);
