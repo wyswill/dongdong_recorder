@@ -54,7 +54,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   ///与canvas交互的参数
   CanvasRectModu canvasRectModu;
   int startIndex, endIndex, startTime, endTime;
-  String startTimestamp, endTimestamp;
+  String startTimestamp = '00:00:00', endTimestamp = '00:00:00';
 
   TextStyle get _textStyle => TextStyle(color: Theme.of(context).primaryColor, fontSize: 12);
 
@@ -141,7 +141,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                       double x = offset.dx.floor().toDouble();
                       if (x < 2) x = 2;
                       if (offset.dx >= windowWidth - rw) x = windowWidth - rw - 2;
-                      offsetToTimeSteap(x);
+                      offsetToTimeSteap(x, true);
                       setState(() {
                         lw = x;
                       });
@@ -167,7 +167,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                       double x = windowWidth - offset.dx;
                       if (offset.dx <= lw) x = windowWidth - lw - 2;
                       if (x < 0) x = 2;
-                      offsetToTimeSteap(offset.dx.floor());
+                      offsetToTimeSteap(offset.dx.floor(), false);
                       setState(() {
                         rw = x.floor().toDouble();
                       });
@@ -188,7 +188,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
               ],
             ),
           ),
-//          setOptions(),
+          setOptions(),
         ],
       ),
       bottomNavigationBar: setButtom(),
@@ -213,19 +213,13 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
               children: <Widget>[Image.asset('asset/sheared/icon_Sheared.png', width: 20), Text('剪切音频', style: _textStyle)],
             ),
           ),
-          GestureDetector(
-            onTap: setStart,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[Image.asset('asset/flag/icon_flag.png', width: 20), Text('开始时间戳', style: _textStyle)],
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[Text(startTimestamp ?? '', style: _textStyle), Text('开始时间', style: _textStyle)],
           ),
-          GestureDetector(
-            onTap: setEnd,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: <Widget>[Image.asset('asset/flag/icon_flag_blue.png', width: 20), Text('结束时间戳', style: _textStyle)],
-            ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[Text(endTimestamp ?? '', style: _textStyle), Text('结束时间', style: _textStyle)],
           ),
         ],
       ),
@@ -342,42 +336,6 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     }
   }
 
-  ///设置截取开始指针
-  setStart() {
-    if (canvasRectModu != null) {
-      int index = canvasRectModu.index + (-left.floor()) - 11;
-      if (startIndex == null) {
-        recrodingData[index].type = CanvasRectTypes.start;
-      } else {
-        recrodingData[startIndex].type = CanvasRectTypes.data;
-        recrodingData[index].type = CanvasRectTypes.start;
-      }
-      setState(() {
-        startIndex = index;
-        startTimestamp = canvasRectModu.timestamp;
-        startTime = canvasRectModu.ms;
-      });
-    }
-  }
-
-  ///设置结束指针
-  setEnd() {
-    if (canvasRectModu != null) {
-      int index = canvasRectModu.index + (-left.floor()) - 11;
-      if (endIndex == null) {
-        recrodingData[index].type = CanvasRectTypes.end;
-      } else {
-        recrodingData[endIndex].type = CanvasRectTypes.data;
-        recrodingData[index].type = CanvasRectTypes.end;
-      }
-      setState(() {
-        endIndex = index;
-        endTimestamp = canvasRectModu.timestamp;
-        endTime = canvasRectModu.ms;
-      });
-    }
-  }
-
   ///保存
   void save() async {
     String newTitle = controller.text.trim();
@@ -439,11 +397,19 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   ///更多
   void more() {}
 
-  void offsetToTimeSteap(num offset) {
+  void offsetToTimeSteap(num offset, bool isleft) {
     num groups = offset / 30 - 1;
     double time = totalTime / 10 * groups;
-    String timeStr = format(Duration(milliseconds: time.toInt()));
-    print(timeStr);
+    String timeStr = '00:00:00';
+    if (time > 0) {
+      timeStr = format(Duration(milliseconds: time.toInt()));
+      setState(() {
+        if (isleft)
+          startTimestamp = timeStr;
+        else
+          endTimestamp = timeStr;
+      });
+    }
   }
 
   String format(Duration duration) {

@@ -21,7 +21,7 @@ class TimeLine_canvas extends CustomPainter {
       fontSize: 7,
     ));
     int time = 0;
-    double jiange = totaltime / 10;
+    double jiange = totaltime / 11.1;
 
     /// 挨个画频谱柱子
     for (int i = 0; i < 13; i++) {
@@ -46,10 +46,10 @@ class TimeLine_canvas extends CustomPainter {
   }
 
   String format(Duration duration) {
-    if (duration.inSeconds > 1)
+//    if (duration.inSeconds <1)
       return '${duration.inHours}:${duration.inMinutes.floor()}:${duration.inSeconds}';
-    else
-      return '${duration.inMinutes.floor()}:${duration.inSeconds}:${duration.inMilliseconds % 1000}';
+//    else
+//      return '${duration.inMinutes.floor()}:${duration.inSeconds}';
   }
 
   @override
