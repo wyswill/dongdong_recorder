@@ -65,6 +65,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     controller.text = rm.title;
     WavReader reader = WavReader(rm.filepath);
     reader.readAsBytes();
+    audioTimeLength = reader.s * 1000;
     Future.delayed(Duration(microseconds: 400)).then((value) => Provider.of<canvasData>(context, listen: false).setData(reader.datas));
     WidgetsBinding.instance.addObserver(this);
 
@@ -120,10 +121,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
               children: <Widget>[
                 Positioned(
                   top: 10,
-                  child: Container(
-                    height: height,
-                    child: setCanvas(),
-                  ),
+                  child: Container(color: Theme.of(context).primaryColor, height: height, child: ShowSoun(recriodingTime: this.audioTimeLength, isEditor: true)),
                 ),
                 Positioned(
                   top: 10,
@@ -187,15 +185,6 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
       ),
       bottomNavigationBar: setButtom(),
     );
-  }
-
-  ///设置音频波形画布
-  Widget setCanvas() {
-    return ShowSoun(
-      recriodingTime: this.audioTimeLength,
-      isEditor: true,
-    );
-//    return ChartPage();
   }
 
   ///剪辑选项

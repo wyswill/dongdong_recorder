@@ -2,6 +2,7 @@ import 'package:flutterapp/canvasData.dart';
 import 'package:flutterapp/modus/cancasRectModu.dart';
 import 'package:flutterapp/widgets/editorCanvas.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterapp/widgets/timeline.dart';
 import 'package:provider/provider.dart';
 
 import 'mycanvas.dart';
@@ -26,9 +27,13 @@ class ShowSounState extends State<ShowSoun> {
       height: 400,
       child: widget.isEditor != null
           ? Consumer<canvasData>(
-              builder: (context, conter, child) => CustomPaint(painter: EditorCanvas(conter.data, widget.recriodingTime)),
+              builder: (context, conter, child) => CustomPaint(
+                painter: TimeLine_canvas(widget.recriodingTime),
+                foregroundPainter: EditorCanvas(conter.data, widget.recriodingTime),
+              ),
             )
           : CustomPaint(
+              isComplex: true,
               painter: MyCanvas(recrodingData, widget.recriodingTime),
             ),
     );

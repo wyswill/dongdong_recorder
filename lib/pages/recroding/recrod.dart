@@ -271,6 +271,9 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
     if (statu) {
       flutterPluginRecord.stop();
       timer.cancel();
+      setState(() {
+        statu = false;
+      });
     } else {
       flutterPluginRecord.start();
       recrodingData = [];
@@ -278,6 +281,7 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
         h = 0;
         m = 0;
         s = 0;
+        statu = true;
         timer = Timer.periodic(Duration(seconds: 1), (newtimer) {
           setState(() {
             s++;
@@ -287,9 +291,6 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
         });
       });
     }
-    setState(() {
-      statu = !statu;
-    });
   }
 
   ///时间转换
@@ -306,19 +307,6 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
 
   ///保存录音
   saveData() async {
-    check() async {
-      String filename = this.controller.text.trim();
-      if (filename == '')
-        alert(context, title: Text('警告!'), content: Text('文件标题不能为空'));
-      else if (filepath.isNotEmpty) {
-        RecroderModule res = await FileUtile.pathTOModule(path: filepath, newFileName: filename, channel: channel);
-        Provider.of<RecordListProvider>(context, listen: false).addRecrodItem(res);
-        Navigator.pop(context);
-      } else {
-        alert(context, title: Text('没有录制音频'));
-      }
-    }
-
     if (this.statu) {
       flutterPluginRecord.stop();
       timer.cancel();
@@ -327,9 +315,29 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
       await check();
   }
 
+  check() async {
+    String filename = this.controller.text.trim();
+    if (filename == '')
+      alert(context, title: Text('警告!'), content: Text('文件标题不能为空'));
+    else if (filepath.isNotEmpty) {
+      try {
+        RecroderModule res = await FileUtile.pathTOModule(path: filepath, newFileName: filename, channel: channel);
+        Provider.of<RecordListProvider>(context, listen: false).addRecrodItem(res);
+        Navigator.pop(context);
+      } catch (e) {
+        print(e);
+        Provider.of<RecordListProvider>(context, listen: false).init(await FileUtile.getlocalMusic(channel: channel));
+        Navigator.pop(context);
+      }
+    } else {
+      alert(context, title: Text('没有录制音频'));
+    }
+  }
+
   ///始录制停止录制监听
   strartRecroding(RecordResponse data) async {
     if (data.msg == "onStop") {
+      print(data.path);
       setState(() {
         filepath = data.path;
       });
