@@ -1,9 +1,5 @@
 import 'dart:io';
 
-import 'package:flutterapp/modus/cancasRectModu.dart';
-
-import '../utiles.dart';
-
 class WavReader {
   final String filepath;
   List datas = [];
@@ -19,30 +15,41 @@ class WavReader {
     s = (datas.length - 44) * 8 / (8000 * 16);
 
     ///计算音频大小kb
-    size = (16000 * (s % 60) / 1024).floorToDouble();
+    size = ((16000 * s) / 1024).floorToDouble();
   }
 
   ///将波形按照毫秒的时域进行转换
-  ///
-  /// 不同机型屏幕适配 转换比例 =  屏幕宽度 / 音频时长(毫秒)
-  ///TODO:1.波形一屏展示2.时间轴绘制3.缩放公式完成4.wav剪切功能由java实现转为dart实现
 
-  List<int> convers() {
-    List<int> data = this.datas;
-
-    ///获取录音时间
-    ///以1毫秒为间隔提取一次数据
-    int flag = (this.datas.length / (this.s * 50000)).floor(), stp = 0;
-    List<int> res = [];
-    for (int i = 0; i < data.length; i++) {
-      int curent = data[i];
-      if (curent == 0) continue;
-      if (stp == flag) {
-        res.add(curent);
-        stp = 0;
-      }
-      stp++;
+  List<int> convers(int width) {
+    List<int> data = this.datas.getRange(44, datas.length).toList();
+    List<int> resList = List(width);
+    double flag = data.length / width;
+    int current = 0;
+    for (int i = 0; i < width; i++) {
+      int start = ~~current;
+      current = (current + flag).floor();
+      int end = ~~current;
+      num res = getMinMaxInRange(data, start, end);
+      resList[i] = res.toInt();
     }
-    return res;
+    return resList;
+  }
+
+  getMinMaxInRange(array, int start, int end) {
+    int min = 0, min1 = 0, max = 0, max1 = 0, current, step = ((end - start) / 15).floor();
+
+    for (var i = start; i < end; i = i + step) {
+      current = array[i];
+
+      if (current < min) {
+        min1 = min;
+        min = current;
+      } else if (current > max) {
+        max1 = max;
+        max = current;
+      }
+    }
+
+    return (max + max1) / 2;
   }
 }

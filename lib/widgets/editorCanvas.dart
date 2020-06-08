@@ -10,23 +10,21 @@ class EditorCanvas extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    print('画了');
-    print(recriodingTime);
-
     /// 每个柱子的宽度
     double columnWidth = 1;
 
     /// 幅度比例
-    double proportion = size.height / 300;
+    double proportion = size.height / 600;
 
     /// 挨个画频谱柱子
     for (int i = 0; i < canvasData.length; i++) {
       double volume = 2.0;
       int current = canvasData[i];
       volume = current * proportion;
-      if (current == 0) continue;
+
       ///柱子
       Rect column = Rect.fromLTWH((columnWidth + 2) * i, (size.height - volume) / 2, columnWidth.ceil().toDouble(), volume);
+
       ///波形柱子
       canvas.drawRect(column, Paint()..color = Colors.white);
     }
