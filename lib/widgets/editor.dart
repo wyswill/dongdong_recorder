@@ -141,6 +141,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                       double x = offset.dx.floor().toDouble();
                       if (x < 2) x = 2;
                       if (offset.dx >= windowWidth - rw) x = windowWidth - rw - 2;
+                      offsetToTimeSteap(x);
                       setState(() {
                         lw = x;
                       });
@@ -166,6 +167,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                       double x = windowWidth - offset.dx;
                       if (offset.dx <= lw) x = windowWidth - lw - 2;
                       if (x < 0) x = 2;
+                      offsetToTimeSteap(offset.dx.floor());
                       setState(() {
                         rw = x.floor().toDouble();
                       });
@@ -436,4 +438,18 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
 
   ///更多
   void more() {}
+
+  void offsetToTimeSteap(num offset) {
+    num groups = offset / 30 - 1;
+    double time = totalTime / 10 * groups;
+    String timeStr = format(Duration(milliseconds: time.toInt()));
+    print(timeStr);
+  }
+
+  String format(Duration duration) {
+    if (duration.inSeconds > 1)
+      return '${duration.inHours}:${duration.inMinutes.floor()}:${duration.inSeconds}';
+    else
+      return '${duration.inMinutes.floor()}:${duration.inSeconds}:${duration.inMilliseconds % 1000}';
+  }
 }

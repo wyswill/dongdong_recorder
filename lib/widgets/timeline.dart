@@ -11,8 +11,7 @@ class TimeLine_canvas extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     double clomeWidth = 30;
-    Paint gary = Paint()..color = Colors.grey,
-        write = Paint()..color = Colors.white;
+    Paint gary = Paint()..color = Colors.grey, write = Paint()..color = Colors.white;
 
     /// 每个柱子的宽度
     ParagraphBuilder pb = ParagraphBuilder(ParagraphStyle(
@@ -34,23 +33,23 @@ class TimeLine_canvas extends CustomPainter {
         timeLine = Rect.fromLTWH((clomeWidth * i).toDouble(), 0, 1, 10);
         canvas.drawRect(timeLine, gary);
       }
-      if (i == 12) {
-        continue;
-      }
+      if (i == 12) continue;
+
       String s = format(Duration(milliseconds: time));
       time += jiange.floor();
 //      print(s);
       pb.addText(s);
       ParagraphConstraints pc = ParagraphConstraints(width: 50);
       Paragraph paragraph = pb.build()..layout(pc);
-      canvas.drawParagraph(
-          paragraph, Offset((clomeWidth * i + 20).toDouble(), 20));
+      canvas.drawParagraph(paragraph, Offset((clomeWidth * i + 20).toDouble(), 20));
     }
   }
 
   String format(Duration duration) {
-    if(duration.inSeconds>1)return '${duration.inHours}:${duration.inMinutes.floor()}:${duration.inSeconds}';
-    else return '${duration.inMinutes.floor()}:${duration.inSeconds}:${duration.inMilliseconds % 1000}';
+    if (duration.inSeconds > 1)
+      return '${duration.inHours}:${duration.inMinutes.floor()}:${duration.inSeconds}';
+    else
+      return '${duration.inMinutes.floor()}:${duration.inSeconds}:${duration.inMilliseconds % 1000}';
   }
 
   @override
