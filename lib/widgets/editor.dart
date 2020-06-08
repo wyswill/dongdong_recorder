@@ -67,7 +67,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     audioTimeLength = reader.t;
     totalTime = reader.s * 1000;
     Future.delayed(Duration(microseconds: 400)).then(
-      (value) => Provider.of<canvasData>(context, listen: false).setData(reader.convers(windowWidth.floor())),
+      (value) => Provider.of<canvasData>(context, listen: false).setData(reader.convers((windowWidth / 2).floor())),
     );
     WidgetsBinding.instance.addObserver(this);
 
@@ -132,7 +132,6 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                       )),
                 ),
                 Positioned(
-
                   left: 0,
                   width: lw,
                   height: height,
@@ -160,7 +159,6 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                   ),
                 ),
                 Positioned(
-
                   right: 0,
                   child: Draggable(
                     axis: Axis.horizontal,

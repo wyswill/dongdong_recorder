@@ -15,11 +15,10 @@ class EditorCanvas extends CustomPainter {
     Paint p = Paint()..color = Colors.white;
 
     /// 幅度比例
-    double proportion = size.height / 600, jiange = (canvasData.length / 12 / 10).floorToDouble();
-    print(jiange);
+    double proportion = size.height / 600, jiange = (canvasData.length / 12).floorToDouble();
 
     /// 挨个画频谱柱子
-    for (int i = 0; i < canvasData.length; i++) {
+    for (int i = 0; i < canvasData.length - (jiange * 5.3); i++) {
       double volume = 2.0;
       int current = canvasData[i];
       volume = current * proportion;
