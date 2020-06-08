@@ -12,6 +12,7 @@ class EditorCanvas extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     /// 每个柱子的宽度
     double columnWidth = 1;
+    Paint p = Paint()..color = Colors.white;
 
     /// 幅度比例
     double proportion = size.height / 600;
@@ -26,7 +27,7 @@ class EditorCanvas extends CustomPainter {
       Rect column = Rect.fromLTWH((columnWidth + 2) * i, (size.height - volume) / 2, columnWidth.ceil().toDouble(), volume);
 
       ///波形柱子
-      canvas.drawRect(column, Paint()..color = Colors.white);
+      canvas.drawRect(column, p);
     }
   }
 

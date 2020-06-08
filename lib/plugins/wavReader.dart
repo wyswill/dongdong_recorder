@@ -3,7 +3,7 @@ import 'dart:io';
 class WavReader {
   final String filepath;
   List datas = [];
-  double s = 0, size = 0;
+  double s = 0, size = 0, t = 0;
 
   WavReader(this.filepath);
 
@@ -16,14 +16,18 @@ class WavReader {
 
     ///计算音频大小kb
     size = ((16000 * s) / 1024).floorToDouble();
+
+    ///计算500毫秒有多少组
+    t = (datas.length / 8000);
   }
 
-  ///将波形按照毫秒的时域进行转换
-
-  List<int> convers(int width) {
+  ///500毫秒一帧，组成初始化的数据
+  List<int> convers(int width, double time) {
     List<int> data = this.datas.getRange(44, datas.length).toList();
+    print(data.length);
     List<int> resList = List(width);
-    double flag = data.length / width;
+    double flag = (data.length / width);
+    print('flag==>$flag,t==>$t');
     int current = 0;
     for (int i = 0; i < width; i++) {
       int start = ~~current;
@@ -36,8 +40,7 @@ class WavReader {
   }
 
   getMinMaxInRange(array, int start, int end) {
-    int min = 0, min1 = 0, max = 0, max1 = 0, current, step = ((end - start) / 15).floor();
-
+    int min = 0, min1 = 0, max = 0, max1 = 0, current, step = ((end - start) / 30).floor();
     for (var i = start; i < end; i = i + step) {
       current = array[i];
 
@@ -49,7 +52,6 @@ class WavReader {
         max = current;
       }
     }
-
     return (max + max1) / 2;
   }
 }

@@ -11,7 +11,6 @@ import 'package:flutterapp/widgets/showSoung.dart';
 import 'package:provider/provider.dart';
 import '../provider.dart';
 import '../utiles.dart';
-import 'chartPage.dart';
 import 'musicProgress.dart';
 
 class Editor extends StatefulWidget {
@@ -35,7 +34,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   ];
   String currenttime = '0:0:0';
   GlobalKey<MusicProgressState> key = GlobalKey();
-  double left = 0, right = 60, audioTimeLength = 0, lw = 20, lww = 0, rw = 20, height = 180;
+  double left = 0, right = 60, audioTimeLength = 0, lw = 30, lww = 0, rw = 30, height = 180;
   List<CanvasRectModu> recrodingData = [], templist = [];
 
   ///和native通讯
@@ -65,8 +64,12 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     controller.text = rm.title;
     WavReader reader = WavReader(rm.filepath);
     reader.readAsBytes();
-    audioTimeLength = reader.s * 1000;
-    Future.delayed(Duration(microseconds: 400)).then((value) => Provider.of<canvasData>(context, listen: false).setData(reader.convers(windowWidth.floor())));
+    audioTimeLength = reader.t;
+    Future.delayed(Duration(microseconds: 400)).then(
+      (value) => Provider.of<canvasData>(context, listen: false).setData(
+        reader.convers(windowWidth.floor() - 40, (audioTimeLength / windowWidth).toDouble()),
+      ),
+    );
     WidgetsBinding.instance.addObserver(this);
 
     ///event_bus
