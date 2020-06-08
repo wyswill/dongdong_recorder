@@ -56,7 +56,6 @@ class FileUtile {
 
   ///读取本地的录音文件，转化为操作List
   static Future<List<RecroderModule>> getlocalMusic({bool isRecroder = true, MethodChannel channel}) async {
-    // ignore: non_constant_identifier_names
     String FIlepath = await FileUtile.getRecrodPath(isDelete: !isRecroder);
     List<RecroderModule> resList = [];
 
@@ -69,8 +68,6 @@ class FileUtile {
             DateTime dateTime = await file.lastModified();
             WavReader reader = WavReader(file.path);
             reader.readAsBytes();
-//            var res = await channel.invokeMethod('getSize', {"path": file.path});
-//            double s = (16000 * (res % (1000 * 60) / 1000)) / 1024;
             RecroderModule rm = RecroderModule(
               title: filename.replaceAll('.wav', ''),
               filepath: file.path,
@@ -114,8 +111,6 @@ class FileUtile {
       DateTime dateTime = await newFile.lastModified();
       WavReader reader = WavReader(file.path);
       reader.readAsBytes();
-//      var res = await channel.invokeMethod('getSize', {"path": newFile.path});
-//      double s = (16000 * (res % (1000 * 60) / 1000)) / 1024;
       RecroderModule rm = RecroderModule(
         title: newFileName,
         filepath: newFile.path,

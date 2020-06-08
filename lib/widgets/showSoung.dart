@@ -8,9 +8,10 @@ import 'package:provider/provider.dart';
 import 'mycanvas.dart';
 
 class ShowSoun extends StatefulWidget {
-  ShowSoun({this.key, this.recriodingTime, this.isEditor}) : super(key: key);
+  ShowSoun({this.key, this.recriodingTime, this.totalTime, this.isEditor})
+      : super(key: key);
   final key;
-  final double recriodingTime;
+  final double recriodingTime, totalTime;
   final bool isEditor;
 
   @override
@@ -28,7 +29,8 @@ class ShowSounState extends State<ShowSoun> {
       child: widget.isEditor != null
           ? Consumer<canvasData>(
               builder: (context, conter, child) => CustomPaint(
-                foregroundPainter: TimeLine_canvas(widget.recriodingTime),
+                foregroundPainter:
+                    TimeLine_canvas(widget.recriodingTime, widget.totalTime),
                 painter: EditorCanvas(conter.data, widget.recriodingTime),
               ),
             )

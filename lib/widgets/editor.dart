@@ -34,7 +34,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   ];
   String currenttime = '0:0:0';
   GlobalKey<MusicProgressState> key = GlobalKey();
-  double left = 0, right = 60, audioTimeLength = 0, lw = 30, lww = 0, rw = 30, height = 180;
+  double left = 0, right = 60, audioTimeLength = 0, lw = 30, lww = 0, rw = 30, height = 180, totalTime = 0;
   List<CanvasRectModu> recrodingData = [], templist = [];
 
   ///和native通讯
@@ -65,10 +65,9 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     WavReader reader = WavReader(rm.filepath);
     reader.readAsBytes();
     audioTimeLength = reader.t;
+    totalTime = reader.s * 1000;
     Future.delayed(Duration(microseconds: 400)).then(
-      (value) => Provider.of<canvasData>(context, listen: false).setData(
-        reader.convers(windowWidth.floor() - 40, (audioTimeLength / windowWidth).toDouble()),
-      ),
+      (value) => Provider.of<canvasData>(context, listen: false).setData(reader.convers(windowWidth.floor())),
     );
     WidgetsBinding.instance.addObserver(this);
 
@@ -123,11 +122,17 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
             child: Stack(
               children: <Widget>[
                 Positioned(
-                  top: 10,
-                  child: Container(color: Theme.of(context).primaryColor, height: height, child: ShowSoun(recriodingTime: this.audioTimeLength, isEditor: true)),
+                  child: Container(
+                      color: Theme.of(context).primaryColor,
+                      height: height,
+                      child: ShowSoun(
+                        recriodingTime: this.audioTimeLength,
+                        isEditor: true,
+                        totalTime: totalTime,
+                      )),
                 ),
                 Positioned(
-                  top: 10,
+
                   left: 0,
                   width: lw,
                   height: height,
@@ -155,7 +160,7 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                   ),
                 ),
                 Positioned(
-                  top: 10,
+
                   right: 0,
                   child: Draggable(
                     axis: Axis.horizontal,

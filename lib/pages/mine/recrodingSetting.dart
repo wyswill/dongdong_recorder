@@ -11,13 +11,16 @@ class RecroddSetting extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(leading: Container(), title: Center(child: Text('录音设置')), actions: [
-        IconButton(
-            icon: Icon(Icons.cancel),
-            onPressed: () {
-              Navigator.pop(context);
-            })
-      ]),
+      appBar: AppBar(
+          leading: Container(),
+          title: Center(child: Text('录音设置')),
+          actions: [
+            IconButton(
+                icon: Icon(Icons.cancel),
+                onPressed: () {
+                  Navigator.pop(context);
+                })
+          ]),
       body: ListView.separated(
           padding: EdgeInsets.symmetric(vertical: 20, horizontal: 20),
           itemBuilder: (context, index) {
@@ -32,7 +35,10 @@ class RecroddSetting extends StatelessWidget {
                   Expanded(child: Container()),
                   Text(
                     '${data[index]['value']}',
-                    style: TextStyle(color: Colors.grey, fontSize: 16, fontWeight: FontWeight.w300),
+                    style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w300),
                   ),
                   Icon(
                     Icons.keyboard_arrow_right,
