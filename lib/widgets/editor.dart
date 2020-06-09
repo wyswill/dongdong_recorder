@@ -41,6 +41,7 @@ class _EditorState extends State<Editor> {
   int get index => widget.arguments['index'];
 
   double get windowWidth => MediaQuery.of(context).size.width;
+  double singleWidth;
 
   ///与canvas交互的参数
   CanvasRectModu canvasRectModu;
@@ -63,20 +64,11 @@ class _EditorState extends State<Editor> {
     totalTime = reader.s * 1000;
 
     ///等待画布widget构建完毕
-    Future.delayed(Duration(microseconds: 400)).then(
-      (value) => Provider.of<canvasData>(context, listen: false).setData(reader.convers((windowWidth / 2).floor())),
-    );
-
-    ///设置键盘监听
-//    WidgetsBinding.instance.addObserver(this);
-    ///键盘监听回调
-//    WidgetsBinding.instance.addPostFrameCallback((_) {
-//      if (MediaQuery.of(context).viewInsets.bottom == 0) {
-//        node.unfocus();
-//      }
-//    });
+    Future.delayed(Duration(microseconds: 400)).then((value) {
+      singleWidth = windowWidth / 13;
+      Provider.of<canvasData>(context, listen: false).setData(reader.convers((windowWidth / 2).floor()));
+    });
   }
-
 
   @override
   void dispose() async {
@@ -122,8 +114,8 @@ class _EditorState extends State<Editor> {
                     axis: Axis.horizontal,
                     onDraggableCanceled: (Velocity velocity, Offset offset) {
                       double x = offset.dx.floor().toDouble();
-                      if (x < 2) x = 2;
-                      if (offset.dx >= windowWidth - rw) x = windowWidth - rw - 2;
+                      if (x < singleWidth) x = singleWidth;
+                      if (offset.dx >= windowWidth - rw) x = windowWidth - rw;
                       offsetToTimeSteap(x, true);
                       setState(() {
                         lw = x;
@@ -147,9 +139,9 @@ class _EditorState extends State<Editor> {
                   child: Draggable(
                     axis: Axis.horizontal,
                     onDraggableCanceled: (Velocity velocity, Offset offset) {
-                      double x = windowWidth - offset.dx;
-                      if (offset.dx <= lw) x = windowWidth - lw - 2;
-                      if (x < 0) x = 2;
+                      double x = windowWidth - offset.dx - 1;
+                      if (offset.dx <= lw) x = windowWidth - lw;
+                      if (offset.dx > windowWidth - singleWidth) x = singleWidth - 1;
                       offsetToTimeSteap(offset.dx.floor(), false);
                       setState(() {
                         rw = x.floor().toDouble();
@@ -275,15 +267,6 @@ class _EditorState extends State<Editor> {
   void play() async {
     print(rm.filepath);
   }
-
-  ///定时选择
-  void setTimeout() {}
-
-  ///全部循环
-  void circulation() {}
-
-  ///倍速
-  void pias() {}
 
   ///开始、结束指针转换函数
   void offsetToTimeSteap(num offset, bool isleft) {

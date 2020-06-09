@@ -116,7 +116,6 @@ public class AudioCat {
       byte[] dlen = buf2.array();  //代表数据长度
       flen = reverse(flen);  //数组反转
       dlen = reverse(dlen);
-      //byte[] head = new byte[44];  //定义wav头部信息数组
       byte[] head = new byte[headSize];
       fis.read(head, 0, head.length);  //读取源wav文件头部信息
       for (int i = 0; i < 4; i++) {  //4代表一个int占用字节数

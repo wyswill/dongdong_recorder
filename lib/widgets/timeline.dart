@@ -10,10 +10,9 @@ class TimeLine_canvas extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    double clomeWidth = 30;
+    double clomeWidth = size.width / 13;
     Paint gary = Paint()..color = Colors.grey, write = Paint()..color = Colors.white;
 
-    /// 每个柱子的宽度
     ParagraphBuilder pb = ParagraphBuilder(ParagraphStyle(
       textAlign: TextAlign.left, // 对齐方式
       fontWeight: FontWeight.w600, // 粗体
