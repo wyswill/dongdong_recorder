@@ -37,7 +37,7 @@ class _SearchPageState extends State<SearchPage> {
               itemCount: datas.length,
               itemExtent: 50.0,
               itemBuilder: (context, index) {
-                return RecrodingFileItems(
+                return RecordingFileItems(
                   curentFile: datas[index],
                   index: index,
                 );

@@ -19,7 +19,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
     {"icon": 'asset/toolbar/icon_trash', "router": 'list', "isActive": false},
     {"icon": 'asset/toolbar/icon_Search', "router": 'list', "isActive": false},
   ];
-  List<Widget> pages = [RecrodingList(), Trash(), SearchPage()];
+  List<Widget> pages = [RecordingList(), Trash(), SearchPage()];
   PageController pageController;
   TabController tabController;
   Map plaingFile;

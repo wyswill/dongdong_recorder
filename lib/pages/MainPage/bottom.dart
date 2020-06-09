@@ -83,6 +83,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
         currentPlayingTime = 0;
       });
     });
+
     ///显示回收站操作选项
     streamSubscription = eventBus.on<TrashOption>().listen((event) async {
       setState(() {
@@ -93,6 +94,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
       controller.reset();
       controller.forward();
     });
+
     ///回收站页面退出时将panel切换
     streamSubscription = eventBus.on<NullEvent>().listen((event) async {
       if (this.currentState != bottomState.recode) {
@@ -361,34 +363,40 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
 
   ///播放音乐
   void play() async {
+    if (plaingFile.isPlaying) {
+      audioPlayer.pause();
+      if (timer != null) {
+        timer.cancel();
+        timer = null;
+      }
+      this.reseProgress();
+    } else {
+      this.reseProgress();
+      setPlanProgress();
+      audioPlayer.play(this.plaingFile.filepath);
+    }
     setState(() {
       this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
     });
-    if (plaingFile.isPlaying) {
-      audioPlayer.play(this.plaingFile.filepath);
-      setPlanProgress();
-    } else {
-      if (timer != null) timer.cancel();
-      timer = null;
-      setState(() {
-        this.currentPlayingTime = 0;
-        this.currentTime = formatTime(currentPlayingTime * 1000);
-      });
-      key.currentState.setCurentTime(0);
-      audioPlayer.pause();
-    }
+  }
+
+  void reseProgress() {
+    setState(() {
+      this.currentPlayingTime = 0;
+      this.currentTime = formatTime(currentPlayingTime * 1000);
+    });
+    key.currentState.setCurentTime(0);
   }
 
   ///设置进度条
   void setPlanProgress() async {
-    int totalMS = (totalTime / 1000).floor();
     timer = Timer.periodic(Duration(seconds: 1), (Timer newtimer) async {
-      if (currentPlayingTime < totalMS) {
+      if (currentPlayingTime < totalTime.truncate()) {
         setState(() {
           this.currentPlayingTime++;
-          this.currentTime = formatTime(currentPlayingTime * 1000);
+          this.currentTime = formatTime(currentPlayingTime);
+          key.currentState.setCurentTime(currentPlayingTime / totalTime);
         });
-        key.currentState.setCurentTime(currentPlayingTime / totalMS);
       } else {
         setState(() {
           this.plaingFile.isPlaying = false;

@@ -3,13 +3,9 @@ package audio.lanwanhudong.com.flutterapp;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
-import android.os.Bundle;
-import android.os.PersistableBundle;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import audio.lanwanhudong.com.flutterapp.bean.Audio;
 import audio.lanwanhudong.com.flutterapp.bean.AudioCat;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
@@ -62,7 +58,10 @@ public class MainActivity extends FlutterActivity {
                 break;
             case "pause":
                 System.out.println("暂停");
-                audioPlayer.pause();
+                try {
+                    audioPlayer.pause();
+                } catch (Error e) {
+                }
                 break;
         }
     }

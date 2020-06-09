@@ -3,16 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../provider.dart';
 
-class RecrodingList extends StatefulWidget {
-  RecrodingList({this.key, this.arguments}) : super(key: key);
+class RecordingList extends StatefulWidget {
+  RecordingList({this.key, this.arguments}) : super(key: key);
   final key;
   final arguments;
 
   @override
-  _RecrodingListState createState() => _RecrodingListState();
+  _RecordingListState createState() => _RecordingListState();
 }
 
-class _RecrodingListState extends State<RecrodingList> {
+class _RecordingListState extends State<RecordingList> {
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
 
   @override
@@ -33,7 +33,7 @@ class _RecrodingListState extends State<RecrodingList> {
           itemCount: conter.recorderFiles.length,
           itemExtent: 50.0, //强制高度为50.0
           itemBuilder: (BuildContext context, int index) {
-            return RecrodingFileItems(
+            return RecordingFileItems(
               curentFile: conter.recorderFiles[index],
               index: index,
             );

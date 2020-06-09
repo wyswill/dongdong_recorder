@@ -13,6 +13,7 @@ class AudioPlayer {
 
   void play(String playeFilePath) async {
     this.initPlayer();
+    print(playeFilePath);
     await channel.invokeMethod("play", {"path": playeFilePath});
   }
 

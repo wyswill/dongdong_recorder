@@ -7,8 +7,8 @@ import '../../event_bus.dart';
 import '../../provider.dart';
 import '../../utiles.dart';
 
-class RecrodingFileItems extends StatefulWidget {
-  const RecrodingFileItems({
+class RecordingFileItems extends StatefulWidget {
+  const RecordingFileItems({
     Key key,
     this.curentFile,
     this.index,
@@ -17,10 +17,10 @@ class RecrodingFileItems extends StatefulWidget {
   final int index;
 
   @override
-  _RecrodingFileItemsState createState() => _RecrodingFileItemsState();
+  _RecordingFileItemsState createState() => _RecordingFileItemsState();
 }
 
-class _RecrodingFileItemsState extends State<RecrodingFileItems> {
+class _RecordingFileItemsState extends State<RecordingFileItems> {
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
   @override
   void initState() {
