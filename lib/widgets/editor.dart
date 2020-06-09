@@ -70,13 +70,6 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
       (value) => Provider.of<canvasData>(context, listen: false).setData(reader.convers((windowWidth / 2).floor())),
     );
     WidgetsBinding.instance.addObserver(this);
-
-    ///event_bus
-    eventBus.on<SetCurentTime>().listen((val) {
-      setState(() {
-        canvasRectModu = val.canvasRectModu;
-      });
-    });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (MediaQuery.of(context).viewInsets.bottom == 0) {
         node.unfocus();

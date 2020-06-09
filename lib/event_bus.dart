@@ -6,13 +6,11 @@ import 'modus/record.dart';
 EventBus eventBus = EventBus();
 
 class PlayingFile {
-  PlayingFile(this.file,this.index);
+  PlayingFile(this.file, this.index);
 
   final RecroderModule file;
   final int index;
 }
-
-
 
 class TrashOption {
   TrashOption(this.rm, this.index);
@@ -21,16 +19,6 @@ class TrashOption {
   final int index;
 }
 
-class TrashDeleted {
-  TrashDeleted({this.index});
-
-  final int index;
-}
 
 class NullEvent {}
 
-class SetCurentTime {
-  final CanvasRectModu canvasRectModu;
-
-  SetCurentTime(this.canvasRectModu);
-}
