@@ -4,10 +4,8 @@ import 'dart:io';
 import 'package:flutterapp/modus/record.dart';
 import 'package:flutterapp/pages/recroding/recrod.dart';
 import 'package:flutterapp/plugins/AudioPlayer.dart';
-import 'package:flutterapp/plugins/Require.dart';
 import 'package:flutterapp/trashProvider.dart';
 import 'package:flutterapp/widgets/musicProgress.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -28,8 +26,9 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
   RecroderModule plaingFile, trashFile;
   StreamSubscription streamSubscription;
   List<Map> playerIocns = [
-    {'icon': 'asset/palying/icon_Sheared_blue.png', 'title': '剪辑'},
-    {'icon': 'asset/palying/icon_refresh2.png', 'title': '转文字'},
+    {'icon': 'asset/paling/icon_Sheared_blue.png', 'title': '剪辑'},
+    {'icon': 'asset/paling/icon_Sheared_blue.png', 'title': '重命名'},
+    {'icon': 'asset/paling/icon_Sheared_blue.png', 'title': '删除'},
   ];
   GlobalKey<MusicProgressState> key = GlobalKey();
   Animation<double> animation;
@@ -38,10 +37,12 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
   double totalTime = 0;
   String currentTime = '0:0:0';
   int index;
-  bottomState curentState = bottomState.recode;
+  bottomState currentState = bottomState.recode;
   AudioPlayer audioPlayer = AudioPlayer();
   Timer timer;
-  int curentPlayingTime = 0;
+  int currentPlayingTime = 0;
+  TextEditingController _textEditingController = TextEditingController();
+  FocusNode _focusNode = FocusNode();
 
   @override
   void initState() {
@@ -61,7 +62,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
         controller.forward();
       } else {
         try {
-          if (curentState == bottomState.playRecoding) key.currentState.setCurentTime(0);
+          if (currentState == bottomState.playRecoding) key.currentState.setCurentTime(0);
         } catch (e) {}
 
         ///如果当前正在播放，就停止播放，并释放player,否则设置当前播放文件
@@ -77,34 +78,34 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
         plaingFile = event.file;
         index = event.index;
         totalTime = (plaingFile.recrodingtime);
-        this.curentState = bottomState.playRecoding;
-        curentPlayingTime = 0;
+        this.currentState = bottomState.playRecoding;
+        currentPlayingTime = 0;
       });
     });
     streamSubscription = eventBus.on<TrashOption>().listen((event) async {
       setState(() {
         trashFile = event.rm;
         index = event.index;
-        this.curentState = bottomState.deleteFiles;
+        this.currentState = bottomState.deleteFiles;
       });
       controller.reset();
       controller.forward();
     });
     streamSubscription = eventBus.on<NullEvent>().listen((event) async {
-      if (this.curentState != bottomState.recode) {
+      if (this.currentState != bottomState.recode) {
         setState(() {
           plaingFile = null;
-          this.curentState = bottomState.recode;
+          this.currentState = bottomState.recode;
         });
         controller.reset();
         controller.forward();
       }
     });
     streamSubscription = eventBus.on<DeleteFileSync>().listen((event) async {
-      if (this.curentState != bottomState.recode) {
+      if (this.currentState != bottomState.recode) {
         setState(() {
           plaingFile = null;
-          this.curentState = bottomState.recode;
+          this.currentState = bottomState.recode;
         });
         controller.reset();
         controller.forward();
@@ -117,6 +118,8 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     super.dispose();
     streamSubscription.cancel();
     controller.dispose();
+    _textEditingController.dispose();
+    _focusNode.dispose();
   }
 
   @override
@@ -124,13 +127,13 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
   Widget build(BuildContext context) {
     return Transform.translate(
       offset: Offset(0, animation.value),
-      child: GetPannel(curentState),
+      child: GetPanel(currentState),
     );
   }
 
   // ignore: missing_return, non_constant_identifier_names
-  Widget GetPannel(bottomState state) {
-    switch (this.curentState) {
+  Widget GetPanel(bottomState state) {
+    switch (this.currentState) {
       case bottomState.recode:
         return Container(
           padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
@@ -174,23 +177,14 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
                                 child: setInk(
                                   ontap: () {
                                     switch (e['title']) {
-                                      case "定时":
+                                      case "删除":
                                         this.setTimeout();
                                         break;
-                                      case "全部循环":
-                                        this.circulation();
-                                        break;
-                                      case "倍速":
-                                        this.pias();
+                                      case "重命名":
+                                        this.changeName();
                                         break;
                                       case "剪辑":
                                         this.editor();
-                                        break;
-                                      case "转文字":
-                                        this.transiton();
-                                        break;
-                                      case "更多":
-                                        this.more();
                                         break;
                                     }
                                   },
@@ -305,8 +299,42 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     Provider.of<TranshProvider>(context, listen: false).remove(index);
     setState(() {
       trashFile = null;
-      curentState = bottomState.recode;
+      currentState = bottomState.recode;
     });
+  }
+
+  ///改名
+  void changeName() {
+    alert(
+      context,
+      title: Text('要改名？！！！'),
+      content: TextField(
+        controller: _textEditingController,
+        focusNode: _focusNode,
+        keyboardType: TextInputType.text,
+        autofocus: true,
+        maxLength: 15,
+        decoration: InputDecoration(hintStyle: TextStyle(color: Theme.of(context).primaryColor)),
+      ),
+      actions: <Widget>[
+        FlatButton(
+          onPressed: () {
+            String newName = _textEditingController.text.trim();
+            Provider.of<RecordListProvider>(context, listen: false).reName(index: index, newName: newName);
+            Navigator.pop(context);
+          },
+          child: Text('确定修改'),
+        ),
+        FlatButton(
+          onPressed: () {
+            _textEditingController.text = '';
+            _focusNode.unfocus();
+            Navigator.pop(context);
+          },
+          child: Text('放弃修改'),
+        ),
+      ],
+    );
   }
 
   ///还原
@@ -325,7 +353,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
   void cancel() {
     setState(() {
       trashFile = null;
-      curentState = bottomState.recode;
+      currentState = bottomState.recode;
     });
     controller.reset();
     controller.forward();
@@ -347,8 +375,8 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
       if (timer != null) timer.cancel();
       timer = null;
       setState(() {
-        this.curentPlayingTime = 0;
-        this.currentTime = formatTime(curentPlayingTime * 1000);
+        this.currentPlayingTime = 0;
+        this.currentTime = formatTime(currentPlayingTime * 1000);
       });
       key.currentState.setCurentTime(0);
       audioPlayer.pause();
@@ -359,12 +387,12 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
   void setPlanProgress() async {
     int totalMS = (totalTime / 1000).floor();
     timer = Timer.periodic(Duration(seconds: 1), (Timer newtimer) async {
-      if (curentPlayingTime < totalMS) {
+      if (currentPlayingTime < totalMS) {
         setState(() {
-          this.curentPlayingTime++;
-          this.currentTime = formatTime(curentPlayingTime * 1000);
+          this.currentPlayingTime++;
+          this.currentTime = formatTime(currentPlayingTime * 1000);
         });
-        key.currentState.setCurentTime(curentPlayingTime / totalMS);
+        key.currentState.setCurentTime(currentPlayingTime / totalMS);
       } else {
         setState(() {
           this.plaingFile.isPlaying = false;
@@ -382,7 +410,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     controller.forward();
     setState(() {
       plaingFile = null;
-      this.curentState = bottomState.recode;
+      this.currentState = bottomState.recode;
     });
     Provider.of<RecordListProvider>(context, listen: false).reset(isNoti: true);
   }
@@ -399,17 +427,6 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
   ///剪辑
   void editor() {
     Navigator.pushNamed(context, '/editor', arguments: {'rm': plaingFile, 'index': index});
-  }
-
-  ///转文字
-  void transiton() async {
-    Response res = await Transiton(plaingFile.filepath);
-    print(res.data);
-    if (res.data['ret'] != 0) {
-      alert(context, title: Text('语音识别错误'), content: Text(res.data['msg']));
-    } else {
-//      var task_id = res.data['data']['task_id'];
-    }
   }
 
   ///更多

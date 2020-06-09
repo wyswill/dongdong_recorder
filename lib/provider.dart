@@ -59,6 +59,7 @@ class RecordListProvider with ChangeNotifier {
     rm.title = newName;
     rm.lastModified = newTime;
     File file = File(rm.filepath), newFile = file.renameSync(newPath);
+    rm.filepath = newPath;
     notifyListeners();
   }
 }
