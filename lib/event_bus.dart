@@ -13,12 +13,6 @@ class PlayingFile {
 }
 
 
-class DeleteFileSync {
-  DeleteFileSync({this.index, this.attr});
-
-  final int index;
-  final String attr;
-}
 
 class TrashOption {
   TrashOption(this.rm, this.index);

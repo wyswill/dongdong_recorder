@@ -56,6 +56,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
       setState(() {});
     });
 
+    ///播放音乐
     streamSubscription = eventBus.on<PlayingFile>().listen((event) async {
       if (plaingFile == null) {
         controller.reset();
@@ -82,6 +83,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
         currentPlayingTime = 0;
       });
     });
+    ///显示回收站操作选项
     streamSubscription = eventBus.on<TrashOption>().listen((event) async {
       setState(() {
         trashFile = event.rm;
@@ -91,17 +93,8 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
       controller.reset();
       controller.forward();
     });
+    ///回收站页面退出时将panel切换
     streamSubscription = eventBus.on<NullEvent>().listen((event) async {
-      if (this.currentState != bottomState.recode) {
-        setState(() {
-          plaingFile = null;
-          this.currentState = bottomState.recode;
-        });
-        controller.reset();
-        controller.forward();
-      }
-    });
-    streamSubscription = eventBus.on<DeleteFileSync>().listen((event) async {
       if (this.currentState != bottomState.recode) {
         setState(() {
           plaingFile = null;
@@ -178,7 +171,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
                                   ontap: () {
                                     switch (e['title']) {
                                       case "删除":
-                                        this.setTimeout();
+                                        this.deleteFile();
                                         break;
                                       case "重命名":
                                         this.changeName();
@@ -293,6 +286,11 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     }
   }
 
+  void deleteFile() async {
+    RecroderModule _rm = await Provider.of<RecordListProvider>(context, listen: false).deleteFile(index);
+    Provider.of<TranshProvider>(context, listen: false).trashs.add(_rm);
+  }
+
   ///删除
   void delete() async {
     await File(trashFile.filepath).delete();
@@ -359,8 +357,6 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     controller.forward();
   }
 
-  void showSelect() {}
-
   /***********播放器设置***********/
 
   ///播放音乐
@@ -415,22 +411,10 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     Provider.of<RecordListProvider>(context, listen: false).reset(isNoti: true);
   }
 
-  ///定时选择
-  void setTimeout() {}
-
-  ///全部循环
-  void circulation() {}
-
-  ///倍速
-  void pias() {}
-
   ///剪辑
   void editor() {
     Navigator.pushNamed(context, '/editor', arguments: {'rm': plaingFile, 'index': index});
   }
-
-  ///更多
-  void more() {}
 
 /*******************************/
 
