@@ -26,11 +26,11 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   FocusNode node = FocusNode();
   TextEditingController controller = TextEditingController();
   List<Map> playerIocns = [
-    {'icon': 'asset/palying/icon_timing.png', 'title': '定时'},
-    {'icon': 'asset/palying/icon_Circulat_blue.png', 'title': '全部循环'},
-    {'icon': 'asset/palying/icon_speed_normal.png', 'title': '倍速'},
-    {'icon': 'asset/palying/icon_refresh2.png', 'title': '转文字'},
-    {'icon': 'asset/palying/icon_more-menu_blue.png', 'title': '更多'},
+    {'icon': 'asset/paling/icon_timing.png', 'title': '定时'},
+    {'icon': 'asset/paling/icon_Circulat_blue.png', 'title': '全部循环'},
+    {'icon': 'asset/paling/icon_speed_normal.png', 'title': '倍速'},
+    {'icon': 'asset/paling/icon_refresh2.png', 'title': '转文字'},
+    {'icon': 'asset/paling/icon_more-menu_blue.png', 'title': '更多'},
   ];
   String currenttime = '0:0:0';
   GlobalKey<MusicProgressState> key = GlobalKey();

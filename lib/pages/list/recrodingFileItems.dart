@@ -21,13 +21,7 @@ class RecrodingFileItems extends StatefulWidget {
 }
 
 class _RecrodingFileItemsState extends State<RecrodingFileItems> {
-  TextEditingController _textEditingController = TextEditingController();
-  FocusNode _focusNode = FocusNode();
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
-
-
-  double get time => (widget.curentFile.recrodingtime);
-
   @override
   void initState() {
     super.initState();
@@ -36,57 +30,47 @@ class _RecrodingFileItemsState extends State<RecrodingFileItems> {
   @override
   void dispose() {
     super.dispose();
-
   }
 
   @override
   Widget build(BuildContext context) {
-    return Listener(
-      child: SingleChildScrollView(
-        scrollDirection: Axis.horizontal,
-        physics: ClampingScrollPhysics(),
+    return setInk(
+      bgColor: Colors.white,
+      ontap: cancle,
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        padding: EdgeInsets.only(left: 20, right: 20),
+        decoration: BoxDecoration(
+          border: Border(
+            left: widget.curentFile.isActive ? BorderSide(width: 4, color: Theme.of(context).primaryColor) : BorderSide(width: 0),
+            bottom: BorderSide(width: 1, color: Color.fromRGBO(240, 240, 246, 1)),
+          ),
+        ),
         child: Row(
           children: <Widget>[
-            setInk(
-              bgColor: Colors.white,
-              ontap: cancle,
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(left: 20, right: 20),
-                decoration: BoxDecoration(
-                  border: Border(
-                    left: widget.curentFile.isActive ? BorderSide(width: 4, color: Theme.of(context).primaryColor) : BorderSide(width: 0),
-                    bottom: BorderSide(width: 1, color: Color.fromRGBO(240, 240, 246, 1)),
-                  ),
-                ),
-                child: Row(
-                  children: <Widget>[
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          Row(children: <Widget>[Text(widget.curentFile.title, style: TextStyle(fontSize: 14))]),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisSize: MainAxisSize.max,
-                            children: <Widget>[
-                              Container(
-                                padding: EdgeInsets.symmetric(horizontal: 5),
-                                decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.all(Radius.circular(10))),
-                                child: Text('${formatTime(widget.curentFile.recrodingtime.toInt())}', style: textStyle),
-                              ),
-                              Container(margin: EdgeInsets.symmetric(horizontal: 5), child: Text(widget.curentFile.fileSize, style: textStyle)),
-                              Expanded(child: Container()),
-                              Container(child: Text(widget.curentFile.lastModified, style: textStyle))
-                            ],
-                          )
-                        ],
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Row(children: <Widget>[Text(widget.curentFile.title, style: TextStyle(fontSize: 14))]),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    mainAxisSize: MainAxisSize.max,
+                    children: <Widget>[
+                      Container(
+                        padding: EdgeInsets.symmetric(horizontal: 5),
+                        decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.all(Radius.circular(10))),
+                        child: Text('${formatTime(widget.curentFile.recrodingtime.toInt())}', style: textStyle),
                       ),
-                    )
-                  ],
-                ),
+                      Container(margin: EdgeInsets.symmetric(horizontal: 5), child: Text(widget.curentFile.fileSize, style: textStyle)),
+                      Expanded(child: Container()),
+                      Container(child: Text(widget.curentFile.lastModified, style: textStyle))
+                    ],
+                  )
+                ],
               ),
-            ),
+            )
           ],
         ),
       ),

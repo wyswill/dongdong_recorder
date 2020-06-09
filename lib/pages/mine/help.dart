@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 // ignore: must_be_immutable
 class HelpPage extends StatelessWidget {
   List<Map<String, dynamic>> audioMannerger = [
-        {'icon': 'asset/palying/icon_more-menu_blue.png', 'word': '音频文件列表管理'},
+        {'icon': 'asset/paling/icon_more-menu_blue.png', 'word': '音频文件列表管理'},
         {'icon': "asset/toolbar/icon_folder_blue.png", 'word': '文件夹管理，方便分类'},
         {'icon': "asset/toolbar/icon_calendar_blue.png", 'word': '日历，方便查找回溯'},
         {'icon': "asset/toolbar/icon_trash_blue.png", 'word': '回收站，删除或回复文件'},
@@ -11,7 +11,7 @@ class HelpPage extends StatelessWidget {
         {'icon': "asset/icon_Renaming.png", 'word': '重命名文件'},
         {'icon': "asset/icon_share.png", 'word': '移动到文件夹'},
         {
-          'icon': "asset/palying/icon_more-menu_blue.png",
+          'icon': "asset/paling/icon_more-menu_blue.png",
           'word': '更多功能：复制、分享、保存到相册、编辑等'
         },
       ],
@@ -27,15 +27,15 @@ class HelpPage extends StatelessWidget {
         {'icon': "asset/step-backward.png", 'word': '上一个音频'},
         {'icon': "asset/fast_forward.png", 'word': '前进5秒'},
         {'icon': "asset/icon_back_forward.png", 'word': '后退5秒'},
-        {'icon': "asset/palying/icon_timing.png", 'word': '定时暂停播放'},
+        {'icon': "asset/paling/icon_timing.png", 'word': '定时暂停播放'},
         {
-          'icon': "asset/palying/icon_Circulat_blue.png",
+          'icon': "asset/paling/icon_Circulat_blue.png",
           'word': '顺序播放、随机播放、单曲循环'
         },
-        {'icon': "asset/palying/icon_Sheared_blue.png", 'word': '编辑当前音频'},
-        {'icon': "asset/palying/icon_refresh2.png", 'word': '语音转文字'},
+        {'icon': "asset/paling/icon_Sheared_blue.png", 'word': '编辑当前音频'},
+        {'icon': "asset/paling/icon_refresh2.png", 'word': '语音转文字'},
         {'icon': "asset/icon_share.png", 'word': '分享'},
-        {'icon': "asset/palying/icon_more-menu_blue.png", 'word': '更多功能'},
+        {'icon': "asset/paling/icon_more-menu_blue.png", 'word': '更多功能'},
       ],
       audioCute = [
         {'icon': "asset/sheared/icon_Sheared.png", 'word': '剪切'},
