@@ -288,9 +288,11 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     }
   }
 
-  void deleteFile() async {
-    RecroderModule _rm = await Provider.of<RecordListProvider>(context, listen: false).deleteFile(index);
-    Provider.of<TranshProvider>(context, listen: false).trashs.add(_rm);
+  void deleteFile() {
+    checkIsPlaingAndDoOtherThing().then((value) async {
+      RecroderModule _rm = await Provider.of<RecordListProvider>(context, listen: false).deleteFile(index);
+      Provider.of<TranshProvider>(context, listen: false).trashs.add(_rm);
+    });
   }
 
   ///删除
@@ -305,35 +307,37 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
 
   ///改名
   void changeName() {
-    alert(
-      context,
-      title: Text('要改名？！！！'),
-      content: TextField(
-        controller: _textEditingController,
-        focusNode: _focusNode,
-        keyboardType: TextInputType.text,
-        autofocus: true,
-        maxLength: 15,
-        decoration: InputDecoration(hintStyle: TextStyle(color: Theme.of(context).primaryColor)),
+    checkIsPlaingAndDoOtherThing().then(
+      (value) => alert(
+        context,
+        title: Text('要改名？！！！'),
+        content: TextField(
+          controller: _textEditingController,
+          focusNode: _focusNode,
+          keyboardType: TextInputType.text,
+          autofocus: true,
+          maxLength: 15,
+          decoration: InputDecoration(hintStyle: TextStyle(color: Theme.of(context).primaryColor)),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              String newName = _textEditingController.text.trim();
+              Provider.of<RecordListProvider>(context, listen: false).reName(index: index, newName: newName);
+              Navigator.pop(context);
+            },
+            child: Text('确定修改'),
+          ),
+          FlatButton(
+            onPressed: () {
+              _textEditingController.text = '';
+              _focusNode.unfocus();
+              Navigator.pop(context);
+            },
+            child: Text('放弃修改'),
+          ),
+        ],
       ),
-      actions: <Widget>[
-        FlatButton(
-          onPressed: () {
-            String newName = _textEditingController.text.trim();
-            Provider.of<RecordListProvider>(context, listen: false).reName(index: index, newName: newName);
-            Navigator.pop(context);
-          },
-          child: Text('确定修改'),
-        ),
-        FlatButton(
-          onPressed: () {
-            _textEditingController.text = '';
-            _focusNode.unfocus();
-            Navigator.pop(context);
-          },
-          child: Text('放弃修改'),
-        ),
-      ],
     );
   }
 
@@ -380,12 +384,26 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     });
   }
 
+  ///重置进度条
   void reseProgress() {
     setState(() {
       this.currentPlayingTime = 0;
       this.currentTime = formatTime(currentPlayingTime);
     });
     key.currentState.setCurentTime(0);
+  }
+
+  ///播放中时进行其他操作
+  Future checkIsPlaingAndDoOtherThing() async {
+    if (plaingFile.isPlaying) {
+      audioPlayer.pause();
+      if (timer != null) {
+        timer.cancel();
+        timer = null;
+      }
+      this.plaingFile.isPlaying = false;
+      this.reseProgress();
+    }
   }
 
   ///设置进度条
@@ -422,7 +440,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
 
   ///剪辑
   void editor() {
-    Navigator.pushNamed(context, '/editor', arguments: {'rm': plaingFile, 'index': index});
+    checkIsPlaingAndDoOtherThing().then((value) => Navigator.pushNamed(context, '/editor', arguments: {'rm': plaingFile, 'index': index}));
   }
 
 /*******************************/
