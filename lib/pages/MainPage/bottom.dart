@@ -383,7 +383,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
   void reseProgress() {
     setState(() {
       this.currentPlayingTime = 0;
-      this.currentTime = formatTime(currentPlayingTime * 1000);
+      this.currentTime = formatTime(currentPlayingTime);
     });
     key.currentState.setCurentTime(0);
   }
@@ -391,13 +391,14 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
   ///设置进度条
   void setPlanProgress() async {
     timer = Timer.periodic(Duration(seconds: 1), (Timer newtimer) async {
-      if (currentPlayingTime < totalTime.truncate()) {
-        setState(() {
-          this.currentPlayingTime++;
-          this.currentTime = formatTime(currentPlayingTime);
-          key.currentState.setCurentTime(currentPlayingTime / totalTime);
-        });
+      print(totalTime.truncate() - 1);
+      if (currentPlayingTime <= totalTime.truncate() - 1) {
+        this.currentPlayingTime++;
+        this.currentTime = formatTime(currentPlayingTime);
+        key.currentState.setCurentTime(currentPlayingTime / totalTime.truncate());
+        setState(() {});
       } else {
+        key.currentState.setCurentTime(1);
         setState(() {
           this.plaingFile.isPlaying = false;
           timer.cancel();
