@@ -20,7 +20,7 @@ class TimeLine_canvas extends CustomPainter {
       fontSize: 7,
     ));
     int time = 0;
-    double jiange = totaltime / 11.1;
+    double jiange = totaltime / 11;
 
     /// 挨个画频谱柱子
     for (int i = 0; i < 13; i++) {

@@ -6,11 +6,16 @@ import android.media.AudioTrack;
 
 import androidx.annotation.NonNull;
 
+import java.util.ArrayList;
+
 import audio.lanwanhudong.com.flutterapp.bean.AudioCat;
+import audio.lanwanhudong.com.flutterapp.bean.FFT;
 import io.flutter.embedding.android.FlutterActivity;
 import io.flutter.embedding.engine.FlutterEngine;
 import io.flutter.plugin.common.MethodCall;
 import io.flutter.plugin.common.MethodChannel;
+
+import static audio.lanwanhudong.com.flutterapp.bean.FFT.process;
 
 public class MainActivity extends FlutterActivity {
     int bufferSize = AudioTrack.getMinBufferSize(8000, AudioFormat.CHANNEL_OUT_MONO, AudioFormat.ENCODING_PCM_16BIT);
@@ -33,6 +38,11 @@ public class MainActivity extends FlutterActivity {
      */
     private void handleMethod(MethodCall methodCall, MethodChannel.Result result) {
         switch (methodCall.method) {
+            case "fft":
+                String filePath = methodCall.argument("filePath").toString();
+                ArrayList<Double> fft_Data = FFT.process(filePath);
+                result.success(fft_Data);
+                break;
             case "cat":
                 String oringPath = methodCall.argument("originPath").toString();
                 String savePath = methodCall.argument("savePath").toString() + ".wav";

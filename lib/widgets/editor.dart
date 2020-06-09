@@ -66,7 +66,7 @@ class _EditorState extends State<Editor> {
     ///等待画布widget构建完毕
     Future.delayed(Duration(microseconds: 400)).then((value) {
       singleWidth = windowWidth / 13;
-      Provider.of<canvasData>(context, listen: false).setData(reader.convers((windowWidth / 2).floor()));
+      Provider.of<canvasData>(context, listen: false).setData(reader.convers((singleWidth).floor()));
     });
   }
 

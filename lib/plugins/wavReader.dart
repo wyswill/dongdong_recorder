@@ -24,34 +24,9 @@ class WavReader {
   ///500毫秒一帧，组成初始化的数据
   List<int> convers(int width) {
     List<int> data = this.datas.getRange(44, datas.length).toList();
-    print(data.length);
-    List<int> resList = List(width);
-    double flag = (data.length / width);
-    print('flag==>$flag,t==>$t');
-    int current = 0;
-    for (int i = 0; i < width; i++) {
-      int start = ~~current;
-      current = (current + flag).floor();
-      int end = ~~current;
-      num res = getMinMaxInRange(data, start, end);
-      resList[i] = res.toInt();
-    }
-    return resList;
+//    print(data);
+    return [];
   }
 
-  getMinMaxInRange(array, int start, int end) {
-    int min = 0, min1 = 0, max = 0, max1 = 0, current, step = ((end - start) / 15).floor();
-    for (var i = start; i < end; i = i + step) {
-      current = array[i];
-
-      if (current < min) {
-        min1 = min;
-        min = current;
-      } else if (current > max) {
-        max1 = max;
-        max = current;
-      }
-    }
-    return (max + max1) / 2;
-  }
+  int getMinMaxInRange(array) {}
 }
