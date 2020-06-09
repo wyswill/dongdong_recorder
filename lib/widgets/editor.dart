@@ -22,20 +22,11 @@ class Editor extends StatefulWidget {
   _EditorState createState() => _EditorState();
 }
 
-class _EditorState extends State<Editor> with WidgetsBindingObserver {
-  FocusNode node = FocusNode();
-  TextEditingController controller = TextEditingController();
-  List<Map> playerIocns = [
-    {'icon': 'asset/paling/icon_timing.png', 'title': '定时'},
-    {'icon': 'asset/paling/icon_Circulat_blue.png', 'title': '全部循环'},
-    {'icon': 'asset/paling/icon_speed_normal.png', 'title': '倍速'},
-    {'icon': 'asset/paling/icon_refresh2.png', 'title': '转文字'},
-    {'icon': 'asset/paling/icon_more-menu_blue.png', 'title': '更多'},
-  ];
-  String currenttime = '0:0:0';
+class _EditorState extends State<Editor> {
+  String currentTime = '0:0:0';
   GlobalKey<MusicProgressState> key = GlobalKey();
-  double left = 0, right = 60, audioTimeLength = 0, lw = 30, lww = 0, rw = 30, height = 180, totalTime = 0;
-  List<CanvasRectModu> recrodingData = [], templist = [];
+  double left = 0, right = 60, audioTimeLength = 0, lw = 30, rw = 30, height = 180, totalTime = 0;
+  List<CanvasRectModu> recordingData = [];
 
   ///和native通讯
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
@@ -61,33 +52,34 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
-    controller.text = rm.title;
+
+    ///设置默认标题
+    ///读取音频二进制数据
     WavReader reader = WavReader(rm.filepath);
     reader.readAsBytes();
+
+    ///设置音频时长
     audioTimeLength = reader.t;
     totalTime = reader.s * 1000;
+
+    ///等待画布widget构建完毕
     Future.delayed(Duration(microseconds: 400)).then(
       (value) => Provider.of<canvasData>(context, listen: false).setData(reader.convers((windowWidth / 2).floor())),
     );
-    WidgetsBinding.instance.addObserver(this);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (MediaQuery.of(context).viewInsets.bottom == 0) {
-        node.unfocus();
-      }
-    });
+
+    ///设置键盘监听
+//    WidgetsBinding.instance.addObserver(this);
+    ///键盘监听回调
+//    WidgetsBinding.instance.addPostFrameCallback((_) {
+//      if (MediaQuery.of(context).viewInsets.bottom == 0) {
+//        node.unfocus();
+//      }
+//    });
   }
 
-  @override
-  void deactivate() {
-    node.unfocus();
-    WidgetsBinding.instance.removeObserver(this);
-    super.deactivate();
-  }
 
   @override
   void dispose() async {
-    controller.dispose();
-    node.dispose();
     super.dispose();
   }
 
@@ -97,7 +89,6 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
       appBar: AppBar(
         leading: Center(
           child: Container(),
-//          child: GestureDetector(onTap: save, child: Text("保存")),
         ),
         title: Center(child: Text('剪辑')),
         actions: <Widget>[
@@ -107,7 +98,6 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
                 Navigator.pop(context);
               })
         ],
-//        bottom: this.setInput(),
       ),
       body: Column(
         children: <Widget>[
@@ -219,67 +209,19 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     );
   }
 
-  ///输入框
-  Widget setInput() {
-    return PreferredSize(
-      preferredSize: Size.fromHeight(80),
-      child: Container(
-        margin: EdgeInsets.only(left: 20, right: 20, bottom: 10),
-        padding: EdgeInsets.only(left: 12),
-        decoration: BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(5))),
-        child: TextField(
-          controller: controller,
-          focusNode: node,
-          decoration: InputDecoration(border: InputBorder.none, hintText: '输入录音标题', hintStyle: TextStyle(color: Theme.of(context).primaryColor)),
-        ),
-      ),
-    );
-  }
-
   ///底部
   Widget setButtom() {
     return Container(
-      height: 200,
-      padding: EdgeInsets.only(right: 13, top: 15, bottom: 30),
+      height: 140,
+      padding: EdgeInsets.only(right: 13, top: 15),
       decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)]),
       child: Column(
         children: <Widget>[
           Container(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: this
-                  .playerIocns
-                  .map((e) => Container(
-                          child: GestureDetector(
-                        onTap: () {
-                          switch (e['title']) {
-                            case "定时":
-                              this.setTimeout();
-                              break;
-                            case "全部循环":
-                              this.circulation();
-                              break;
-                            case "倍速":
-                              this.pias();
-                              break;
-                            case "转文字":
-                              this.transiton();
-                              break;
-                            case "更多":
-                              this.more();
-                              break;
-                          }
-                        },
-                        child: Column(children: <Widget>[Image.asset(e['icon'], width: 20), Text(e['title'], style: _textStyle)]),
-                      )))
-                  .toList(),
-            ),
-          ),
-          Container(
             margin: EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: <Widget>[
-                Text(currenttime, style: TextStyle(color: Colors.grey)),
+                Text(currentTime, style: TextStyle(color: Colors.grey)),
                 Expanded(child: MusicProgress(key: key)),
                 Text('${formatTime(rm.recrodingtime.toInt())}', style: TextStyle(color: Colors.grey)),
               ],
@@ -329,47 +271,6 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
     }
   }
 
-  ///保存
-  void save() async {
-    String newTitle = controller.text.trim();
-
-    ///没有更改名称
-    if (newTitle.compareTo(this.rm.title) == 0) {
-      Navigator.pop(context);
-    }
-
-    ///修改了名称
-    else {
-      File file = File(this.rm.filepath);
-      String newPath = '${await FileUtile.getRecrodPath()}$newTitle.wav';
-      await file.copy(newPath);
-      await file.delete();
-      Provider.of<RecordListProvider>(context, listen: false).changeRM(newTitle, newPath, index);
-      Navigator.pop(context);
-    }
-  }
-
-  ///数据左右滑动
-  recrodingOffset(double offset) {
-    double ofs = offset.floorToDouble();
-    List<CanvasRectModu> newList;
-    left += ofs;
-    right = (-left) + 120;
-    if (-left.floor() < 0) {
-      left -= ofs;
-      return;
-    }
-    if (right > recrodingData.length) {
-      left -= ofs;
-      right = recrodingData.length.toDouble();
-      return;
-    }
-    var newList2 = recrodingData.getRange(-left.floor(), right.floor());
-    print(newList);
-    newList = newList2.toList();
-//    showSounkey.currentState.setRecrodingData(newList);
-  }
-
   ///播放音乐
   void play() async {
     print(rm.filepath);
@@ -384,25 +285,21 @@ class _EditorState extends State<Editor> with WidgetsBindingObserver {
   ///倍速
   void pias() {}
 
-  ///转文字
-  void transiton() {}
-
-  ///更多
-  void more() {}
-
+  ///开始、结束指针转换函数
   void offsetToTimeSteap(num offset, bool isleft) {
-    num groups = offset / 30 - 1;
-    double time = totalTime / 10 * groups;
-    String timeStr = '00:00:00';
-    if (time > 0) {
-      timeStr = format(Duration(milliseconds: time.toInt()));
-      setState(() {
-        if (isleft)
-          startTimestamp = timeStr;
-        else
-          endTimestamp = timeStr;
-      });
-    }
+    print(offset);
+//    num groups = offset / 30 - 1;
+//    double time = totalTime / 10 * groups;
+//    String timeStr = '00:00:00';
+//    if (time > 0) {
+//      timeStr = format(Duration(milliseconds: time.toInt()));
+//      setState(() {
+//        if (isleft)
+//          startTimestamp = timeStr;
+//        else
+//          endTimestamp = timeStr;
+//      });
+//    }
   }
 
   String format(Duration duration) {

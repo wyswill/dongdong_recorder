@@ -46,10 +46,7 @@ class TimeLine_canvas extends CustomPainter {
   }
 
   String format(Duration duration) {
-//    if (duration.inSeconds <1)
-      return '${duration.inHours}:${duration.inMinutes.floor()}:${duration.inSeconds}';
-//    else
-//      return '${duration.inMinutes.floor()}:${duration.inSeconds}';
+    return '${duration.inHours}:${duration.inMinutes.floor()}:${duration.inSeconds}';
   }
 
   @override

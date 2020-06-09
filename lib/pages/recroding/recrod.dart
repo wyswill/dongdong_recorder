@@ -315,6 +315,7 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
       await check();
   }
 
+  ///检查标题
   check() async {
     String filename = this.controller.text.trim();
     if (filename == '')
@@ -344,6 +345,7 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
     }
   }
 
+  ///插件回调
   show(RecordResponse data) {
     double value = (double.parse(data.msg) * 250).floorToDouble();
     setdata(value);
