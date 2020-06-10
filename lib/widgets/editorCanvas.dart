@@ -6,7 +6,7 @@ class EditorCanvas extends CustomPainter {
   bool isChanged;
 
   final double recordingTime;
-  final List<int> canvasData;
+  final List<List<double>> canvasData;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -22,16 +22,16 @@ class EditorCanvas extends CustomPainter {
     double left = 0;
     for (int i = 0; i < canvasData.length; i++) {
       double volume = 2.0;
-      int current = canvasData[i];
-      volume = current * 0.003;
+      List<double> current = canvasData[i];
+      volume = (current[0] + current[1]) * 0.004;
       if (volume > 0) {
         ///柱子
         Rect column = Rect.fromLTWH(left, (size.height - volume) / 2, columnWidth.toDouble(), volume);
         left += 2;
+
         ///波形柱子
         canvas.drawRect(column, p);
       }
-
     }
   }
 
