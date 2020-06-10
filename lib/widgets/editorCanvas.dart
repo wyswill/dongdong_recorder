@@ -16,18 +16,22 @@ class EditorCanvas extends CustomPainter {
 
     /// 幅度比例
     double proportion = size.height / 400;
+    canvas.translate(size.width / 13, 0);
 
     /// 挨个画频谱柱子
+    double left = 0;
     for (int i = 0; i < canvasData.length; i++) {
       double volume = 2.0;
       int current = canvasData[i];
-      volume = current * proportion;
+      volume = current * 0.003;
+      if (volume > 0) {
+        ///柱子
+        Rect column = Rect.fromLTWH(left, (size.height - volume) / 2, columnWidth.toDouble(), volume);
+        left += 2;
+        ///波形柱子
+        canvas.drawRect(column, p);
+      }
 
-      ///柱子
-      Rect column = Rect.fromLTWH((columnWidth + 2) * i, (size.height - volume) / 2, columnWidth.ceil().toDouble(), volume);
-
-      ///波形柱子
-      canvas.drawRect(column, p);
     }
   }
 

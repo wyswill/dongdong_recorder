@@ -1,3 +1,4 @@
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutterapp/canvasData.dart';
 import 'package:flutterapp/modus/cancasRectModu.dart';
 import 'package:flutterapp/widgets/editorCanvas.dart';
@@ -8,8 +9,7 @@ import 'package:provider/provider.dart';
 import 'mycanvas.dart';
 
 class ShowSoun extends StatefulWidget {
-  ShowSoun({this.key, this.recriodingTime, this.totalTime, this.isEditor})
-      : super(key: key);
+  ShowSoun({this.key, this.recriodingTime, this.totalTime, this.isEditor}) : super(key: key);
   final key;
   final double recriodingTime, totalTime;
   final bool isEditor;
@@ -28,9 +28,9 @@ class ShowSounState extends State<ShowSoun> {
       height: 400,
       child: widget.isEditor != null
           ? Consumer<canvasData>(
-              builder: (context, conter, child) => CustomPaint(
-                foregroundPainter:
-                    TimeLine_canvas(widget.recriodingTime, widget.totalTime),
+              builder: (context, conter, child) =>
+              CustomPaint(
+                foregroundPainter: TimeLine_canvas(widget.recriodingTime, widget.totalTime),
                 painter: EditorCanvas(conter.data, widget.recriodingTime),
               ),
             )
@@ -45,15 +45,6 @@ class ShowSounState extends State<ShowSoun> {
   setRecrodingData(List<CanvasRectModu> data) {
     setState(() {
       recrodingData = data;
-    });
-  }
-
-  ///录音实时数据
-  double curentHeight = 0;
-
-  setRecrodingSingledata(double data) {
-    setState(() {
-      curentHeight = data;
     });
   }
 }

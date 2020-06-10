@@ -65,7 +65,9 @@ class _EditorState extends State<Editor> {
 
     ///等待画布widget构建完毕
     Future.delayed(Duration(microseconds: 400)).then((value) {
-      List<int> data = reader.convert(windowWidth.truncate());
+      singleWidth = windowWidth / 13;
+      List<int> data = reader.datas.skip(44).toList(growable: false);
+//      List<int> data = reader.convert((singleWidth * 11).truncate());
       Provider.of<canvasData>(context, listen: false).setData(data);
     });
   }
@@ -144,7 +146,7 @@ class _EditorState extends State<Editor> {
                       if (offset.dx > windowWidth - singleWidth) x = singleWidth - 1;
                       offsetToTimeSteap(offset.dx.floor(), false);
                       setState(() {
-                        rw = x.floor().toDouble();
+                        rw = x.floorToDouble();
                       });
                     },
                     child: Container(
