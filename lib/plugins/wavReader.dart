@@ -11,10 +11,11 @@ class WavReader {
 
   readAsBytes() {
     File file = File(this.filepath);
+
     Uint8List list = file.readAsBytesSync();
-    var val = ByteData.view(list.buffer);
+    var val = list.buffer.asInt16List();
     for (int i = 0; i < val.lengthInBytes / 2; i++) {
-      int d = val.getInt16(i * 2);
+      int d = val[i];
       datas.add(d);
     }
 
@@ -30,7 +31,6 @@ class WavReader {
   ///转化数据
   List<List<double>> convert(int width) {
     List<int> data = this.datas.getRange(44, datas.length).toList();
-    print(data.length);
     List<List<double>> resList = List(width);
     double flag = (data.length / width);
     int current = 0;
@@ -45,7 +45,7 @@ class WavReader {
   }
 
   List<double> getMinMaxInRanges(List<int> array, int start, int end) {
-    int min = 0, min1 = 0, max = 0, max1 = 0, current, step = ((end - start) / 15).floor();
+    int min = 0, min1 = 0, max = 0, max1 = 0, current, step = ((end - start) / 30).floor();
     for (var i = start; i < end; i = i + step) {
       current = array[i];
       if (current < min) {

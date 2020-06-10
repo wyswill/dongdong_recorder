@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 class EditorCanvas extends CustomPainter {
@@ -13,9 +15,6 @@ class EditorCanvas extends CustomPainter {
     /// 每个柱子的宽度
     double columnWidth = 1;
     Paint p = Paint()..color = Colors.white;
-
-    /// 幅度比例
-    double proportion = size.height / 400;
     canvas.translate(size.width / 13, 0);
 
     /// 挨个画频谱柱子
@@ -23,15 +22,17 @@ class EditorCanvas extends CustomPainter {
     for (int i = 0; i < canvasData.length; i++) {
       double volume = 2.0;
       List<double> current = canvasData[i];
-      volume = (current[0] + current[1]) * 0.004;
-      if (volume > 0) {
-        ///柱子
-        Rect column = Rect.fromLTWH(left, (size.height - volume) / 2, columnWidth.toDouble(), volume);
-        left += 2;
 
-        ///波形柱子
-        canvas.drawRect(column, p);
-      }
+      volume = (current[0] + current[1]) * 0.01;
+//      print(current);
+      double heigh = (size.height - volume) / 2;
+
+      ///柱子
+      Rect column = Rect.fromLTWH(left, heigh, columnWidth, volume);
+      left += 1;
+
+      ///波形柱子
+      canvas.drawRect(column, p);
     }
   }
 
