@@ -56,7 +56,7 @@ class _EditorState extends State<Editor> {
 
     ///设置默认标题
     ///读取音频二进制数据
-    WavReader reader = WavReader(rm.filepath);
+    WavReader reader = rm.reader;
     reader.readAsBytes();
 
     ///设置音频时长
@@ -66,6 +66,7 @@ class _EditorState extends State<Editor> {
     ///等待画布widget构建完毕
     Future.delayed(Duration(microseconds: 400)).then((value) {
       singleWidth = windowWidth / 13;
+      lw = rw = singleWidth;
       List<List<double>> datas = reader.convert((333).truncate()).cast<List<double>>();
       Provider.of<canvasData>(context, listen: false).setData(datas);
     });

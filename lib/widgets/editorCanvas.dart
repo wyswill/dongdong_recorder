@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 class EditorCanvas extends CustomPainter {
@@ -24,8 +22,9 @@ class EditorCanvas extends CustomPainter {
       List<double> current = canvasData[i];
 
       volume = (current[0] + current[1]) * 0.01;
-//      print(current);
       double heigh = (size.height - volume) / 2;
+//      print('volume==>$volume,size_height==>${size.height}');
+      if (volume > size.height) volume = size.height;
 
       ///柱子
       Rect column = Rect.fromLTWH(left, heigh, columnWidth, volume);

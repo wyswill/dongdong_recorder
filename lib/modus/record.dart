@@ -1,21 +1,15 @@
+import 'package:flutterapp/plugins/WavReader.dart';
 class RecroderModule {
   final num recrodingtime;
   final String fileSize;
+  WavReader reader;
   String lastModified;
   String filepath;
   String title;
   bool isPlaying;
   bool isActive;
 
-  RecroderModule({
-    this.title,
-    this.recrodingtime,
-    this.fileSize,
-    this.lastModified,
-    this.filepath,
-    this.isPlaying,
-    this.isActive,
-  });
+  RecroderModule({this.title, this.recrodingtime, this.fileSize, this.lastModified, this.filepath, this.isPlaying, this.isActive, this.reader});
 
   void reset() {
     this.isActive = this.isPlaying = false;

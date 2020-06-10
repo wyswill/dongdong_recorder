@@ -76,6 +76,7 @@ class FileUtile {
               isPlaying: false,
               isActive: false,
               fileSize: "${reader.size}kb",
+              reader: reader,
             );
             resList.add(rm);
           }
@@ -119,6 +120,7 @@ class FileUtile {
         isPlaying: false,
         fileSize: "${reader.size}kb",
         isActive: false,
+        reader: reader,
       );
       return rm;
     }
