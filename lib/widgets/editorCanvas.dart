@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 
 class EditorCanvas extends CustomPainter {
-  EditorCanvas(this.canvasData, this.recriodingTime);
+  EditorCanvas(this.canvasData, this.recordingTime);
 
   bool isChanged;
 
-  final double recriodingTime;
+  final double recordingTime;
   final List<int> canvasData;
 
   @override
@@ -15,16 +15,16 @@ class EditorCanvas extends CustomPainter {
     Paint p = Paint()..color = Colors.white;
 
     /// 幅度比例
-    double proportion = size.height / 600, jiange = (canvasData.length / 12).floorToDouble();
+    double proportion = size.height / 400;
 
     /// 挨个画频谱柱子
-    for (int i = 0; i < canvasData.length - (jiange * 5.3); i++) {
+    for (int i = 0; i < canvasData.length; i++) {
       double volume = 2.0;
       int current = canvasData[i];
       volume = current * proportion;
 
       ///柱子
-      Rect column = Rect.fromLTWH((columnWidth + 2) * i + 28, (size.height - volume) / 2, columnWidth.ceil().toDouble(), volume);
+      Rect column = Rect.fromLTWH((columnWidth + 2) * i, (size.height - volume) / 2, columnWidth.ceil().toDouble(), volume);
 
       ///波形柱子
       canvas.drawRect(column, p);

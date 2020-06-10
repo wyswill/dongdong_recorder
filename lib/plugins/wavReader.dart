@@ -21,12 +21,46 @@ class WavReader {
     t = (datas.length / 8000);
   }
 
-  ///500毫秒一帧，组成初始化的数据
-  List<int> convers(int width) {
+  ///转化数据
+  List<int> convert(int width) {
     List<int> data = this.datas.getRange(44, datas.length).toList();
-//    print(data);
-    return [];
+    int g = 11;
+
+    ///数据和屏幕比
+    double r = (width / data.length);
+    print(r);
+
+    ///每个间隔的取样区间
+    int sr = ((data.length / g) * r).truncate();
+
+    ///每个间隔中的指针的取样区间
+    int pr = (sr / 5).truncate();
+
+    ///总的指针数量
+    int pc = (data.length / pr).truncate();
+    int temp = 0;
+    List<int> res = [];
+    for (int i = 0; i < pc; i++) {
+      if (temp < data.length) {
+        int end = temp + pr;
+//        print('temp==>$temp,end==>$end');
+        int value = getMinMaxInRange(data.getRange(temp, end).toList());
+//        print(value);
+        res.add(value);
+        temp = end;
+      }
+    }
+    return res;
   }
 
-  int getMinMaxInRange(array) {}
+  int getMinMaxInRange(List<int> array) {
+    double res = 0;
+    array.forEach((element) {
+      res += element;
+    });
+    if (res == 0)
+      return 0;
+    else
+      return (res / array.length).truncate();
+  }
 }
