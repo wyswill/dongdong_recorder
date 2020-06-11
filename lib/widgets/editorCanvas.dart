@@ -6,7 +6,7 @@ class EditorCanvas extends CustomPainter {
   bool isChanged;
 
   final double recordingTime;
-  final List<List<double>> canvasData;
+  final List<List<int>> canvasData;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -19,12 +19,10 @@ class EditorCanvas extends CustomPainter {
     double left = 0;
     for (int i = 0; i < canvasData.length; i++) {
       double volume = 2.0;
-      List<double> current = canvasData[i];
-
+      List<int> current = canvasData[i];
       volume = (current[0] + current[1]) * 0.01;
+      if (volume > size.height) volume = size.height - 250;
       double heigh = (size.height - volume) / 2;
-//      print('volume==>$volume,size_height==>${size.height}');
-      if (volume > size.height) volume = size.height;
 
       ///柱子
       Rect column = Rect.fromLTWH(left, heigh, columnWidth, volume);

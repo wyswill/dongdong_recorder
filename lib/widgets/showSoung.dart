@@ -30,7 +30,7 @@ class ShowSounState extends State<ShowSoun> {
           ? Consumer<canvasData>(
               builder: (context, conter, child) =>
               CustomPaint(
-                foregroundPainter: TimeLine_canvas(widget.recriodingTime, widget.totalTime),
+                foregroundPainter: TimeLine_canvas(conter.data.length, widget.totalTime),
                 painter: EditorCanvas(conter.data, widget.recriodingTime),
               ),
             )

@@ -25,7 +25,7 @@ class Editor extends StatefulWidget {
 class _EditorState extends State<Editor> {
   String currentTime = '0:0:0';
   GlobalKey<MusicProgressState> key = GlobalKey();
-  double left = 0, right = 60, audioTimeLength = 0, lw = 30, rw = 30, height = 180, totalTime = 0;
+  double left = 0, right = 60, audioTimeLength = 0, lw = 30, rw = 30, height = 250, totalTime = 0;
   List<CanvasRectModu> recordingData = [];
 
   ///和native通讯
@@ -65,9 +65,9 @@ class _EditorState extends State<Editor> {
 
     ///等待画布widget构建完毕
     Future.delayed(Duration(microseconds: 400)).then((value) {
-      singleWidth = windowWidth / 13;
+      singleWidth = windowWidth / 14;
       lw = rw = singleWidth;
-      List<List<double>> datas = reader.convert((333).truncate()).cast<List<double>>();
+      List<List<int>> datas = reader.convert((singleWidth * 12).truncate()).cast<List<int>>();
       Provider.of<canvasData>(context, listen: false).setData(datas);
     });
   }
@@ -99,6 +99,7 @@ class _EditorState extends State<Editor> {
             child: Stack(
               children: <Widget>[
                 Positioned(
+                  height: 250,
                   child: Container(
                       color: Theme.of(context).primaryColor,
                       height: height,
@@ -217,7 +218,7 @@ class _EditorState extends State<Editor> {
               children: <Widget>[
                 Text(currentTime, style: TextStyle(color: Colors.grey)),
                 Expanded(child: MusicProgress(key: key)),
-                Text('${formatTime(rm.recrodingtime.toInt())}', style: TextStyle(color: Colors.grey)),
+                Text('${formatTime(rm.recrodingtime.truncate())}', style: TextStyle(color: Colors.grey)),
               ],
             ),
           ),
@@ -271,26 +272,27 @@ class _EditorState extends State<Editor> {
   }
 
   ///开始、结束指针转换函数
+  ///
+  ///每次左右指针移动之后得到开始和结束的时间
+  ///再将开始和结束时间发送到java端
+  ///
   void offsetToTimeSteap(num offset, bool isleft) {
-    print(offset);
-//    num groups = offset / 30 - 1;
-//    double time = totalTime / 10 * groups;
-//    String timeStr = '00:00:00';
-//    if (time > 0) {
-//      timeStr = format(Duration(milliseconds: time.toInt()));
-//      setState(() {
-//        if (isleft)
-//          startTimestamp = timeStr;
-//        else
-//          endTimestamp = timeStr;
-//      });
-//    }
+    num groups = offset / singleWidth - 1;
+    double time = totalTime / 12 * groups;
+    String timeStr = '00:00:00';
+    if (time > 0) {
+      timeStr = format(Duration(milliseconds: time.toInt()));
+      setState(() {
+        if (isleft)
+          startTimestamp = timeStr;
+        else
+          endTimestamp = timeStr;
+      });
+    }
   }
 
   String format(Duration duration) {
-    if (duration.inSeconds > 1)
-      return '${duration.inHours}:${duration.inMinutes.floor()}:${duration.inSeconds}';
-    else
-      return '${duration.inMinutes.floor()}:${duration.inSeconds}:${duration.inMilliseconds % 1000}';
+    if (duration.inMinutes < 1) return '${duration.inSeconds}.${duration.inMilliseconds % 1000}';
+    if (duration.inHours < 1) return '${duration.inMinutes}:${duration.inSeconds}';
   }
 }

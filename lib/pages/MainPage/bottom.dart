@@ -215,7 +215,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
                         ),
                         Text(currentTime, style: TextStyle(color: Colors.grey)),
                         Expanded(child: MusicProgress(key: key)),
-                        Text(formatTime(totalTime.toInt()), style: TextStyle(color: Colors.grey))
+                        Text(formatTime(totalTime.truncate()), style: TextStyle(color: Colors.grey))
                       ],
                     )
                   ],

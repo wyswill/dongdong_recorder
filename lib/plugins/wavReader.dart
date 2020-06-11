@@ -19,6 +19,10 @@ class WavReader {
       datas.add(d);
     }
 
+    ///音频数据总长度=音频总时长*每毫秒的字节数
+    ///每毫秒字节数=16
+    ///总毫秒时长 = 音频数据长度/16
+    ///
     ///计算音频长度 单位秒
     s = (val.lengthInBytes - 44) / 16000;
 
@@ -29,33 +33,27 @@ class WavReader {
   }
 
   ///转化数据
-  List<List<double>> convert(int width) {
+  List<List<int>> convert(int width) {
     List<int> data = this.datas.getRange(44, datas.length).toList();
-    List<List<double>> resList = List(width);
-    double flag = (data.length / width);
+    List<List<int>> resList = [];
+    int flag = 256;
     int current = 0;
     for (int i = 0; i < width; i++) {
-      int start = ~~current;
-      current = (current + flag).floor();
-      int end = ~~current;
-      List res = getMinMaxInRanges(data, start, end);
-      resList[i] = res;
+      int end = current + flag;
+      if (end > data.length) break;
+      List res = getMinMaxInRanges(data.getRange(current, end).toList());
+      resList.add(res);
+      current += flag;
     }
     return resList;
   }
 
-  List<double> getMinMaxInRanges(List<int> array, int start, int end) {
-    int min = 0, min1 = 0, max = 0, max1 = 0, current, step = ((end - start) / 30).floor();
-    for (var i = start; i < end; i = i + step) {
-      current = array[i];
-      if (current < min) {
-        min1 = min;
-        min = current;
-      } else if (current > max) {
-        max1 = max;
-        max = current;
-      }
-    }
-    return [(min + min1) / 2, (max + max1) / 2];
+  List<int> getMinMaxInRanges(List<int> array) {
+    int max = 0, min = 0;
+    array.forEach((element) {
+      if (element < min) min = element;
+      if (element > max) max = element;
+    });
+    return [min, max];
   }
 }

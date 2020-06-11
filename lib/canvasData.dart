@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
 class canvasData with ChangeNotifier {
-  List<List<double>> data = [];
+  List<List<int>> data = [];
 
-  setData(List<List<double>> val) {
+  setData(List<List<int>> val) {
     data = val;
     notifyListeners();
   }

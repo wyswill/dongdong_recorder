@@ -22,6 +22,7 @@ class RecordingFileItems extends StatefulWidget {
 
 class _RecordingFileItemsState extends State<RecordingFileItems> {
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
+
   @override
   void initState() {
     super.initState();
@@ -61,7 +62,7 @@ class _RecordingFileItemsState extends State<RecordingFileItems> {
                       Container(
                         padding: EdgeInsets.symmetric(horizontal: 5),
                         decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.all(Radius.circular(10))),
-                        child: Text('${formatTime(widget.curentFile.recrodingtime.toInt())}', style: textStyle),
+                        child: Text('${formatTime(widget.curentFile.recrodingtime.truncate())}', style: textStyle),
                       ),
                       Container(margin: EdgeInsets.symmetric(horizontal: 5), child: Text(widget.curentFile.fileSize, style: textStyle)),
                       Expanded(child: Container()),

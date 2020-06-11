@@ -65,6 +65,14 @@ public class MainActivity extends FlutterActivity {
                 } catch (Error e) {
                 }
                 break;
+            case "playWithFlag":
+                int start = methodCall.argument("start");
+                int end = methodCall.argument("end");
+                String filepath = methodCall.argument("filePath");
+                audioPlayer.playWithFlag(filepath, start, end);
+                break;
+            default:
+                throw new IllegalStateException("Unexpected value: " + methodCall.method);
         }
     }
 

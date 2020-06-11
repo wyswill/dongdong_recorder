@@ -18,7 +18,7 @@ class MyCanvas extends CustomPainter {
     // 每个柱子的宽度
     double columnWidth = 2;
     // 幅度比例
-    double step = size.height / 300;
+    double step = size.height / 400;
     // 挨个画频谱柱子
     for (int i = 0; i < canvasData.length; i++) {
       double volume = 2.0;
