@@ -44,8 +44,8 @@ alert(
 
 String formatTime(int totalTime) {
   Duration duration = Duration(seconds: totalTime);
-  if (duration.inMinutes < 1) return '${duration.inSeconds}.${duration.inMilliseconds % 1000}';
-  if (duration.inHours < 1) return '${duration.inMinutes}:${duration.inSeconds}';
+  int h = duration.inHours, m = duration.inMinutes, ms = totalTime % 1000;
+  return '$h:$m:$totalTime.$ms';
 }
 
 class FileUtile {
