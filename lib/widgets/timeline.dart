@@ -31,16 +31,15 @@ class TimeLine_canvas extends CustomPainter {
     ///每秒宽度
     double sw = datalength / s;
     canvas.translate(singlesw, 0);
-    bool printT = s > 10 ? true : false;
     for (int i = 0; i <= totlecount; i++) {
       if (i % 10 == 0) {
         Rect timeLine = Rect.fromLTWH((sw * i).toDouble(), 0, 0.5, 15);
         canvas.drawRect(timeLine, write);
-        if (printT) drawText(i, Offset((sw * i).toDouble(), 20), pb, canvas);
+        drawText(i, Offset((sw * i).toDouble(), 22), pb, canvas);
       } else {
         Rect timeLine = Rect.fromLTWH((sw * i).toDouble(), 0, 0.5, 10);
         canvas.drawRect(timeLine, gary);
-        if (!printT) drawText(i, Offset((sw * i).toDouble(), 20), pb, canvas);
+        if (s < 50) drawText(i, Offset((sw * i).toDouble(), 13), pb, canvas);
       }
     }
   }
