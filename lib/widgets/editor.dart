@@ -240,31 +240,21 @@ class _EditorState extends State<Editor> {
 
   ///音频剪切
   void cut() async {
-//    if (startTime == null) {
-//      alert(context, title: Text('没有确定开始剪辑的时间'));
-//      return;
-//    } else if (endTime == null) {
-//      alert(context, title: Text('没有确定结束剪辑的时间'));
-//      return;
-//    } else if (endTime < startTime) {
-//      alert(context, title: Text('结束时间不能小于开始时间！'));
-//      return;
-//    }
-//    String originPath = rm.filepath, savePath;
-//    DateTime dateTime = DateTime.now();
-//    savePath = await FileUtile.getRecrodPath();
-//    savePath = "$savePath${rm.title}-${dateTime.year}.${dateTime.month}.${dateTime.day}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}";
-//    try {
-//      String res = await channel.invokeMethod("cat", {"originPath": originPath, "savePath": savePath, "startTime": startTime, "endTime": endTime});
-//      if (res.isNotEmpty) {
-//        alert(context, title: Text('剪辑完成！'));
-//        Provider.of<RecordListProvider>(context, listen: false).init(await FileUtile.getlocalMusic(channel: channel));
-//      } else {
-//        alert(context, title: Text('剪辑失败！'));
-//      }
-//    } catch (e) {
-//      print(e);
-//    }
+    String originPath = rm.filepath, savePath;
+    DateTime dateTime = DateTime.now();
+    savePath = await FileUtile.getRecrodPath();
+    savePath = "$savePath${rm.title}-${dateTime.year}.${dateTime.month}.${dateTime.day}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}";
+    try {
+      String res = await channel.invokeMethod("cat", {"originPath": originPath, "savePath": savePath, "startTime": starttime, "endTime": endtime});
+      if (res.isNotEmpty) {
+        alert(context, title: Text('剪辑完成！'));
+        Provider.of<RecordListProvider>(context, listen: false).init(await FileUtile.getlocalMusic(channel: channel));
+      } else {
+        alert(context, title: Text('剪辑失败！'));
+      }
+    } catch (e) {
+      print(e);
+    }
   }
 
   ///播放音乐
@@ -339,7 +329,6 @@ class _EditorState extends State<Editor> {
     }
     totlePlaying = endtime - starttime;
     setState(() {});
-    this.playOrPurse();
   }
 
   String doubleTwo(double number) {

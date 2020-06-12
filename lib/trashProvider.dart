@@ -26,6 +26,7 @@ class TranshProvider with ChangeNotifier {
   }
 
   void remove(int index) {
+    reset();
     trashs.removeAt(index);
     notifyListeners();
   }

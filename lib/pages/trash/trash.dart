@@ -21,6 +21,7 @@ class _TrashState extends State<Trash> {
   Widget build(BuildContext context) {
     return Consumer<TranshProvider>(builder: (context, conter, child) {
       this.datas = conter.trashs;
+      print(conter.trashs);
       return ListView.separated(
         itemCount: conter.trashs.length,
         itemBuilder: folderItemStyle,

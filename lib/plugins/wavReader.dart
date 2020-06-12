@@ -24,12 +24,11 @@ class WavReader {
     ///总毫秒时长 = 音频数据长度/16
     ///
     ///计算音频长度 单位秒
-    s = (val.lengthInBytes - 44) / 16000;
+    s = val.lengthInBytes / 16000;
 
     ///计算音频大小kb
     size = ((16000 * s) / 1024).truncateToDouble();
-
-    t = ((val.lengthInBytes - 44) / 8000);
+    t = s / 2;
   }
 
   ///转化数据

@@ -26,7 +26,7 @@ class TimeLine_canvas extends CustomPainter {
     double totlecount = totaltime / 1000;
 
     ///起始偏移
-    double singlesw = datalength / 12;
+    double singlesw = size.width / 14;
 
     ///每秒宽度
     double sw = datalength / s;

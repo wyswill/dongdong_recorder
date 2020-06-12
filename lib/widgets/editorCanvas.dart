@@ -13,7 +13,7 @@ class EditorCanvas extends CustomPainter {
     /// 每个柱子的宽度
     double columnWidth = 1;
     Paint p = Paint()..color = Colors.white;
-    canvas.translate(size.width / 13, 0);
+    canvas.translate(size.width / 14, 0);
 
     /// 挨个画频谱柱子
     double left = 0;

@@ -35,6 +35,7 @@ class RecordListProvider with ChangeNotifier {
   }
 
   Future<RecroderModule> deleteFile(int index) async {
+    reset();
     String deletePath = await FileUtile.getRecrodPath(isDelete: true);
     RecroderModule rm = recorderFiles[index];
     File file = File(rm.filepath);
