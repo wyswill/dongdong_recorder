@@ -245,7 +245,7 @@ class _EditorState extends State<Editor> {
     savePath = await FileUtile.getRecrodPath();
     savePath = "$savePath${rm.title}-${dateTime.year}.${dateTime.month}.${dateTime.day}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}";
     try {
-      String res = await channel.invokeMethod("cat", {"originPath": originPath, "savePath": savePath, "startTime": starttime, "endTime": endtime});
+      String res = await channel.invokeMethod("cat", {"originPath": originPath, "savePath": savePath, "startTime": starttime, "endTime": endtime, "totalS": totalTime / 1000});
       if (res.isNotEmpty) {
         alert(context, title: Text('剪辑完成！'));
         Provider.of<RecordListProvider>(context, listen: false).init(await FileUtile.getlocalMusic(channel: channel));

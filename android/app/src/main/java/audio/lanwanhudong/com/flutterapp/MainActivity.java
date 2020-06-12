@@ -3,6 +3,7 @@ package audio.lanwanhudong.com.flutterapp;
 import android.media.AudioFormat;
 import android.media.AudioManager;
 import android.media.AudioTrack;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -38,12 +39,19 @@ public class MainActivity extends FlutterActivity {
             case "cat":
                 String oringPath = Objects.requireNonNull(methodCall.argument("originPath")).toString();
                 String savePath = Objects.requireNonNull(methodCall.argument("savePath")).toString() + ".wav";
+                double totleS = methodCall.argument("totalS");
                 int startTime = methodCall.argument("startTime");
                 int endTime = methodCall.argument("endTime");
-                System.out.println("剪辑开始");
-                boolean res = AudioCat.cut(oringPath, savePath, startTime, endTime, 44);
-                System.out.println("剪辑完成！" + res);
-                result.success(savePath);
+                Log.d("startTime", "handleMethod: " + startTime);
+                Log.d("totleS", "handleMethod: " + totleS);
+                try {
+                    System.out.println("剪辑开始");
+                    boolean res = AudioCat.cut(oringPath, savePath, totleS, startTime, endTime, 44);
+                    System.out.println("剪辑完成！" + res);
+                    result.success(savePath);
+                } catch (Exception e) {
+                    result.error("404", "剪辑错误", e);
+                }
                 break;
             case "initPlayer":
                 audioPlayer = new AudioPlayer(bufferSize, audioTrack);
