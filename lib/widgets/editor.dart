@@ -41,7 +41,7 @@ class _EditorState extends State<Editor> {
   int get index => widget.arguments['index'];
 
   double get windowWidth => MediaQuery.of(context).size.width;
-  double singleWidth;
+  double singleWidth, sw;
 
   ///与canvas交互的参数
   CanvasRectModu canvasRectModu;
@@ -67,6 +67,7 @@ class _EditorState extends State<Editor> {
     Future.delayed(Duration(microseconds: 400)).then((value) {
       singleWidth = windowWidth / 14;
       lw = rw = singleWidth;
+      sw = singleWidth * 12 / (totalTime / 1000).truncate();
       List<List<int>> datas = reader.convert((singleWidth * 12).truncate()).cast<List<int>>();
       Provider.of<canvasData>(context, listen: false).setData(datas);
     });
@@ -116,12 +117,12 @@ class _EditorState extends State<Editor> {
                   child: Draggable(
                     axis: Axis.horizontal,
                     onDraggableCanceled: (Velocity velocity, Offset offset) {
-                      double x = offset.dx.floor().toDouble();
+                      double x = offset.dx;
                       if (x < singleWidth) x = singleWidth;
                       if (offset.dx >= windowWidth - rw) x = windowWidth - rw;
-                      offsetToTimeSteap(x, true);
+                      offsetToTimeSteap(x - 1, true);
                       setState(() {
-                        lw = x;
+                        lw = x - 1;
                       });
                     },
                     child: Container(
@@ -142,12 +143,12 @@ class _EditorState extends State<Editor> {
                   child: Draggable(
                     axis: Axis.horizontal,
                     onDraggableCanceled: (Velocity velocity, Offset offset) {
-                      double x = windowWidth - offset.dx - 1;
+                      double x = windowWidth - offset.dx;
                       if (offset.dx <= lw) x = windowWidth - lw;
-                      if (offset.dx > windowWidth - singleWidth) x = singleWidth - 1;
-                      offsetToTimeSteap(offset.dx.floor(), false);
+                      if (offset.dx > windowWidth - singleWidth) x = singleWidth;
+                      offsetToTimeSteap(offset.dx + 1, false);
                       setState(() {
-                        rw = x.floorToDouble();
+                        rw = x + 1;
                       });
                     },
                     child: Container(
@@ -207,7 +208,7 @@ class _EditorState extends State<Editor> {
   ///底部
   Widget setButtom() {
     return Container(
-      height: 140,
+      height: 80,
       padding: EdgeInsets.only(right: 13, top: 15),
       decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)]),
       child: Column(
@@ -216,22 +217,13 @@ class _EditorState extends State<Editor> {
             margin: EdgeInsets.symmetric(horizontal: 20),
             child: Row(
               children: <Widget>[
+                IconButton(icon: Icon(Icons.play_arrow, color: mainColor), onPressed: () {}),
                 Text(currentTime, style: TextStyle(color: Colors.grey)),
                 Expanded(child: MusicProgress(key: key)),
                 Text('${formatTime(rm.recrodingtime.truncate())}', style: TextStyle(color: Colors.grey)),
               ],
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              IconButton(icon: Icon(Icons.skip_previous, color: gary), onPressed: () {}),
-              IconButton(icon: Icon(Icons.replay, color: gary), onPressed: () {}),
-              IconButton(icon: Icon(Icons.play_arrow, color: mainColor), onPressed: () {}),
-              IconButton(icon: Icon(Icons.refresh, color: gary), onPressed: () {}),
-              IconButton(icon: Icon(Icons.skip_next, color: gary), onPressed: () {}),
-            ],
-          )
         ],
       ),
     );
@@ -277,22 +269,26 @@ class _EditorState extends State<Editor> {
   ///再将开始和结束时间发送到java端
   ///
   void offsetToTimeSteap(num offset, bool isleft) {
-    num groups = offset / singleWidth - 1;
-    double time = totalTime / 12 * groups;
-    String timeStr = '00:00:00';
-    if (time > 0) {
-      timeStr = format(Duration(milliseconds: time.toInt()));
-      setState(() {
-        if (isleft)
-          startTimestamp = timeStr;
-        else
-          endTimestamp = timeStr;
-      });
-    }
+    ///实际的偏移量=偏移量-基本的偏移量
+    int flag = (offset - singleWidth).truncate();
+    if (flag == 0) return;
+
+    ///开始或结束时间 = 实际偏移量 / 基本的指针长度
+    double time = (flag / sw).abs();
+    String timeString = doubleTwo(time);
+    setState(() {
+      if (isleft)
+        startTimestamp = timeString;
+      else
+        endTimestamp = timeString;
+    });
   }
 
-  String format(Duration duration) {
-    if (duration.inMinutes < 1) return '${duration.inSeconds}.${duration.inMilliseconds % 1000}';
-    if (duration.inHours < 1) return '${duration.inMinutes}:${duration.inSeconds}';
+  String doubleTwo(double number) {
+    String t = number.toString();
+    List<String> end = t.split('.');
+    String tp = end[1].substring(0, 2);
+    int s = double.parse('${end[0]}.$tp').floor();
+    return formatTime(s);
   }
 }
