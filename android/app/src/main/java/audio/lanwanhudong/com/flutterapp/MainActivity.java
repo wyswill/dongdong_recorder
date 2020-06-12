@@ -68,8 +68,8 @@ public class MainActivity extends FlutterActivity {
             case "playWithFlag":
                 int start = methodCall.argument("start");
                 int end = methodCall.argument("end");
-                String filepath = methodCall.argument("filePath");
-                audioPlayer.playWithFlag(filepath, start, end);
+                String filePath = methodCall.argument("filePath");
+                audioPlayer.playWithFlag(filePath, start, end);
                 break;
             default:
                 throw new IllegalStateException("Unexpected value: " + methodCall.method);

@@ -45,9 +45,8 @@ alert(
 String formatTime(int totalTime) {
   Duration duration = Duration(seconds: totalTime);
   int h = duration.inHours, m = duration.inMinutes, ms = totalTime % 1000;
-  String res = '0:${totalTime % 60}.${ms % 60}';
-  if (m > 0) res = '$m:$res';
-  if (h > 0) res = '$h:$res';
+  String res = '${m % 60}:${totalTime % 60}.${ms % 60}';
+  if (h > 0) res = '${h % 60}:$res';
   return res;
 }
 

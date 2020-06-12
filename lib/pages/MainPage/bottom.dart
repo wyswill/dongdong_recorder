@@ -409,7 +409,6 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
   ///设置进度条
   void setPlanProgress() async {
     timer = Timer.periodic(Duration(seconds: 1), (Timer newtimer) async {
-      print(totalTime.truncate() - 1);
       if (currentPlayingTime <= totalTime.truncate() - 1) {
         this.currentPlayingTime++;
         this.currentTime = formatTime(currentPlayingTime);

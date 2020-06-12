@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutterapp/canvasData.dart';
 import 'package:flutterapp/event_bus.dart';
 import 'package:flutterapp/modus/cancasRectModu.dart';
 import 'package:flutterapp/modus/record.dart';
+import 'package:flutterapp/plugins/AudioPlayer.dart';
 import 'package:flutterapp/plugins/WavReader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -45,8 +47,12 @@ class _EditorState extends State<Editor> {
 
   ///与canvas交互的参数
   CanvasRectModu canvasRectModu;
-  int startIndex, endIndex, startTime, endTime;
-  String startTimestamp = '00:00:00', endTimestamp = '00:00:00';
+  String startTimestamp = '0:0:0', endTimestamp = '0:0:0', playingTime = '0:0:0';
+  int starttime, endtime;
+  AudioPlayer audioPlayer = AudioPlayer();
+  bool isplaying = false;
+  Timer timer = null;
+  int currentPlayingTime = 0, totlePlaying = 0;
 
   TextStyle get _textStyle => TextStyle(color: Theme.of(context).primaryColor, fontSize: 12);
 
@@ -62,6 +68,9 @@ class _EditorState extends State<Editor> {
     ///设置音频时长
     audioTimeLength = reader.t;
     totalTime = reader.s * 1000;
+    endTimestamp = formatTime(rm.recrodingtime.truncate());
+    endtime = totalTime.truncate();
+    totlePlaying = reader.s.truncate();
 
     ///等待画布widget构建完毕
     Future.delayed(Duration(microseconds: 400)).then((value) {
@@ -211,56 +220,97 @@ class _EditorState extends State<Editor> {
       height: 80,
       padding: EdgeInsets.only(right: 13, top: 15),
       decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)]),
-      child: Column(
-        children: <Widget>[
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: <Widget>[
-                IconButton(icon: Icon(Icons.play_arrow, color: mainColor), onPressed: () {}),
-                Text(currentTime, style: TextStyle(color: Colors.grey)),
-                Expanded(child: MusicProgress(key: key)),
-                Text('${formatTime(rm.recrodingtime.truncate())}', style: TextStyle(color: Colors.grey)),
-              ],
-            ),
-          ),
-        ],
+      child: Container(
+        margin: EdgeInsets.symmetric(horizontal: 20),
+        child: Row(
+          children: <Widget>[
+            IconButton(icon: Icon(isplaying ? Icons.stop : Icons.play_arrow, color: mainColor), onPressed: playOrPurse),
+            Text(playingTime, style: TextStyle(color: Colors.grey)),
+            Expanded(child: MusicProgress(key: key)),
+            Text(endTimestamp, style: TextStyle(color: Colors.grey)),
+          ],
+        ),
       ),
     );
   }
 
   ///音频剪切
   void cut() async {
-    if (startTime == null) {
-      alert(context, title: Text('没有确定开始剪辑的时间'));
-      return;
-    } else if (endTime == null) {
-      alert(context, title: Text('没有确定结束剪辑的时间'));
-      return;
-    } else if (endTime < startTime) {
-      alert(context, title: Text('结束时间不能小于开始时间！'));
-      return;
-    }
-    String originPath = rm.filepath, savePath;
-    DateTime dateTime = DateTime.now();
-    savePath = await FileUtile.getRecrodPath();
-    savePath = "$savePath${rm.title}-${dateTime.year}.${dateTime.month}.${dateTime.day}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}";
-    try {
-      String res = await channel.invokeMethod("cat", {"originPath": originPath, "savePath": savePath, "startTime": startTime, "endTime": endTime});
-      if (res.isNotEmpty) {
-        alert(context, title: Text('剪辑完成！'));
-        Provider.of<RecordListProvider>(context, listen: false).init(await FileUtile.getlocalMusic(channel: channel));
-      } else {
-        alert(context, title: Text('剪辑失败！'));
-      }
-    } catch (e) {
-      print(e);
-    }
+//    if (startTime == null) {
+//      alert(context, title: Text('没有确定开始剪辑的时间'));
+//      return;
+//    } else if (endTime == null) {
+//      alert(context, title: Text('没有确定结束剪辑的时间'));
+//      return;
+//    } else if (endTime < startTime) {
+//      alert(context, title: Text('结束时间不能小于开始时间！'));
+//      return;
+//    }
+//    String originPath = rm.filepath, savePath;
+//    DateTime dateTime = DateTime.now();
+//    savePath = await FileUtile.getRecrodPath();
+//    savePath = "$savePath${rm.title}-${dateTime.year}.${dateTime.month}.${dateTime.day}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}";
+//    try {
+//      String res = await channel.invokeMethod("cat", {"originPath": originPath, "savePath": savePath, "startTime": startTime, "endTime": endTime});
+//      if (res.isNotEmpty) {
+//        alert(context, title: Text('剪辑完成！'));
+//        Provider.of<RecordListProvider>(context, listen: false).init(await FileUtile.getlocalMusic(channel: channel));
+//      } else {
+//        alert(context, title: Text('剪辑失败！'));
+//      }
+//    } catch (e) {
+//      print(e);
+//    }
   }
 
   ///播放音乐
-  void play() async {
-    print(rm.filepath);
+  void playOrPurse() async {
+    if (isplaying) {
+      if (timer != null) {
+        timer.cancel();
+        timer = null;
+      }
+      this.reseProgress();
+    } else {
+      reseProgress();
+      setProgress();
+    }
+    setState(() {
+      isplaying = !isplaying;
+    });
+
+    ///和java通信
+    //audioPlayer.playWithFlag(rm.filepath, starttime, endtime);
+  }
+
+  ///设置进度条
+  void setProgress() {
+    timer = Timer.periodic(Duration(seconds: 1), (Timer newtimer) async {
+      print("totlePlaying==>$totlePlaying,currentPlayingTime==>$currentPlayingTime");
+      if (currentPlayingTime <= totlePlaying.truncate() - 1) {
+        this.currentPlayingTime++;
+        this.playingTime = formatTime(currentPlayingTime);
+        key.currentState.setCurentTime(currentPlayingTime / totlePlaying.truncate());
+        setState(() {});
+      } else {
+        key.currentState.setCurentTime(1);
+        setState(() {
+          isplaying = false;
+          timer.cancel();
+          timer = null;
+        });
+//        audioPlayer.pause();
+      }
+    });
+  }
+
+  ///重置进度条
+  void reseProgress() {
+    setState(() {
+      this.currentPlayingTime = 0;
+      this.playingTime = formatTime(currentPlayingTime);
+    });
+    key.currentState.setCurentTime(0);
   }
 
   ///开始、结束指针转换函数
@@ -277,11 +327,17 @@ class _EditorState extends State<Editor> {
     double time = (flag / sw).abs();
     String timeString = doubleTwo(time);
     setState(() {
-      if (isleft)
+      if (isleft) {
         startTimestamp = timeString;
-      else
+        starttime = (time * 1000).floor();
+        currentPlayingTime = starttime;
+      } else {
         endTimestamp = timeString;
+        endtime = (time * 1000).floor();
+      }
+      totlePlaying = endtime - starttime;
     });
+    this.playOrPurse();
   }
 
   String doubleTwo(double number) {
