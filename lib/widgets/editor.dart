@@ -47,12 +47,11 @@ class _EditorState extends State<Editor> {
 
   ///与canvas交互的参数
   CanvasRectModu canvasRectModu;
-  String startTimestamp = '0:0:0', endTimestamp = '0:0:0', playingTime = '0:0:0';
-  int starttime, endtime;
+  String startTimestamp = '0:0:0', endTimestamp = '0:0:0', playingTime = '0:0:0', playingEndTime = '';
   AudioPlayer audioPlayer = AudioPlayer();
   bool isplaying = false;
   Timer timer = null;
-  int currentPlayingTime = 0, totlePlaying = 0;
+  int starttime, endtime, currentPlayingTime, totlePlaying;
 
   TextStyle get _textStyle => TextStyle(color: Theme.of(context).primaryColor, fontSize: 12);
 
@@ -68,13 +67,14 @@ class _EditorState extends State<Editor> {
     ///设置音频时长
     audioTimeLength = reader.t;
     totalTime = reader.s * 1000;
-    endTimestamp = formatTime(rm.recrodingtime.truncate());
+    playingEndTime = endTimestamp = formatTime(rm.recrodingtime.truncate());
     endtime = totalTime.truncate();
     totlePlaying = reader.s.truncate();
 
     ///等待画布widget构建完毕
     Future.delayed(Duration(microseconds: 400)).then((value) {
       singleWidth = windowWidth / 14;
+      starttime = singleWidth.truncate();
       lw = rw = singleWidth;
       sw = singleWidth * 12 / (totalTime / 1000).truncate();
       List<List<int>> datas = reader.convert((singleWidth * 12).truncate()).cast<List<int>>();
@@ -85,6 +85,10 @@ class _EditorState extends State<Editor> {
   @override
   void dispose() async {
     super.dispose();
+    if (timer != null) {
+      timer.cancel();
+      timer = null;
+    }
   }
 
   @override
@@ -227,7 +231,7 @@ class _EditorState extends State<Editor> {
             IconButton(icon: Icon(isplaying ? Icons.stop : Icons.play_arrow, color: mainColor), onPressed: playOrPurse),
             Text(playingTime, style: TextStyle(color: Colors.grey)),
             Expanded(child: MusicProgress(key: key)),
-            Text(endTimestamp, style: TextStyle(color: Colors.grey)),
+            Text(playingEndTime, style: TextStyle(color: Colors.grey)),
           ],
         ),
       ),
@@ -270,6 +274,7 @@ class _EditorState extends State<Editor> {
         timer.cancel();
         timer = null;
       }
+      audioPlayer.pause();
       this.reseProgress();
     } else {
       reseProgress();
@@ -280,16 +285,15 @@ class _EditorState extends State<Editor> {
     });
 
     ///和java通信
-    //audioPlayer.playWithFlag(rm.filepath, starttime, endtime);
+    audioPlayer.playWithFlag(rm.filepath, starttime * 1000, endtime * 1000);
   }
 
   ///设置进度条
   void setProgress() {
     timer = Timer.periodic(Duration(seconds: 1), (Timer newtimer) async {
-      print("totlePlaying==>$totlePlaying,currentPlayingTime==>$currentPlayingTime");
       if (currentPlayingTime <= totlePlaying.truncate() - 1) {
         this.currentPlayingTime++;
-        this.playingTime = formatTime(currentPlayingTime);
+        this.playingTime = formatTime((currentPlayingTime + starttime).truncate());
         key.currentState.setCurentTime(currentPlayingTime / totlePlaying.truncate());
         setState(() {});
       } else {
@@ -299,7 +303,7 @@ class _EditorState extends State<Editor> {
           timer.cancel();
           timer = null;
         });
-//        audioPlayer.pause();
+        audioPlayer.pause();
       }
     });
   }
@@ -308,7 +312,7 @@ class _EditorState extends State<Editor> {
   void reseProgress() {
     setState(() {
       this.currentPlayingTime = 0;
-      this.playingTime = formatTime(currentPlayingTime);
+      this.playingTime = formatTime(currentPlayingTime + starttime);
     });
     key.currentState.setCurentTime(0);
   }
@@ -326,17 +330,15 @@ class _EditorState extends State<Editor> {
     ///开始或结束时间 = 实际偏移量 / 基本的指针长度
     double time = (flag / sw).abs();
     String timeString = doubleTwo(time);
-    setState(() {
-      if (isleft) {
-        startTimestamp = timeString;
-        starttime = (time * 1000).floor();
-        currentPlayingTime = starttime;
-      } else {
-        endTimestamp = timeString;
-        endtime = (time * 1000).floor();
-      }
-      totlePlaying = endtime - starttime;
-    });
+    if (isleft) {
+      playingTime = startTimestamp = timeString;
+      starttime = currentPlayingTime = time.truncate();
+    } else {
+      playingEndTime = endTimestamp = timeString;
+      endtime = time.floor();
+    }
+    totlePlaying = endtime - starttime;
+    setState(() {});
     this.playOrPurse();
   }
 
