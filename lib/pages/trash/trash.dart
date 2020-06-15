@@ -59,37 +59,27 @@ class _TrashState extends State<Trash> {
         showOptions(current, index);
       },
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(
-          border: Border(
-            left: current.isActive ? BorderSide(width: 4, color: Theme.of(context).primaryColor) : BorderSide(width: 0),
-          ),
-        ),
-        child: Row(
+        height: 60,
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        decoration: BoxDecoration(border: Border(left: current.isActive ? BorderSide(width: 6, color: Theme.of(context).primaryColor) : BorderSide(width: 0))),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: <Widget>[
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(current.title),
-                  SizedBox(
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          padding: EdgeInsets.symmetric(horizontal: 5),
-                          decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.all(Radius.circular(10))),
-                          child: Text(formatTime(current.recrodingtime.toInt()), style: textStyle),
-                        ),
-                        Text(current.fileSize, style: textStyle),
-                        Expanded(child: Container()),
-                        Text(current.lastModified, style: textStyle),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-            )
+            Text(current.title),
+            Row(
+              children: <Widget>[
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 5),
+                  margin: EdgeInsets.only(right: 10),
+                  decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.all(Radius.circular(10))),
+                  child: Text(formatTime(current.recrodingtime.toInt()), style: textStyle),
+                ),
+                Text(current.fileSize, style: textStyle),
+                Expanded(child: Container()),
+                Text(current.lastModified, style: textStyle),
+              ],
+            ),
           ],
         ),
       ),
