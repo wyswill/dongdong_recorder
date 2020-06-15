@@ -53,10 +53,10 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
       bgColor: Colors.white,
       ontap: cancle,
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 500),
+        duration: Duration(milliseconds: 620),
         curve: Curves.easeInOut,
         width: MediaQuery.of(context).size.width,
-        height: widget.curentFile.isActive ? 130 : 60,
+        height: widget.curentFile.isActive ? 115 : 60,
         padding: EdgeInsets.only(left: 10, right: 20),
         decoration: BoxDecoration(
           border: Border(
@@ -69,14 +69,15 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Padding(
-                padding: EdgeInsets.only(bottom: widget.curentFile.isActive ? 0 : 15, top: 5),
+                padding: EdgeInsets.only(bottom: widget.curentFile.isActive ? 5 : 15, top: 5),
                 child: Row(
                   children: [
-                    SizedBox(
+                    Container(
                       width: 20,
                       height: 20,
+                      margin: EdgeInsets.only(right: 10),
                       child: IconButton(
-                        iconSize: 20,
+                        iconSize: 25,
                         padding: EdgeInsets.all(0),
                         icon: Icon(this.widget.curentFile.isPlaying ? Icons.pause : Icons.play_arrow, color: Theme.of(context).primaryColor),
                         onPressed: play,
@@ -97,9 +98,7 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
                     child: Text('${formatTime(widget.curentFile.recrodingtime.truncate())}', style: textStyle),
                   ),
                   Container(margin: EdgeInsets.symmetric(horizontal: 5), child: Text(widget.curentFile.fileSize, style: textStyle)),
-                  Expanded(
-                    child: Container(),
-                  ),
+                  Expanded(child: Container()),
                   Container(child: Text(widget.curentFile.lastModified, style: textStyle))
                 ],
               ),
@@ -110,7 +109,7 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
                     Row(
                       children: <Widget>[
                         Text(currentTime, style: TextStyle(color: Colors.grey)),
-                        Expanded(child: MusicProgress(key: key)),
+                        Expanded(child: MusicProgress(key: key, margin: EdgeInsets.symmetric(vertical: 10))),
                         Text(formatTime(widget.curentFile.recrodingtime.truncate()), style: TextStyle(color: Colors.grey)),
                       ],
                     ),
@@ -120,7 +119,6 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
                         children: playerIocns
                             .map(
                               (e) => Container(
-//                                width: 70,
                                 child: setInk(
                                   ontap: () {
                                     switch (e['title']) {
@@ -136,19 +134,7 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
                                     }
                                   },
                                   child: Column(
-                                    children: <Widget>[
-                                      Image.asset(
-                                        e['icon'],
-                                        width: 20,
-                                      ),
-                                      Text(
-                                        e['title'],
-                                        style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize: 12,
-                                        ),
-                                      )
-                                    ],
+                                    children: <Widget>[Image.asset(e['icon'], width: 25), Text(e['title'], style: TextStyle(color: Theme.of(context).primaryColor, fontSize: 12))],
                                   ),
                                 ),
                               ),

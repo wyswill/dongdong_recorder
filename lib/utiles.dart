@@ -135,10 +135,12 @@ class FileUtile {
 }
 
 ///水波纹控件
-Widget setInk({Function ontap, Color bgColor = Colors.white, Color highlightColor, BorderRadiusGeometry borderRadius, Widget child}) {
+Widget setInk({Function ontap, Color shadowColor = Colors.black, double elevation = 0, Color bgColor = Colors.white, Color highlightColor, BorderRadiusGeometry borderRadius, Widget child}) {
   return Material(
     borderRadius: borderRadius,
+    shadowColor: shadowColor,
     color: bgColor,
+    elevation: elevation,
     child: Ink(
       child: InkWell(onTap: ontap, child: child, highlightColor: highlightColor, borderRadius: borderRadius),
     ),

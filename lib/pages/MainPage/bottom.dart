@@ -121,21 +121,19 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     switch (this.currentState) {
       case bottomState.recode:
         return Container(
-          padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
-          decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)]),
+          margin: EdgeInsets.only( bottom: 56),
           child: Center(
             child: setInk(
-              borderRadius: BorderRadius.all(Radius.circular(50)),
-              bgColor: Theme.of(context).primaryColor,
+              elevation: 6,
+              shadowColor: Theme.of(context).primaryColor,
+              bgColor: Colors.white,
               highlightColor: Color.fromRGBO(113, 119, 219, 1),
+              borderRadius: BorderRadius.all(Radius.circular(50)),
               ontap: showRecroding,
               child: Container(
                 width: 60,
                 height: 60,
-                child: Icon(
-                  Icons.mic,
-                  color: Colors.white,
-                ),
+                child: Icon(Icons.mic, color: Theme.of(context).primaryColor),
               ),
             ),
           ),
