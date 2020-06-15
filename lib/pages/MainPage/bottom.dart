@@ -3,7 +3,6 @@ import 'dart:io';
 
 import 'package:flutterapp/modus/record.dart';
 import 'package:flutterapp/pages/recroding/recrod.dart';
-import 'package:flutterapp/plugins/AudioPlayer.dart';
 import 'package:flutterapp/trashProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -12,7 +11,7 @@ import '../../event_bus.dart';
 import '../../provider.dart';
 import '../../utiles.dart';
 
-enum bottomState { recode, playRecoding, deleteFiles }
+enum bottomState { recode, deleteFiles }
 
 class BottomshowBar extends StatefulWidget {
   BottomshowBar({Key key}) : super(key: key);
@@ -29,10 +28,8 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
   AnimationController controller;
 
   double totalTime = 0;
-  String currentTime = '0:0:0';
   int index;
   bottomState currentState = bottomState.recode;
-  AudioPlayer audioPlayer = AudioPlayer();
   Timer timer;
   int currentPlayingTime = 0;
   TextEditingController _textEditingController = TextEditingController();
@@ -48,30 +45,6 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     controller.forward();
     controller.addListener(() {
       setState(() {});
-    });
-
-    ///播放音乐
-    streamSubscription = eventBus.on<PlayingFile>().listen((event) async {
-      if (plaingFile == null) {
-        controller.reset();
-        controller.forward();
-      } else {
-        ///如果当前正在播放，就停止播放，并释放player,否则设置当前播放文件
-        if (plaingFile.isPlaying) {
-          audioPlayer.pause();
-          timer.cancel();
-          timer = null;
-          plaingFile.isPlaying = false;
-        }
-      }
-      setState(() {
-        currentTime = '0:0:0';
-        plaingFile = event.file;
-        index = event.index;
-        totalTime = (plaingFile.recrodingtime);
-        this.currentState = bottomState.playRecoding;
-        currentPlayingTime = 0;
-      });
     });
 
     ///显示回收站操作选项
@@ -233,25 +206,6 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
   }
 
   /***********播放器设置***********/
-
-  ///重置进度条
-  void reseProgress() {
-    setState(() {
-      this.currentPlayingTime = 0;
-      this.currentTime = formatTime(currentPlayingTime);
-    });
-  }
-
-  ///右上角叉叉
-  void closePlayer() {
-    controller.reset();
-    controller.forward();
-    setState(() {
-      plaingFile = null;
-      this.currentState = bottomState.recode;
-    });
-    Provider.of<RecordListProvider>(context, listen: false).reset(isNoti: true);
-  }
 
   /// 跳转到录音页面
   void showRecroding() {
