@@ -5,7 +5,6 @@ import 'package:flutterapp/modus/record.dart';
 import 'package:flutterapp/pages/recroding/recrod.dart';
 import 'package:flutterapp/plugins/AudioPlayer.dart';
 import 'package:flutterapp/trashProvider.dart';
-import 'package:flutterapp/widgets/musicProgress.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
@@ -25,13 +24,7 @@ class BottomshowBar extends StatefulWidget {
 class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProviderStateMixin {
   RecroderModule plaingFile, trashFile;
   StreamSubscription streamSubscription;
-  List<Map> playerIocns = [
-    {'icon': 'asset/paling/icon_Sheared_blue.png', 'title': '剪辑'},
-    {'icon': 'asset/paling/icon_Sheared_blue.png', 'title': '重命名'},
-    {'icon': 'asset/paling/icon_Sheared_blue.png', 'title': '删除'},
-  ];
 
-//  GlobalKey<MusicProgressState> key = GlobalKey();
   Animation<double> animation;
   AnimationController controller;
 
@@ -63,10 +56,6 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
         controller.reset();
         controller.forward();
       } else {
-        try {
-//          if (currentState == bottomState.playRecoding) key.currentState.setCurentTime(0);
-        } catch (e) {}
-
         ///如果当前正在播放，就停止播放，并释放player,否则设置当前播放文件
         if (plaingFile.isPlaying) {
           audioPlayer.pause();
@@ -152,96 +141,6 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
           ),
         );
         break;
-      case bottomState.playRecoding:
-        return Stack(
-          children: <Widget>[
-            ///播放面板
-            Positioned(
-              child: Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(right: 13, top: 15, bottom: 30),
-                decoration: BoxDecoration(color: Colors.white, boxShadow: <BoxShadow>[BoxShadow(color: Colors.grey, offset: Offset(0, 7), blurRadius: 20)]),
-                child: Column(
-                  children: <Widget>[
-                    Container(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: playerIocns
-                            .map(
-                              (e) => Container(
-                                width: 70,
-                                child: setInk(
-                                  ontap: () {
-                                    switch (e['title']) {
-                                      case "删除":
-                                        this.deleteFile();
-                                        break;
-                                      case "重命名":
-                                        this.changeName();
-                                        break;
-                                      case "剪辑":
-                                        this.editor();
-                                        break;
-                                    }
-                                  },
-                                  child: Column(
-                                    children: <Widget>[
-                                      Image.asset(
-                                        e['icon'],
-                                        width: 20,
-                                      ),
-                                      Text(
-                                        e['title'],
-                                        style: TextStyle(
-                                          color: Theme.of(context).primaryColor,
-                                          fontSize: 14,
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                            .toList(),
-                      ),
-                    ),
-                    Row(
-                      children: <Widget>[
-                        IconButton(
-                          icon: Icon(
-                            this.plaingFile.isPlaying ? Icons.pause : Icons.play_arrow,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          onPressed: play,
-                        ),
-                        Text(currentTime, style: TextStyle(color: Colors.grey)),
-//                        Expanded(child: MusicProgress(key: key)),
-                        Text(formatTime(totalTime.truncate()), style: TextStyle(color: Colors.grey))
-                      ],
-                    )
-                  ],
-                ),
-              ),
-            ),
-
-            ///右上角叉叉
-            Positioned(
-              right: 0,
-              child: ClipOval(
-                child: Container(
-                  width: 20,
-                  height: 20,
-                  color: Theme.of(context).primaryColor,
-                  child: GestureDetector(
-                    child: Icon(Icons.close, size: 20, color: Colors.white),
-                    onTap: closePlayer,
-                  ),
-                ),
-              ),
-            )
-          ],
-        );
-        break;
       case bottomState.deleteFiles:
         return Container(
           padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
@@ -289,13 +188,6 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     }
   }
 
-  void deleteFile() {
-    checkIsPlaingAndDoOtherThing().then((value) async {
-      RecroderModule _rm = await Provider.of<RecordListProvider>(context, listen: false).deleteFile(index);
-      Provider.of<TranshProvider>(context, listen: false).trashs.add(_rm);
-    });
-  }
-
   ///删除
   void delete() async {
     await File(trashFile.filepath).delete();
@@ -304,42 +196,6 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
       trashFile = null;
       currentState = bottomState.recode;
     });
-  }
-
-  ///改名
-  void changeName() {
-    checkIsPlaingAndDoOtherThing().then(
-      (value) => alert(
-        context,
-        title: Text('要改名？！！！'),
-        content: TextField(
-          controller: _textEditingController,
-          focusNode: _focusNode,
-          keyboardType: TextInputType.text,
-          autofocus: true,
-          maxLength: 15,
-          decoration: InputDecoration(hintStyle: TextStyle(color: Theme.of(context).primaryColor)),
-        ),
-        actions: <Widget>[
-          FlatButton(
-            onPressed: () {
-              String newName = _textEditingController.text.trim();
-              Provider.of<RecordListProvider>(context, listen: false).reName(index: index, newName: newName);
-              Navigator.pop(context);
-            },
-            child: Text('确定修改'),
-          ),
-          FlatButton(
-            onPressed: () {
-              _textEditingController.text = '';
-              _focusNode.unfocus();
-              Navigator.pop(context);
-            },
-            child: Text('放弃修改'),
-          ),
-        ],
-      ),
-    );
   }
 
   ///还原
@@ -366,64 +222,11 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
 
   /***********播放器设置***********/
 
-  ///播放音乐
-  void play() async {
-    if (plaingFile.isPlaying) {
-      audioPlayer.pause();
-      if (timer != null) {
-        timer.cancel();
-        timer = null;
-      }
-      this.reseProgress();
-    } else {
-      this.reseProgress();
-      setPlanProgress();
-      audioPlayer.play(this.plaingFile.filepath);
-    }
-    setState(() {
-      this.plaingFile.isPlaying = !this.plaingFile.isPlaying;
-    });
-  }
-
   ///重置进度条
   void reseProgress() {
     setState(() {
       this.currentPlayingTime = 0;
       this.currentTime = formatTime(currentPlayingTime);
-    });
-//    key.currentState.setCurentTime(0);
-  }
-
-  ///播放中时进行其他操作
-  Future checkIsPlaingAndDoOtherThing() async {
-    if (plaingFile.isPlaying) {
-      audioPlayer.pause();
-      if (timer != null) {
-        timer.cancel();
-        timer = null;
-      }
-      this.plaingFile.isPlaying = false;
-      this.reseProgress();
-    }
-  }
-
-  ///设置进度条
-  void setPlanProgress() async {
-    timer = Timer.periodic(Duration(seconds: 1), (Timer newtimer) async {
-      if (currentPlayingTime <= totalTime.truncate() - 1) {
-        this.currentPlayingTime++;
-        this.currentTime = formatTime(currentPlayingTime);
-//        key.currentState.setCurentTime(currentPlayingTime / totalTime.truncate());
-        setState(() {});
-      } else {
-//        key.currentState.setCurentTime(1);
-        setState(() {
-          this.plaingFile.isPlaying = false;
-          timer.cancel();
-          timer = null;
-        });
-        audioPlayer.pause();
-      }
     });
   }
 
@@ -437,13 +240,6 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     });
     Provider.of<RecordListProvider>(context, listen: false).reset(isNoti: true);
   }
-
-  ///剪辑
-  void editor() {
-    checkIsPlaingAndDoOtherThing().then((value) => Navigator.pushNamed(context, '/editor', arguments: {'rm': plaingFile, 'index': index}));
-  }
-
-/*******************************/
 
   /// 跳转到录音页面
   void showRecroding() {

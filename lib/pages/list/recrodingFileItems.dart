@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutterapp/modus/record.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterapp/plugins/AudioPlayer.dart';
@@ -27,8 +28,8 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
   List<Map> playerIocns = [
     {'icon': 'asset/paling/icon_Sheared_blue.png', 'title': '剪辑'},
-    {'icon': 'asset/paling/icon_Sheared_blue.png', 'title': '重命名'},
-    {'icon': 'asset/paling/icon_Sheared_blue.png', 'title': '删除'},
+    {'icon': 'asset/sheared/icon_copy_blue.png', 'title': '重命名'},
+    {'icon': 'asset/sheared/icon_remove_blue.png', 'title': '删除'},
   ];
   AudioPlayer audioPlayer = AudioPlayer();
   String currentTime = '0:0:0';
@@ -56,22 +57,39 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
         curve: Curves.easeInOut,
         width: MediaQuery.of(context).size.width,
         height: widget.curentFile.isActive ? 130 : 60,
-        padding: EdgeInsets.only(left: 20, right: 20),
+        padding: EdgeInsets.only(left: 10, right: 20),
         decoration: BoxDecoration(
           border: Border(
-            left: widget.curentFile.isActive ? BorderSide(width: 4, color: Theme.of(context).primaryColor) : BorderSide(width: 0),
+            left: widget.curentFile.isActive ? BorderSide(width: 6, color: Theme.of(context).primaryColor) : BorderSide(width: 0),
             bottom: BorderSide(width: 1, color: Color.fromRGBO(240, 240, 246, 1)),
           ),
         ),
         child: SingleChildScrollView(
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
-              Row(children: <Widget>[Text(widget.curentFile.title, style: TextStyle(fontSize: 14))]),
+              Padding(
+                padding: EdgeInsets.only(bottom: widget.curentFile.isActive ? 0 : 15, top: 5),
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: IconButton(
+                        iconSize: 20,
+                        padding: EdgeInsets.all(0),
+                        icon: Icon(this.widget.curentFile.isPlaying ? Icons.pause : Icons.play_arrow, color: Theme.of(context).primaryColor),
+                        onPressed: play,
+                      ),
+                    ),
+                    Text(
+                      widget.curentFile.title,
+                      style: TextStyle(fontSize: 14),
+                    )
+                  ],
+                ),
+              ),
               Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 5),
@@ -79,7 +97,9 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
                     child: Text('${formatTime(widget.curentFile.recrodingtime.truncate())}', style: textStyle),
                   ),
                   Container(margin: EdgeInsets.symmetric(horizontal: 5), child: Text(widget.curentFile.fileSize, style: textStyle)),
-                  Expanded(child: Container()),
+                  Expanded(
+                    child: Container(),
+                  ),
                   Container(child: Text(widget.curentFile.lastModified, style: textStyle))
                 ],
               ),
@@ -89,15 +109,9 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
                   children: <Widget>[
                     Row(
                       children: <Widget>[
-                        IconButton(
-                            icon: Icon(
-                              this.widget.curentFile.isPlaying ? Icons.pause : Icons.play_arrow,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            onPressed: play),
                         Text(currentTime, style: TextStyle(color: Colors.grey)),
                         Expanded(child: MusicProgress(key: key)),
-                        Text(formatTime(widget.curentFile.recrodingtime.truncate()), style: TextStyle(color: Colors.grey))
+                        Text(formatTime(widget.curentFile.recrodingtime.truncate()), style: TextStyle(color: Colors.grey)),
                       ],
                     ),
                     Container(
@@ -107,38 +121,38 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
                             .map(
                               (e) => Container(
 //                                width: 70,
-                            child: setInk(
-                              ontap: () {
-                                switch (e['title']) {
-                                  case "删除":
-                                    this.deleteFile();
-                                    break;
-                                  case "重命名":
-                                    this.changeName();
-                                    break;
-                                  case "剪辑":
-                                    this.editor();
-                                    break;
-                                }
-                              },
-                              child: Column(
-                                children: <Widget>[
-                                  Image.asset(
-                                    e['icon'],
-                                    width: 20,
+                                child: setInk(
+                                  ontap: () {
+                                    switch (e['title']) {
+                                      case "删除":
+                                        this.deleteFile();
+                                        break;
+                                      case "重命名":
+                                        this.changeName();
+                                        break;
+                                      case "剪辑":
+                                        this.editor();
+                                        break;
+                                    }
+                                  },
+                                  child: Column(
+                                    children: <Widget>[
+                                      Image.asset(
+                                        e['icon'],
+                                        width: 20,
+                                      ),
+                                      Text(
+                                        e['title'],
+                                        style: TextStyle(
+                                          color: Theme.of(context).primaryColor,
+                                          fontSize: 12,
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                  Text(
-                                    e['title'],
-                                    style: TextStyle(
-                                      color: Theme.of(context).primaryColor,
-                                      fontSize: 14,
-                                    ),
-                                  )
-                                ],
+                                ),
                               ),
-                            ),
-                          ),
-                        )
+                            )
                             .toList(),
                       ),
                     ),
