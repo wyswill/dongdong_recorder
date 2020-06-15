@@ -27,7 +27,8 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
   FlutterPluginRecord flutterPluginRecord = FlutterPluginRecord();
   bool statu = false;
   String filepath = '', path = '';
-  List<CanvasRectModu> recrodingData = [], templist = [];
+  int leng =130;
+  List<int> recrodingData = List<int>.filled(130, 0, growable: true), templist = [];
   GlobalKey<ShowSounState> key = GlobalKey();
   double left = 0, right = 60;
   double audioTimeLength = 0;
@@ -47,6 +48,9 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
     DateTime dateTime = DateTime.now();
     String defaultTitle = '${dateTime.year}.${dateTime.month}.${dateTime.day}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
     controller = TextEditingController(text: defaultTitle);
+    Future.delayed(Duration(milliseconds: 400), () {
+      key.currentState.setRecrodingData(recrodingData);
+    });
   }
 
   @override
@@ -171,13 +175,14 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
 
   ///设置音频波形画布
   Widget setCanvas() {
-    return GestureDetector(
-      onHorizontalDragUpdate: (DragUpdateDetails e) {
-        double offset = e.delta.dx;
-        recrodingOffset(offset);
-      },
-      child: ShowSoun(key: key, recriodingTime: this.audioTimeLength),
-    );
+    return ShowSoun(key: key, recriodingTime: this.audioTimeLength);
+//    return GestureDetector(
+//      onHorizontalDragUpdate: (DragUpdateDetails e) {
+//        double offset = e.delta.dx;
+//        recrodingOffset(offset);
+//      },
+//      child:,
+//    );
   }
 
   Future<bool> exit() {
@@ -268,7 +273,6 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
       });
     } else {
       flutterPluginRecord.start();
-      recrodingData = [];
       setState(() {
         h = 0;
         m = 0;
@@ -345,17 +349,17 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
 
   ///录音实时写入波形
   setdata(double value) {
-    List<CanvasRectModu> newLists = [];
-    if (recrodingData.length < 195) {
-      this.recrodingData.add(CanvasRectModu(vlaue: value, type: CanvasRectTypes.data));
+    List<int> newLists = [];
+    if (recrodingData.length <= leng) {
+      this.recrodingData.add(value.round());
       key.currentState.setRecrodingData(recrodingData);
     } else {
       newLists = recrodingData;
       newLists.removeAt(0);
-      newLists.add(CanvasRectModu(vlaue: value, type: CanvasRectTypes.data));
+      newLists.add(value.round());
       key.currentState.setRecrodingData(newLists);
     }
-    templist.add(CanvasRectModu(vlaue: value, type: CanvasRectTypes.data));
+    templist.add(value.round());
   }
 
   ///将数字音频信号转换成毫秒位单位的值
@@ -383,7 +387,7 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
   ///数据左右滑动
   recrodingOffset(double offset) {
     double ofs = offset.floorToDouble();
-    List<CanvasRectModu> newList;
+    List<int> newList;
     left += ofs;
     right = 195 - left;
     if (-left.floor() < 0) {

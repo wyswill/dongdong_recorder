@@ -5,7 +5,7 @@ class MyCanvas extends CustomPainter {
   MyCanvas(this.canvasData, this.recriodingTime);
 
   final double recriodingTime;
-  final List<CanvasRectModu> canvasData;
+  final List<int> canvasData;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -13,20 +13,19 @@ class MyCanvas extends CustomPainter {
   }
 
   void init(Canvas canvas, Size size) {
-    var rect = Offset.zero & size;
-    canvas.drawRect(rect, Paint()..color = Color.fromRGBO(87, 92, 159, 1));
     // 每个柱子的宽度
     double columnWidth = 2;
-    // 幅度比例
-    double step = size.height / 400;
     // 挨个画频谱柱子
     for (int i = 0; i < canvasData.length; i++) {
-      double volume = 2.0;
-      CanvasRectModu curent = canvasData[i];
-      volume = curent.vlaue * step;
-      Rect column = Rect.fromLTWH(columnWidth * i, (size.height - volume) / 2, columnWidth.ceil().toDouble(), volume);
+      double volume = 2.0, top;
+      int curent = canvasData[i];
+      volume = curent.truncateToDouble() - 100;
+      if (volume <= 0) volume = 2;
+      top = (size.height - volume) / 2;
+      Rect column = Rect.fromLTWH((columnWidth + 1) * i, top, columnWidth.roundToDouble(), volume);
       canvas.drawRect(column, Paint()..color = Colors.white);
     }
+//    canvas.drawLine(Offset(size.width / 2, size.height / 3), Offset(size.width / 2, size.height - size.height / 3), Paint()..color = Colors.redAccent);
   }
 
   @override
