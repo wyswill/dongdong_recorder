@@ -1,6 +1,4 @@
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutterapp/canvasData.dart';
-import 'package:flutterapp/modus/cancasRectModu.dart';
 import 'package:flutterapp/widgets/editorCanvas.dart';
 import 'package:flutter/material.dart';
 import 'package:flutterapp/widgets/timeline.dart';
@@ -19,7 +17,7 @@ class ShowSoun extends StatefulWidget {
 }
 
 class ShowSounState extends State<ShowSoun> {
-  List<CanvasRectModu> recrodingData = [];
+  List<int> recrodingData = [];
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +34,14 @@ class ShowSounState extends State<ShowSoun> {
             )
           : CustomPaint(
               isComplex: true,
+              willChange: true,
               painter: MyCanvas(recrodingData, widget.recriodingTime),
             ),
     );
   }
 
   ///滑动窗口
-  setRecrodingData(List<CanvasRectModu> data) {
+  setRecrodingData(List<int> data) {
     setState(() {
       recrodingData = data;
     });
