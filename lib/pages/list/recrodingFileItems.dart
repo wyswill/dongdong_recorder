@@ -7,6 +7,7 @@ import 'package:flutterapp/plugins/AudioPlayer.dart';
 import 'package:flutterapp/trashProvider.dart';
 import 'package:flutterapp/widgets/musicProgress.dart';
 import 'package:provider/provider.dart';
+import 'package:share_extend/share_extend.dart';
 
 import '../../provider.dart';
 import '../../utiles.dart';
@@ -30,6 +31,7 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
     {'icon': 'asset/paling/icon_Sheared_blue.png', 'title': '剪辑'},
     {'icon': 'asset/sheared/icon_copy_blue.png', 'title': '重命名'},
     {'icon': 'asset/sheared/icon_remove_blue.png', 'title': '删除'},
+    {'icon': 'asset/share-alt.png', 'title': '分享'},
   ];
   AudioPlayer audioPlayer = AudioPlayer();
   String currentTime = '0:0:0';
@@ -137,6 +139,9 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
                                       case "剪辑":
                                         this.editor();
                                         break;
+                                      case "分享":
+                                        this.shear();
+                                        break;
                                     }
                                   },
                                   child: Column(
@@ -156,6 +161,10 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
         ),
       ),
     );
+  }
+
+  void shear() {
+    ShareExtend.share(widget.curentFile.filepath, "file");
   }
 
   ///还原滑动
@@ -242,7 +251,7 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
     checkIsPlaingAndDoOtherThing().then(
       (value) => alert(
         context,
-        title: Text('要改名？！！！'),
+        title: Text('请输入要修改的名称:'),
         content: TextField(
           controller: _textEditingController,
           focusNode: _focusNode,

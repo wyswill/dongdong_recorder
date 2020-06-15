@@ -48,11 +48,18 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver, SingleTick
     DateTime dateTime = DateTime.now();
     String defaultTitle = '${dateTime.year}.${dateTime.month}.${dateTime.day}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
     controller = TextEditingController(text: defaultTitle);
+
+    ///获取实例
     widgetsBinding = WidgetsBinding.instance;
+
+    ///添加第一帧回调
     widgetsBinding.addPostFrameCallback((callback) {
+      ///每一帧回调
       widgetsBinding.addPersistentFrameCallback((callback) {
         key.currentState.setRecrodingData(recrodingData);
         widgetsBinding.scheduleFrame();
+
+        ///触发屏幕刷新
       });
     });
   }
