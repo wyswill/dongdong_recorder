@@ -31,7 +31,6 @@ class _RecordingListState extends State<RecordingList> {
       builder: (context, conter, child) {
         return ListView.builder(
           itemCount: conter.recorderFiles.length,
-          itemExtent: 50.0, //强制高度为50.0
           itemBuilder: (BuildContext context, int index) {
             return RecordingFileItems(
               curentFile: conter.recorderFiles[index],

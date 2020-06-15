@@ -30,7 +30,8 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     {'icon': 'asset/paling/icon_Sheared_blue.png', 'title': '重命名'},
     {'icon': 'asset/paling/icon_Sheared_blue.png', 'title': '删除'},
   ];
-  GlobalKey<MusicProgressState> key = GlobalKey();
+
+//  GlobalKey<MusicProgressState> key = GlobalKey();
   Animation<double> animation;
   AnimationController controller;
 
@@ -63,7 +64,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
         controller.forward();
       } else {
         try {
-          if (currentState == bottomState.playRecoding) key.currentState.setCurentTime(0);
+//          if (currentState == bottomState.playRecoding) key.currentState.setCurentTime(0);
         } catch (e) {}
 
         ///如果当前正在播放，就停止播放，并释放player,否则设置当前播放文件
@@ -214,7 +215,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
                           onPressed: play,
                         ),
                         Text(currentTime, style: TextStyle(color: Colors.grey)),
-                        Expanded(child: MusicProgress(key: key)),
+//                        Expanded(child: MusicProgress(key: key)),
                         Text(formatTime(totalTime.truncate()), style: TextStyle(color: Colors.grey))
                       ],
                     )
@@ -390,7 +391,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
       this.currentPlayingTime = 0;
       this.currentTime = formatTime(currentPlayingTime);
     });
-    key.currentState.setCurentTime(0);
+//    key.currentState.setCurentTime(0);
   }
 
   ///播放中时进行其他操作
@@ -412,10 +413,10 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
       if (currentPlayingTime <= totalTime.truncate() - 1) {
         this.currentPlayingTime++;
         this.currentTime = formatTime(currentPlayingTime);
-        key.currentState.setCurentTime(currentPlayingTime / totalTime.truncate());
+//        key.currentState.setCurentTime(currentPlayingTime / totalTime.truncate());
         setState(() {});
       } else {
-        key.currentState.setCurentTime(1);
+//        key.currentState.setCurentTime(1);
         setState(() {
           this.plaingFile.isPlaying = false;
           timer.cancel();

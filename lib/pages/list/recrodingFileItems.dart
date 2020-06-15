@@ -1,9 +1,12 @@
+import 'dart:async';
+
 import 'package:flutterapp/modus/record.dart';
 import 'package:flutter/material.dart';
+import 'package:flutterapp/plugins/AudioPlayer.dart';
 import 'package:flutterapp/trashProvider.dart';
+import 'package:flutterapp/widgets/musicProgress.dart';
 import 'package:provider/provider.dart';
 
-import '../../event_bus.dart';
 import '../../provider.dart';
 import '../../utiles.dart';
 
@@ -20,17 +23,27 @@ class RecordingFileItems extends StatefulWidget {
   _RecordingFileItemsState createState() => _RecordingFileItemsState();
 }
 
-class _RecordingFileItemsState extends State<RecordingFileItems> {
+class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTickerProviderStateMixin {
   TextStyle textStyle = TextStyle(fontSize: 10, color: Colors.grey);
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  List<Map> playerIocns = [
+    {'icon': 'asset/paling/icon_Sheared_blue.png', 'title': '剪辑'},
+    {'icon': 'asset/paling/icon_Sheared_blue.png', 'title': '重命名'},
+    {'icon': 'asset/paling/icon_Sheared_blue.png', 'title': '删除'},
+  ];
+  AudioPlayer audioPlayer = AudioPlayer();
+  String currentTime = '0:0:0';
+  GlobalKey<MusicProgressState> key = GlobalKey();
+  Timer timer;
+  double totalTime = 0, height = 60;
+  TextEditingController _textEditingController = TextEditingController();
+  FocusNode _focusNode = FocusNode();
+  int currentPlayingTime = 0;
 
   @override
   void dispose() {
     super.dispose();
+    _textEditingController.dispose();
+    _focusNode.dispose();
   }
 
   @override
@@ -38,8 +51,11 @@ class _RecordingFileItemsState extends State<RecordingFileItems> {
     return setInk(
       bgColor: Colors.white,
       ontap: cancle,
-      child: Container(
+      child: AnimatedContainer(
+        duration: Duration(milliseconds: 500),
+        curve: Curves.easeInOut,
         width: MediaQuery.of(context).size.width,
+        height: widget.curentFile.isActive ? 130 : 60,
         padding: EdgeInsets.only(left: 20, right: 20),
         decoration: BoxDecoration(
           border: Border(
@@ -47,32 +63,90 @@ class _RecordingFileItemsState extends State<RecordingFileItems> {
             bottom: BorderSide(width: 1, color: Color.fromRGBO(240, 240, 246, 1)),
           ),
         ),
-        child: Row(
-          children: <Widget>[
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.start,
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Row(children: <Widget>[Text(widget.curentFile.title, style: TextStyle(fontSize: 14))]),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                mainAxisSize: MainAxisSize.max,
                 children: <Widget>[
-                  Row(children: <Widget>[Text(widget.curentFile.title, style: TextStyle(fontSize: 14))]),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.max,
-                    children: <Widget>[
-                      Container(
-                        padding: EdgeInsets.symmetric(horizontal: 5),
-                        decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.all(Radius.circular(10))),
-                        child: Text('${formatTime(widget.curentFile.recrodingtime.truncate())}', style: textStyle),
-                      ),
-                      Container(margin: EdgeInsets.symmetric(horizontal: 5), child: Text(widget.curentFile.fileSize, style: textStyle)),
-                      Expanded(child: Container()),
-                      Container(child: Text(widget.curentFile.lastModified, style: textStyle))
-                    ],
-                  )
+                  Container(
+                    padding: EdgeInsets.symmetric(horizontal: 5),
+                    decoration: BoxDecoration(border: Border.all(color: Colors.grey, width: 1), borderRadius: BorderRadius.all(Radius.circular(10))),
+                    child: Text('${formatTime(widget.curentFile.recrodingtime.truncate())}', style: textStyle),
+                  ),
+                  Container(margin: EdgeInsets.symmetric(horizontal: 5), child: Text(widget.curentFile.fileSize, style: textStyle)),
+                  Expanded(child: Container()),
+                  Container(child: Text(widget.curentFile.lastModified, style: textStyle))
                 ],
               ),
-            )
-          ],
+              Offstage(
+                offstage: !widget.curentFile.isActive,
+                child: Column(
+                  children: <Widget>[
+                    Row(
+                      children: <Widget>[
+                        IconButton(
+                            icon: Icon(
+                              this.widget.curentFile.isPlaying ? Icons.pause : Icons.play_arrow,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            onPressed: play),
+                        Text(currentTime, style: TextStyle(color: Colors.grey)),
+                        Expanded(child: MusicProgress(key: key)),
+                        Text(formatTime(widget.curentFile.recrodingtime.truncate()), style: TextStyle(color: Colors.grey))
+                      ],
+                    ),
+                    Container(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: playerIocns
+                            .map(
+                              (e) => Container(
+//                                width: 70,
+                            child: setInk(
+                              ontap: () {
+                                switch (e['title']) {
+                                  case "删除":
+                                    this.deleteFile();
+                                    break;
+                                  case "重命名":
+                                    this.changeName();
+                                    break;
+                                  case "剪辑":
+                                    this.editor();
+                                    break;
+                                }
+                              },
+                              child: Column(
+                                children: <Widget>[
+                                  Image.asset(
+                                    e['icon'],
+                                    width: 20,
+                                  ),
+                                  Text(
+                                    e['title'],
+                                    style: TextStyle(
+                                      color: Theme.of(context).primaryColor,
+                                      fontSize: 14,
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ),
+                        )
+                            .toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -82,6 +156,114 @@ class _RecordingFileItemsState extends State<RecordingFileItems> {
   void cancle() {
     if (Provider.of<RecordListProvider>(context, listen: false).preIndex == widget.index) return;
     Provider.of<RecordListProvider>(context, listen: false).changeState(widget.index);
-    eventBus.fire(PlayingFile(widget.curentFile, widget.index));
+  }
+
+  void deleteFile() {
+    checkIsPlaingAndDoOtherThing().then((value) async {
+      RecroderModule _rm = await Provider.of<RecordListProvider>(context, listen: false).deleteFile(widget.index);
+      Provider.of<TranshProvider>(context, listen: false).trashs.add(_rm);
+    });
+  }
+
+  ///剪辑
+  void editor() {
+    checkIsPlaingAndDoOtherThing().then((value) => Navigator.pushNamed(context, '/editor', arguments: {'rm': widget.curentFile, 'index': widget.index}));
+  }
+
+  ///播放音乐
+  void play() async {
+    if (widget.curentFile.isPlaying) {
+      audioPlayer.pause();
+      if (timer != null) {
+        timer.cancel();
+        timer = null;
+      }
+      this.reseProgress();
+    } else {
+      this.reseProgress();
+      setPlanProgress();
+      audioPlayer.play(this.widget.curentFile.filepath);
+    }
+    setState(() {
+      this.widget.curentFile.isPlaying = !this.widget.curentFile.isPlaying;
+    });
+  }
+
+  ///设置进度条
+  void setPlanProgress() async {
+    timer = Timer.periodic(Duration(seconds: 1), (Timer newtimer) async {
+      if (currentPlayingTime <= totalTime.truncate() - 1) {
+        this.currentPlayingTime++;
+        this.currentTime = formatTime(currentPlayingTime);
+        key.currentState.setCurentTime(currentPlayingTime / totalTime.truncate());
+        setState(() {});
+      } else {
+        key.currentState.setCurentTime(1);
+        setState(() {
+          widget.curentFile.isPlaying = false;
+          timer.cancel();
+          timer = null;
+        });
+        audioPlayer.pause();
+      }
+    });
+  }
+
+  ///重置进度条
+  void reseProgress() {
+    setState(() {
+      this.currentPlayingTime = 0;
+      this.currentTime = formatTime(currentPlayingTime);
+    });
+    key.currentState.setCurentTime(0);
+  }
+
+  ///播放中时进行其他操作
+  Future checkIsPlaingAndDoOtherThing() async {
+    if (widget.curentFile.isPlaying) {
+      audioPlayer.pause();
+      if (timer != null) {
+        timer.cancel();
+        timer = null;
+      }
+      this.widget.curentFile.isPlaying = false;
+      this.reseProgress();
+    }
+  }
+
+  ///改名
+  void changeName() {
+    checkIsPlaingAndDoOtherThing().then(
+      (value) => alert(
+        context,
+        title: Text('要改名？！！！'),
+        content: TextField(
+          controller: _textEditingController,
+          focusNode: _focusNode,
+          keyboardType: TextInputType.text,
+          autofocus: true,
+          maxLength: 15,
+          decoration: InputDecoration(hintStyle: TextStyle(color: Theme.of(context).primaryColor)),
+        ),
+        actions: <Widget>[
+          FlatButton(
+            onPressed: () {
+              String newName = _textEditingController.text.trim();
+              Provider.of<RecordListProvider>(context, listen: false).reName(index: widget.index, newName: newName);
+              Navigator.pop(context);
+            },
+            child: Text('确定修改'),
+          ),
+          FlatButton(
+            onPressed: () {
+              _textEditingController.text = '';
+              _focusNode.unfocus();
+              Navigator.pop(context);
+            },
+            child: Text('放弃修改'),
+          ),
+        ],
+      ),
+    );
   }
 }
