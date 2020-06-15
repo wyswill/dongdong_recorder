@@ -17,7 +17,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
   List<Map> menus = [
     {"icon": "asset/toolbar/icon_List", "router": 'list', "isActive": false},
     {"icon": 'asset/toolbar/icon_trash', "router": 'list', "isActive": false},
-    {"icon": 'asset/toolbar/icon_Search', "router": 'list', "isActive": false},
+//    {"icon": 'asset/toolbar/icon_Search', "router": 'list', "isActive": false},
   ];
   List<Widget> pages = [RecordingList(), Trash(), SearchPage()];
   PageController pageController;
@@ -28,7 +28,7 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
   @override
   void initState() {
     super.initState();
-    tabController = TabController(vsync: this, length: 3);
+    tabController = TabController(vsync: this, length: menus.length);
     tabController.addListener(() {
       setState(() {
         pageController.animateToPage(tabController.index, duration: Duration(milliseconds: 200), curve: ElasticOutCurve(4));

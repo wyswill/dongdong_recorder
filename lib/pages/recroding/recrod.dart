@@ -121,39 +121,31 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
   Widget setBottonButton() {
     return Container(
       padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
-      ),
+      decoration: BoxDecoration(color: Colors.white, boxShadow: [
+        BoxShadow(color: Color.fromRGBO(80, 69, 112, 1), blurRadius: 20, offset: Offset(-20, 0)),
+        BoxShadow(color: Color.fromRGBO(80, 69, 112, 1), blurRadius: 15, offset: Offset(-15, 0)),
+        BoxShadow(color: Color.fromRGBO(80, 69, 112, 1), blurRadius: 5, offset: Offset(-5, 0)),
+      ]),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
           setInk(
-            bgColor: Theme.of(context).primaryColor,
-            child: Image.asset('asset/icon_repeat.png', width: 40),
+            borderRadius: BorderRadius.all(Radius.circular(50)),
+            bgColor: Color.fromRGBO(113, 119, 219, 1),
             ontap: reset,
+            child: SizedBox(width: 30, height: 30, child: Icon(Icons.refresh, color: Colors.white, size: 20)),
           ),
+          setInk(
+              borderRadius: BorderRadius.all(Radius.circular(50)),
+              bgColor: Theme.of(context).primaryColor,
+              highlightColor: Color.fromRGBO(113, 119, 219, 1),
+              ontap: startOrStop,
+              child: Container(width: 60, height: 60, child: Icon(statu ? Icons.pause : Icons.play_arrow, color: Colors.white, size: 50))),
           setInk(
             borderRadius: BorderRadius.all(Radius.circular(50)),
-            bgColor: Colors.white,
-            highlightColor: Color.fromRGBO(113, 119, 219, 1),
-            ontap: startOrStop,
-            child: Container(
-              width: 60,
-              height: 60,
-              child: Icon(statu ? Icons.stop : Icons.mic, color: Theme.of(context).primaryColor),
-            ),
-          ),
-          setInk(
-            bgColor: Theme.of(context).primaryColor,
-            child: Container(
-              width: 40,
-              height: 40,
-              child: Icon(
-                Icons.check,
-                color: Colors.white,
-              ),
-            ),
+            bgColor: Color.fromRGBO(113, 119, 219, 1),
             ontap: saveData,
+            child: Container(width: 30, height: 30, child: Icon(Icons.stop, color: Colors.white, size: 20)),
           ),
         ],
       ),

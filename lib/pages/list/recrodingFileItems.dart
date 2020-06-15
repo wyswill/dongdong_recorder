@@ -41,10 +41,16 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
   int currentPlayingTime = 0;
 
   @override
+  void initState() {
+    totalTime = widget.curentFile.recrodingtime;
+    super.initState();
+  }
+
+  @override
   void dispose() {
-    super.dispose();
     _textEditingController.dispose();
     _focusNode.dispose();
+    super.dispose();
   }
 
   @override
@@ -53,7 +59,7 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
       bgColor: Colors.white,
       ontap: cancle,
       child: AnimatedContainer(
-        duration: Duration(milliseconds: 620),
+        duration: Duration(milliseconds: 350),
         curve: Curves.easeInOut,
         width: MediaQuery.of(context).size.width,
         height: widget.curentFile.isActive ? 115 : 60,
