@@ -1,9 +1,6 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutterapp/canvasData.dart';
-import 'package:flutterapp/event_bus.dart';
-import 'package:flutterapp/modus/cancasRectModu.dart';
 import 'package:flutterapp/modus/record.dart';
 import 'package:flutterapp/plugins/AudioPlayer.dart';
 import 'package:flutterapp/plugins/WavReader.dart';
@@ -28,7 +25,6 @@ class _EditorState extends State<Editor> {
   String currentTime = '0:0:0';
   GlobalKey<MusicProgressState> key = GlobalKey();
   double left = 0, right = 60, audioTimeLength = 0, lw = 30, rw = 30, height = 250, totalTime = 0;
-  List<CanvasRectModu> recordingData = [];
 
   ///和native通讯
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
@@ -45,8 +41,6 @@ class _EditorState extends State<Editor> {
   double get windowWidth => MediaQuery.of(context).size.width;
   double singleWidth, sw;
 
-  ///与canvas交互的参数
-  CanvasRectModu canvasRectModu;
   String startTimestamp = '0:0:0', endTimestamp = '0:0:0', playingTime = '0:0:0', playingEndTime = '';
   AudioPlayer audioPlayer = AudioPlayer();
   bool isplaying = false;

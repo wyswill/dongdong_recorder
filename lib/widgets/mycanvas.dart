@@ -1,4 +1,3 @@
-import 'package:flutterapp/modus/cancasRectModu.dart';
 import 'package:flutter/material.dart';
 
 class MyCanvas extends CustomPainter {
@@ -25,7 +24,6 @@ class MyCanvas extends CustomPainter {
       Rect column = Rect.fromLTWH((columnWidth + 1) * i, top, columnWidth.roundToDouble(), volume);
       canvas.drawRect(column, Paint()..color = Colors.white);
     }
-//    canvas.drawLine(Offset(size.width / 2, size.height / 3), Offset(size.width / 2, size.height - size.height / 3), Paint()..color = Colors.redAccent);
   }
 
   @override

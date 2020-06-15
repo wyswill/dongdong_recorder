@@ -1,4 +1,3 @@
-import 'package:flutterapp/modus/cancasRectModu.dart';
 import 'package:event_bus/event_bus.dart';
 
 import 'modus/record.dart';

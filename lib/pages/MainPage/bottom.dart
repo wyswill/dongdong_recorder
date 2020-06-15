@@ -121,7 +121,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
     switch (this.currentState) {
       case bottomState.recode:
         return Container(
-          margin: EdgeInsets.only( bottom: 56),
+          margin: EdgeInsets.only(bottom: 56),
           child: Center(
             child: setInk(
               elevation: 6,
@@ -188,12 +188,26 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
 
   ///删除
   void delete() async {
-    await File(trashFile.filepath).delete();
-    Provider.of<TranshProvider>(context, listen: false).remove(index);
-    setState(() {
-      trashFile = null;
-      currentState = bottomState.recode;
-    });
+    alert(context, title: Text('是否删除当前文件?'), actions: [
+      FlatButton(
+        onPressed: () async {
+          await File(trashFile.filepath).delete();
+          Provider.of<TranshProvider>(context, listen: false).remove(index);
+          setState(() {
+            trashFile = null;
+            currentState = bottomState.recode;
+          });
+          Navigator.pop(context);
+        },
+        child: Text('确认删除'),
+      ),
+      FlatButton(
+        onPressed: () {
+          Navigator.pop(context);
+        },
+        child: Text('取消'),
+      )
+    ]);
   }
 
   ///还原
