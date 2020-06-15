@@ -19,20 +19,21 @@ class Recrod extends StatefulWidget {
   _RecrodState createState() => _RecrodState();
 }
 
-class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
+class _RecrodState extends State<Recrod> with WidgetsBindingObserver, SingleTickerProviderStateMixin {
   FocusNode node = FocusNode();
   TextEditingController controller;
 
   FlutterPluginRecord flutterPluginRecord = FlutterPluginRecord();
   bool statu = false;
   String filepath = '', path = '';
-  int leng =130;
+  int leng = 130;
   List<int> recrodingData = List<int>.filled(130, 0, growable: true), templist = [];
   GlobalKey<ShowSounState> key = GlobalKey();
   double left = 0, right = 60;
   double audioTimeLength = 0;
   int h = 0, m = 0, s = 0, temp = 0;
   Timer timer;
+  WidgetsBinding widgetsBinding;
 
   ///和native通讯
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
@@ -47,8 +48,12 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
     DateTime dateTime = DateTime.now();
     String defaultTitle = '${dateTime.year}.${dateTime.month}.${dateTime.day}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}';
     controller = TextEditingController(text: defaultTitle);
-    Future.delayed(Duration(milliseconds: 400), () {
-      key.currentState.setRecrodingData(recrodingData);
+    widgetsBinding = WidgetsBinding.instance;
+    widgetsBinding.addPostFrameCallback((callback) {
+      widgetsBinding.addPersistentFrameCallback((callback) {
+        key.currentState.setRecrodingData(recrodingData);
+        widgetsBinding.scheduleFrame();
+      });
     });
   }
 
@@ -175,13 +180,6 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
   ///设置音频波形画布
   Widget setCanvas() {
     return ShowSoun(key: key, recriodingTime: this.audioTimeLength);
-//    return GestureDetector(
-//      onHorizontalDragUpdate: (DragUpdateDetails e) {
-//        double offset = e.delta.dx;
-//        recrodingOffset(offset);
-//      },
-//      child:,
-//    );
   }
 
   Future<bool> exit() {
@@ -351,55 +349,11 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
     List<int> newLists = [];
     if (recrodingData.length <= leng) {
       this.recrodingData.add(value.round());
-      key.currentState.setRecrodingData(recrodingData);
     } else {
       newLists = recrodingData;
       newLists.removeAt(0);
       newLists.add(value.round());
-      key.currentState.setRecrodingData(newLists);
     }
     templist.add(value.round());
-  }
-
-  ///将数字音频信号转换成毫秒位单位的值
-  Future<List> transfrom(List data) async {
-    double recrodingtime = (data.length / 8000) * 1000, temp = 0;
-    int flag = (data.length / (s * 1000)).floor(), stp = 0;
-    List<double> res = [];
-    print("音频时长:$recrodingtime ms");
-    setState(() {
-      audioTimeLength = recrodingtime;
-    });
-    for (int i = 0; i < data.length; i++) {
-      if (stp == flag) {
-        double avg = temp / stp;
-        res.add(avg);
-        stp = 0;
-        temp = 0;
-      }
-      temp += data[i];
-      stp++;
-    }
-    return res;
-  }
-
-  ///数据左右滑动
-  recrodingOffset(double offset) {
-    double ofs = offset.floorToDouble();
-    List<int> newList;
-    left += ofs;
-    right = 195 - left;
-    if (-left.floor() < 0) {
-      left -= ofs;
-      return;
-    }
-    if (right > templist.length) {
-      left -= ofs;
-      right = templist.length.toDouble();
-      return;
-    }
-    var newList2 = templist.getRange(-left.floor(), right.floor());
-    newList = newList2.toList();
-    key.currentState.setRecrodingData(newList);
   }
 }

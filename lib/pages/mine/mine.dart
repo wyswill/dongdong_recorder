@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutterapp/utiles.dart';
+import 'package:path_provider/path_provider.dart';
 
 class Mine extends StatefulWidget {
   const Mine({Key key, this.arguments}) : super(key: key);
@@ -11,8 +15,8 @@ class Mine extends StatefulWidget {
 class _MineState extends State<Mine> {
   List<Map<String, String>> data = [
     {"icon": 'asset/setting/icon_help_blue.png', "title": "使用帮助", "router": '/help'},
-//    {"icon": 'asset/setting/icon_Instructions_blue.png', "title": "快捷指令", "router": '/'},
     {"icon": 'asset/setting/icon_seeting_blue.png', "title": "录音设置", "router": '/recrodeSetting'},
+    {"icon": 'asset/setting/icon_Instructions_blue.png', "title": "清除缓存", "router": '/clear'},
 //    {"icon": 'asset/setting/icon_help_blue.png', "title": "分享给朋友", "router": '/'},
 //    {"icon": 'asset/setting/info-sign.png', "title": "关于", "router": '/'},
 //    {"icon": 'asset/setting/icon_pencil_b.png', "title": "意见设置", "router": '/'},
@@ -59,7 +63,10 @@ class _MineState extends State<Mine> {
           children: <Widget>[
             Padding(
               padding: EdgeInsets.only(left: 10),
-              child: Image.asset(curent['icon'],width: 20,),
+              child: Image.asset(
+                curent['icon'],
+                width: 20,
+              ),
             ),
             Padding(
               padding: EdgeInsets.only(left: 10),
@@ -76,6 +83,30 @@ class _MineState extends State<Mine> {
   }
 
   jump(String path) {
-    Navigator.pushNamed(context, path);
+    if (path == '/clear') {
+      alert(context, title: Text('确认清除缓存么？'), actions: [
+        FlatButton(
+          child: Text('确认'),
+          onPressed: () async {
+            Directory directory = (await getExternalCacheDirectories())[0];
+            String cachePath = '${directory.path}/file_cache/Audio';
+            Directory d = Directory(cachePath);
+            if (!d.existsSync()) d.createSync();
+            final List<FileSystemEntity> cacheDirectory = Directory(cachePath).listSync();
+            if (cacheDirectory.isNotEmpty)
+              cacheDirectory.forEach((element) {
+                element.deleteSync();
+              });
+            Navigator.pop(context);
+          },
+        ),
+        FlatButton(
+            child: Text('取消'),
+            onPressed: () {
+              Navigator.pop(context);
+            })
+      ]);
+    } else
+      Navigator.pushNamed(context, path);
   }
 }
