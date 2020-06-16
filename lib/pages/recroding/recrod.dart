@@ -19,7 +19,7 @@ class Recrod extends StatefulWidget {
   _RecrodState createState() => _RecrodState();
 }
 
-class _RecrodState extends State<Recrod> with WidgetsBindingObserver, SingleTickerProviderStateMixin {
+class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
   FocusNode node = FocusNode();
   TextEditingController controller;
 
@@ -33,7 +33,6 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver, SingleTick
   double audioTimeLength = 0;
   int h = 0, m = 0, s = 0, temp = 0;
   Timer timer;
-  WidgetsBinding widgetsBinding;
 
   ///和native通讯
   MethodChannel channel = const MethodChannel("com.lanwanhudong");
@@ -50,17 +49,15 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver, SingleTick
     controller = TextEditingController(text: defaultTitle);
 
     ///获取实例
-    widgetsBinding = WidgetsBinding.instance;
 
     ///添加第一帧回调
-    widgetsBinding.addPostFrameCallback((callback) {
-      ///每一帧回调
-      widgetsBinding.addPersistentFrameCallback((callback) {
-        key.currentState.setRecrodingData(recrodingData);
-        widgetsBinding.scheduleFrame();
-
-        ///触发屏幕刷新
-      });
+    WidgetsBinding.instance.addPostFrameCallback((callback) {
+      if (MediaQuery.of(context).viewInsets.bottom == 0) {
+        setState(() {
+          node.unfocus();
+        });
+      }
+      key.currentState.setRecrodingData(recrodingData);
     });
   }
 
@@ -68,24 +65,12 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver, SingleTick
   void didChangeDependencies() async {
     super.didChangeDependencies();
     path = await FileUtile.getRecrodPath();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        if (MediaQuery.of(context).viewInsets.bottom == 0) {
-          node.unfocus();
-        }
-      });
-    });
-  }
-
-  @override
-  void deactivate() {
-    WidgetsBinding.instance.removeObserver(this);
-    super.deactivate();
   }
 
   @override
   void dispose() {
     super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
     controller.dispose();
     flutterPluginRecord.dispose();
     node.dispose();
@@ -361,6 +346,7 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver, SingleTick
       newLists.removeAt(0);
       newLists.add(value.round());
     }
+    key.currentState.setRecrodingData(recrodingData);
     templist.add(value.round());
   }
 }
