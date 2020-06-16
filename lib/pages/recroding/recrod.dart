@@ -26,8 +26,8 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
   FlutterPluginRecord flutterPluginRecord = FlutterPluginRecord();
   bool statu = false;
   String filepath = '', path = '';
-  int leng = 130;
-  List<int> recrodingData = List<int>.filled(130, 0, growable: true), templist = [];
+  int leng = (130 * 1.1).floor();
+  List<int> recrodingData = List<int>.filled((130 * 1.1).floor(), 0, growable: true), templist = [];
   GlobalKey<ShowSounState> key = GlobalKey();
   double left = 0, right = 60;
   double audioTimeLength = 0;
@@ -40,6 +40,7 @@ class _RecrodState extends State<Recrod> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    print(leng);
     flutterPluginRecord.init();
     flutterPluginRecord.responseFromInit.listen(responseFromInitListen);
     flutterPluginRecord.response.listen(strartRecroding);
