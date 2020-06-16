@@ -26,9 +26,8 @@ class ShowSounState extends State<ShowSoun> {
       height: 400,
       child: widget.isEditor != null
           ? Consumer<canvasData>(
-              builder: (context, conter, child) =>
-              CustomPaint(
-                foregroundPainter: TimeLine_canvas(conter.data.length, widget.totalTime),
+              builder: (context, conter, child) => CustomPaint(
+                foregroundPainter: TimeLine_canvas(conter.data.length, widget.totalTime, conter.scaleNum),
                 painter: EditorCanvas(conter.data, widget.recriodingTime),
               ),
             )

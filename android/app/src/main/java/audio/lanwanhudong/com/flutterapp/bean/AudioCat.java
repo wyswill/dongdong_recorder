@@ -1,8 +1,5 @@
 package audio.lanwanhudong.com.flutterapp.bean;
 
-import android.media.MediaPlayer;
-import android.util.Log;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -47,28 +44,6 @@ public class AudioCat {
         }
 
         return null;
-    }
-
-
-    /**
-     * 根据MediaPlayer获取wav音频时长 ms
-     *
-     * @return
-     */
-    public static long getWavLength(File file) {
-        MediaPlayer player = new MediaPlayer();
-        try {
-            player.setDataSource(file.getPath());  //recordingFilePath（）为音频文件的路径
-            player.prepare();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        long duration = player.getDuration();//获取音频的时间
-        Log.d("ACETEST", "### duration: " + duration);
-        player.release();//记得释放资源
-        return duration;
     }
 
     /**

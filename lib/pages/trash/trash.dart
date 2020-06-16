@@ -87,7 +87,10 @@ class _TrashState extends State<Trash> {
 
   ///显示选项
   void showOptions(RecroderModule rm, index) {
-    Provider.of<TranshProvider>(context, listen: false).trashSwitchState(index);
-    eventBus.fire(TrashOption(rm, index));
+    int preIndex = Provider.of<TranshProvider>(context, listen: false).preIndex;
+    if (preIndex != index) {
+      Provider.of<TranshProvider>(context, listen: false).trashSwitchState(index);
+      eventBus.fire(TrashOption(rm, index));
+    }
   }
 }

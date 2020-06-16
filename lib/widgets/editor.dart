@@ -107,16 +107,23 @@ class _EditorState extends State<Editor> {
             child: Stack(
               children: <Widget>[
                 Positioned(
-                  height: 250,
-                  child: Container(
-                      color: Theme.of(context).primaryColor,
-                      height: height,
-                      child: ShowSoun(
-                        recriodingTime: this.audioTimeLength,
-                        isEditor: true,
-                        totalTime: totalTime,
-                      )),
-                ),
+                    height: 250,
+                    child: GestureDetector(
+                      onScaleUpdate: (ScaleUpdateDetails details) {
+//                        print(details);
+                        int scaleNum = details.scale.round() > 0 ? details.scale.round() : 1;
+                        Provider.of<canvasData>(context,listen: false).setScaleNum(scaleNum);
+                        },
+                      child: Container(
+                        color: Theme.of(context).primaryColor,
+                        height: height,
+                        child: ShowSoun(
+                          recriodingTime: this.audioTimeLength,
+                          isEditor: true,
+                          totalTime: totalTime,
+                        ),
+                      ),
+                    )),
                 Positioned(
                   left: 0,
                   width: lw,

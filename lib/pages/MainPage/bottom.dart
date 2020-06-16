@@ -34,6 +34,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
   int currentPlayingTime = 0;
   TextEditingController _textEditingController = TextEditingController();
   FocusNode _focusNode = FocusNode();
+  double width = 60;
 
   @override
   void initState() {
@@ -113,6 +114,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
         );
         break;
       case bottomState.deleteFiles:
+        width = (MediaQuery.of(context).size.width - 99) / 3;
         return Container(
           padding: EdgeInsets.only(top: 13, bottom: 56, left: 33, right: 33),
           decoration: BoxDecoration(
@@ -123,7 +125,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
               Container(
-                width: 100,
+                width: width,
                 height: 40,
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -133,7 +135,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
                 child: FlatButton(child: Text('删除'), onPressed: delete),
               ),
               Container(
-                width: 100,
+                width: width,
                 height: 40,
                 decoration: BoxDecoration(
                   color: Colors.white,
@@ -143,7 +145,7 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
                 child: FlatButton(child: Text('还原'), onPressed: reset),
               ),
               Container(
-                width: 100,
+                width: width,
                 height: 40,
                 decoration: BoxDecoration(
                   color: Colors.white,

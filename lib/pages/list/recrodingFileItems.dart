@@ -264,8 +264,11 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
           FlatButton(
             onPressed: () {
               String newName = _textEditingController.text.trim();
-              Provider.of<RecordListProvider>(context, listen: false).reName(index: widget.index, newName: newName);
-              Navigator.pop(context);
+              if (newName.isNotEmpty) {
+                Provider.of<RecordListProvider>(context, listen: false).reName(index: widget.index, newName: newName);
+                Navigator.pop(context);
+              } else
+                Navigator.pop(context);
             },
             child: Text('确定修改'),
           ),

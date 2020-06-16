@@ -6,10 +6,11 @@ import 'package:flutter/material.dart';
 import '../utiles.dart';
 
 class TimeLine_canvas extends CustomPainter {
-  TimeLine_canvas(this.datalength, this.totaltime);
+  TimeLine_canvas(this.datalength, this.totaltime, this.scaleNum);
 
   final double totaltime;
   final int datalength;
+  int scaleNum;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -20,6 +21,7 @@ class TimeLine_canvas extends CustomPainter {
       fontSize: 6,
     ));
     Paint gary = Paint()..color = Colors.grey, write = Paint()..color = Colors.white;
+//    scale(scaleNum, size.width);
 
     ///秒数
     int s = (totaltime / 1000).truncate();
@@ -52,8 +54,19 @@ class TimeLine_canvas extends CustomPainter {
     canvas.drawParagraph(paragraph, offset);
   }
 
+  ///接收缩放系数，根据缩放系数计算时间轴
+  ///默认系数为1
+  ///大轴和小轴的关系：大轴间隔的1/5是小轴的间隔
+  ///屏幕宽度 375
+  ///缩放系数 [1-3] default = 1
+  scale(int scaleNum, double sw) {
+    double maxC = sw / 250 * scaleNum;
+    double minC = maxC / 5 * scaleNum;
+//    print('$maxC   $minC');
+  }
+
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
+  bool shouldRepaint(TimeLine_canvas oldDelegate) {
+    return scaleNum == oldDelegate.scaleNum;
   }
 }
