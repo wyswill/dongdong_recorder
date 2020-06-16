@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutterapp/canvasData.dart';
 import 'package:flutterapp/modus/record.dart';
 import 'package:flutterapp/plugins/AudioPlayer.dart';
@@ -112,8 +113,8 @@ class _EditorState extends State<Editor> {
                       onScaleUpdate: (ScaleUpdateDetails details) {
 //                        print(details);
                         int scaleNum = details.scale.round() > 0 ? details.scale.round() : 1;
-                        Provider.of<canvasData>(context,listen: false).setScaleNum(scaleNum);
-                        },
+                        Provider.of<canvasData>(context, listen: false).setScaleNum(scaleNum);
+                      },
                       child: Container(
                         color: Theme.of(context).primaryColor,
                         height: height,
@@ -242,17 +243,26 @@ class _EditorState extends State<Editor> {
   ///音频剪切
   void cut() async {
     String originPath = rm.filepath, savePath;
-    DateTime dateTime = DateTime.now();
     savePath = await FileUtile.getRecrodPath();
-    savePath = "$savePath${rm.title}-${dateTime.year}.${dateTime.month}.${dateTime.day}-${dateTime.hour}:${dateTime.minute}:${dateTime.second}";
+    List<RecroderModule> rml = Provider.of<RecordListProvider>(context, listen: false).recorderFiles;
+    int tim = 0;
+    rml.forEach((element) {
+      if (RegExp(rm.title).hasMatch(element.title)) {
+        tim++;
+      }
+    });
+    savePath = "$savePath${rm.title}-($tim)";
     try {
-      String res = await channel.invokeMethod("cat", {"originPath": originPath, "savePath": savePath, "startTime": starttime, "endTime": endtime, "totalS": totalTime / 1000});
-      if (res.isNotEmpty) {
-        alert(context, title: Text('剪辑完成！'));
+      bool res = await channel.invokeMethod("cat", {"originPath": originPath, "savePath": savePath, "startTime": starttime, "endTime": endtime, "totalS": totalTime / 1000});
+      if (res) {
         Provider.of<RecordListProvider>(context, listen: false).init(await FileUtile.getlocalMusic(channel: channel));
+        alert(context, title: Text('剪辑完成！'));
       } else {
         alert(context, title: Text('剪辑失败！'));
       }
+      Future.delayed(Duration(milliseconds: 900), () {
+        Navigator.pop(context);
+      });
     } catch (e) {
       print(e);
     }

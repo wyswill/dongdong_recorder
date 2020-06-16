@@ -42,15 +42,11 @@ public class MainActivity extends FlutterActivity {
                 double totleS = methodCall.argument("totalS");
                 int startTime = methodCall.argument("startTime");
                 int endTime = methodCall.argument("endTime");
-                Log.d("startTime", "handleMethod: " + startTime);
-                Log.d("totleS", "handleMethod: " + totleS);
                 try {
-                    System.out.println("剪辑开始");
                     boolean res = AudioCat.cut(oringPath, savePath, totleS, startTime, endTime, 44);
-                    System.out.println("剪辑完成！" + res);
-                    result.success(savePath);
+                    result.success(res);
                 } catch (Exception e) {
-                    result.error("404", "剪辑错误", e);
+                    result.error("404", "false", e);
                 }
                 break;
             case "initPlayer":

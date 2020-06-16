@@ -27,6 +27,7 @@ class RecordListProvider with ChangeNotifier {
     notifyListeners();
   }
 
+
   void changeState(int index) {
     if (preIndex != null) recorderFiles[preIndex].isActive = !recorderFiles[preIndex].isActive;
     recorderFiles[index].isActive = !recorderFiles[index].isActive;
