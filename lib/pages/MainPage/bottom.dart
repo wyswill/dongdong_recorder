@@ -96,11 +96,11 @@ class _BottomshowBarState extends State<BottomshowBar> with SingleTickerProvider
       case bottomState.recode:
         return Container(
           margin: EdgeInsets.only(bottom: 56),
+          width: 60,
           child: Center(
             child: setInk(
               elevation: 6,
               shadowColor: Theme.of(context).primaryColor,
-              bgColor: Colors.white,
               highlightColor: Color.fromRGBO(113, 119, 219, 1),
               borderRadius: BorderRadius.all(Radius.circular(50)),
               ontap: showRecroding,

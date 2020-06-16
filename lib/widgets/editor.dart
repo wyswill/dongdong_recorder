@@ -111,7 +111,6 @@ class _EditorState extends State<Editor> {
                     height: 250,
                     child: GestureDetector(
                       onScaleUpdate: (ScaleUpdateDetails details) {
-//                        print(details);
                         int scaleNum = details.scale.round() > 0 ? details.scale.round() : 1;
                         Provider.of<canvasData>(context, listen: false).setScaleNum(scaleNum);
                       },

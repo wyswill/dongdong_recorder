@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 class WavReader {
-  final String filepath;
+  String filepath;
   List<int> datas = [];
   double s = 0, size = 0, t = 0;
 

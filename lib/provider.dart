@@ -27,7 +27,6 @@ class RecordListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-
   void changeState(int index) {
     if (preIndex != null) recorderFiles[preIndex].isActive = !recorderFiles[preIndex].isActive;
     recorderFiles[index].isActive = !recorderFiles[index].isActive;
@@ -55,13 +54,16 @@ class RecordListProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  void reName({int index, String newName}) async {
+  Future<String> reName({int index, String newName}) async {
     RecroderModule rm = recorderFiles[index];
     String newTime = FileUtile.timeFromate(DateTime.now()), newPath = '${await FileUtile.getRecrodPath()}$newName.wav';
     rm.title = newName;
     rm.lastModified = newTime;
     File file = File(rm.filepath), newFile = file.renameSync(newPath);
     rm.filepath = newPath;
+    rm.reader.filepath=newPath;
+    recorderFiles[index] = rm;
     notifyListeners();
+    return newPath;
   }
 }

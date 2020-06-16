@@ -262,10 +262,13 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
         ),
         actions: <Widget>[
           FlatButton(
-            onPressed: () {
+            onPressed: () async {
               String newName = _textEditingController.text.trim();
               if (newName.isNotEmpty) {
-                Provider.of<RecordListProvider>(context, listen: false).reName(index: widget.index, newName: newName);
+                String newpath = await Provider.of<RecordListProvider>(context, listen: false).reName(index: widget.index, newName: newName);
+                widget.curentFile.title = newName;
+                widget.curentFile.filepath = newpath;
+                _textEditingController.clear();
                 Navigator.pop(context);
               } else
                 Navigator.pop(context);

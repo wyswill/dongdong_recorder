@@ -71,6 +71,8 @@ class FileUtile {
             DateTime dateTime = await file.lastModified();
             WavReader reader = WavReader(file.path);
             reader.readAsBytes();
+            int size = (reader.size / 1024).floor();
+            String fileS = size > 0 ? '${size}Mb' : '${reader.size}kb';
             RecroderModule rm = RecroderModule(
               title: filename.replaceAll('.wav', ''),
               filepath: file.path,
@@ -78,7 +80,7 @@ class FileUtile {
               lastModified: '${dateTime.year}年${dateTime.day}日${dateTime.hour}:${dateTime.minute}:${dateTime.second}',
               isPlaying: false,
               isActive: false,
-              fileSize: "${reader.size}kb",
+              fileSize: fileS,
               reader: reader,
             );
             resList.add(rm);
@@ -115,13 +117,15 @@ class FileUtile {
       DateTime dateTime = await newFile.lastModified();
       WavReader reader = WavReader(file.path);
       reader.readAsBytes();
+      int size = (reader.size / 1024).floor();
+      String fileS = size > 0 ? '${size}Mb' : '${reader.size}kb';
       RecroderModule rm = RecroderModule(
         title: newFileName,
         filepath: newFile.path,
         recrodingtime: reader.s,
         lastModified: timeFromate(dateTime),
         isPlaying: false,
-        fileSize: "${reader.size}kb",
+        fileSize: fileS,
         isActive: false,
         reader: reader,
       );
