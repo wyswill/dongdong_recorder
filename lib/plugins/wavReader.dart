@@ -33,21 +33,21 @@ class WavReader {
 
   ///转化数据
   List<List<int>> convert(int width) {
-    List<int> data = this.datas.getRange(44, datas.length).toList();
     List<List<int>> resList = [];
     int flag = 256;
     int current = 0;
-    for (int i = 0; i < width; i++) {
+    for (int i = 0; i < datas.length; i++) {
       int end = current + flag;
-      if (end > data.length) break;
-      List res = getMinMaxInRanges(data.getRange(current, end).toList());
+      if (end > datas.length) break;
+      List res = getMinMaxInRanges(datas.getRange(current, end));
       resList.add(res);
       current += flag;
     }
+    print(resList.length);
     return resList;
   }
 
-  List<int> getMinMaxInRanges(List<int> array) {
+  List<int> getMinMaxInRanges(Iterable<int> array) {
     int max = 0, min = 0;
     array.forEach((element) {
       if (element < min) min = element;

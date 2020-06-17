@@ -1,5 +1,6 @@
 import 'package:flutter/services.dart';
 import 'package:flutterapp/canvasData.dart';
+import 'package:flutterapp/commdata.dart';
 import 'package:flutterapp/pages/MainPage/MainPage.dart';
 import 'package:flutterapp/provider.dart';
 import 'package:flutterapp/router.dart';
@@ -17,6 +18,7 @@ void main() {
       ChangeNotifierProvider<RecordListProvider>(create: (_) => RecordListProvider()),
       ChangeNotifierProvider<TranshProvider>(create: (_) => TranshProvider()),
       ChangeNotifierProvider<canvasData>(create: (_) => canvasData()),
+      ChangeNotifierProvider<commdata>(create: (_) => commdata()),
     ],
     child: MyApp(),
   ));

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutterapp/canvasData.dart';
+import 'package:flutterapp/commdata.dart';
 import 'package:flutterapp/modus/record.dart';
 import 'package:flutterapp/plugins/AudioPlayer.dart';
 import 'package:flutterapp/plugins/WavReader.dart';
@@ -39,8 +40,7 @@ class _EditorState extends State<Editor> {
 
   int get index => widget.arguments['index'];
 
-  double get windowWidth => MediaQuery.of(context).size.width;
-  double singleWidth, sw;
+  double singleWidth, sw, windowWidth;
 
   String startTimestamp = '0:0:0', endTimestamp = '0:0:0', playingTime = '0:0:0', playingEndTime = '';
   AudioPlayer audioPlayer = AudioPlayer();
@@ -68,11 +68,13 @@ class _EditorState extends State<Editor> {
 
     ///等待画布widget构建完毕
     Future.delayed(Duration(microseconds: 400)).then((value) {
+      windowWidth = Provider.of<commdata>(context, listen: false).size.width;
       singleWidth = windowWidth / 14;
       starttime = singleWidth.truncate();
       lw = rw = singleWidth;
+      ///屏幕宽度
       sw = singleWidth * 12 / (totalTime / 1000).truncate();
-      List<List<int>> datas = reader.convert((singleWidth * 12).truncate()).cast<List<int>>();
+      List<List<int>> datas = reader.convert((windowWidth).truncate()).cast<List<int>>();
       Provider.of<canvasData>(context, listen: false).setData(datas);
     });
   }

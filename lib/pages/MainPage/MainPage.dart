@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutterapp/pages/list/RecrodingList.dart';
 import 'package:flutterapp/pages/search/search.dart';
 import 'package:flutterapp/pages/trash/trash.dart';
+import 'package:provider/provider.dart';
+import '../../commdata.dart';
 import 'bottom.dart';
 
 class MainPage extends StatefulWidget {
@@ -25,6 +27,8 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
   Map plaingFile;
   int preIndex = 0;
 
+  Size get size => MediaQuery.of(context).size;
+
   @override
   void initState() {
     super.initState();
@@ -35,6 +39,9 @@ class _MainPageState extends State<MainPage> with SingleTickerProviderStateMixin
       });
     });
     pageController = new PageController(initialPage: preIndex);
+    Future.delayed(Duration(milliseconds: 200), () {
+      Provider.of<commdata>(context, listen: false).size = size;
+    });
   }
 
   @override

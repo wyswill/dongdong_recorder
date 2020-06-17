@@ -164,7 +164,7 @@ class _RecordingFileItemsState extends State<RecordingFileItems> with SingleTick
   }
 
   void shear() {
-    ShareExtend.share(widget.curentFile.filepath, "file");
+    ShareExtend.share(widget.curentFile.filepath, "wav");
   }
 
   ///还原滑动
