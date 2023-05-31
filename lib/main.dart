@@ -1,36 +1,27 @@
+import 'package:asdasd/pages/MainPage/MainPage.dart';
+import 'package:asdasd/provider.dart';
+import 'package:asdasd/router.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
-import 'pages/recroding.dart';
-
-void main() => runApp(MyApp());
+void main() {
+  Provider.debugCheckInvalidValueType = null;
+  debugDefaultTargetPlatformOverride = TargetPlatform.android;
+  return runApp(Provider<Modus>(
+    create: (_) => Modus(),
+    child: MyApp(),
+  ));
+}
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: MyHomePage(title: 'flutter 音频剪辑'),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key, this.title}) : super(key: key);
-  final String title;
-
-  @override
-  _MyHomePageState createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.title),
-      ),
-      body: Recroding(),
+      title: '咚咚录音机',
+      theme: ThemeData(primaryColor: Color.fromRGBO(87, 92, 159, 1)),
+      home: MainPage(),
+      onGenerateRoute: (RouteSettings settings) => generateRoute(settings),
     );
   }
 }

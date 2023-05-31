@@ -1,0 +1,21 @@
+{
+  "name": "recording_flutter",
+  "description": "A new Flutter project.",
+  "version": "1.0.0",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "buildapk": "flutter build apk  --target-platform android-arm,android-arm64",
+    "install": "flutter install"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "http://t1.game2d.com:3000/wyswill/recording_flutter.git"
+  },
+  "author": "",
+  "license": "ISC"
+}
